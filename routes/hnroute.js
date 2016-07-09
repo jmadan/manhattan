@@ -12,21 +12,25 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
+	hackerNews.connectDB();
 	hackerNews.getDocuments().then((docs) => {
 		console.log(docs);
 		res.json(docs);
+	}).catch((err) => {
+		console.log(err);
 	}).done(() => {
-		mongoose.disconnect();
+		hackerNews.disconnectDB();
+		console.log("done");
 	});
 });
 
 router.get('/gethn', (req, res) => {
+	hackerNews.connectDB();
 	https.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty", (results) => {
 		results.on('data', (d) => {
 			var storyArray = JSON.parse(d);
 			for (i = 0; i < storyArray.length - 100; i++) {
 				var url = "https://hacker-news.firebaseio.com/v0/item/" + storyArray[i] + ".json?print=pretty";
-				console.log("url: ", url);
 				https.get(url, function(res) {
 					res.on('data', (data) => {
 						var story = JSON.parse(data);
@@ -37,6 +41,10 @@ router.get('/gethn', (req, res) => {
 				});
 			}
 		});
+	}).catch((err) => {
+		console.log(err);
+	}).done((err) => {
+		hackerNews.disconnectDB();
 	});
 	res.json("done");
 });
