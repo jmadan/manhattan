@@ -1,7 +1,8 @@
 var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
-
+let docDB = require('./modules/docDB');
+let story = require('./routes/storyroute');
 var app = express();
 
 app.use(morgan('combined', {
@@ -11,17 +12,14 @@ app.use(morgan('combined', {
 }));
 app.use(bodyParser.json());
 
-var hn = require('./routes/hnroute');
-let story = require('./routes/storyroute');
-
 app.get('/', function(req, res) {
 	res.json('Manhattan Project');
 });
 
-app.use('/hn', hn);
 app.use('/stories', story);
 
 app.listen(3000, function() {
 	// news.getNews();
+	docDB.connectDB();
 	console.log("Server Listening at 3000 port");
 });
