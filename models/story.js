@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+
 var Schema = mongoose.Schema;
 
 mongoose.Promise = require('q').Promise;
@@ -24,6 +25,10 @@ var StorySchema = new Schema({
 	score: {
 		type: Number
 	},
+	bodyText: {
+		type: String,
+		default: 'No Body'
+	},
 	category: {
 		type: String,
 		default: 'uncategorized'
@@ -32,21 +37,12 @@ var StorySchema = new Schema({
 
 var story = mongoose.model('story', StorySchema);
 
-exports.connectDB = () => {
-	mongoose.connect(process.env.MANHATTANDB);
-	console.log("Mongo Connected");
-}
-exports.disconnectDB = () => {
-	mongoose.disconnect();
-	console.log("Mongo Diconnected");
-}
-
 exports.getDocuments = () => {
-	var query = story.find({}).limit(10);
+	var query = story.find({});
 	return query.exec();
 }
 
-exports.saveDocuments = (storyId, title, url, storyType, timeSubmitted, score, category) => {
+exports.saveDocuments = (storyId, title, url, storyType, timeSubmitted, score, bodyText, category) => {
 	var st = new story({
 		storyId: storyId,
 		title: title,
@@ -54,20 +50,14 @@ exports.saveDocuments = (storyId, title, url, storyType, timeSubmitted, score, c
 		storyType: storyType,
 		timeSubmitted: timeSubmitted,
 		score: score,
+		bodyText: bodyText,
 		category: category
 	});
-	console.log(st.toString());
 	st.save((err) => {
 		if (err) {
 			console.log("error saving this document: ", st.storyId);
+		} else {
+			console.log("saved");
 		}
 	});
-}
-
-exports.getMetaDataByID = (storyID) => {
-	console.log("getMetaDataByID");
-	var query = story.find({
-		storyId: storyID
-	});
-	return query.exec();
 }

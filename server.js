@@ -12,12 +12,14 @@ app.use(morgan('combined', {
 app.use(bodyParser.json());
 
 var hn = require('./routes/hnroute');
+let story = require('./routes/storyroute');
 
 app.get('/', function(req, res) {
 	res.json('Manhattan Project');
 });
 
 app.use('/hn', hn);
+app.use('/stories', story);
 
 app.listen(3000, function() {
 	// news.getNews();
