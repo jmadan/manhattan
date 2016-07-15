@@ -2,7 +2,7 @@ var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 let docDB = require('./modules/docDB');
-let story = require('./routes/storyroute');
+let HNRoute = require('./routes/hnroute');
 var app = express();
 
 app.use(morgan('combined', {
@@ -12,11 +12,16 @@ app.use(morgan('combined', {
 }));
 app.use(bodyParser.json());
 
-app.get('/', function(req, res) {
-	res.json('Manhattan Project');
+app.get('/', (req, res) => {
+	res.json("{message: 'Hello Manhattan'}");
+});
+app.get('/api/', function(req, res) {
+	res.json({
+		message: 'Manhattan API Home'
+	});
 });
 
-app.use('/stories', story);
+app.use('/api/stories', HNRoute);
 
 app.listen(3000, function() {
 	// news.getNews();
