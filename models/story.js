@@ -32,32 +32,12 @@ var StorySchema = new Schema({
 	category: {
 		type: String,
 		default: 'uncategorized'
+	},
+	source: {
+		type: String
 	}
 });
 
-var story = mongoose.model('story', StorySchema);
+var Story = mongoose.model('story', StorySchema);
 
-exports.getDocuments = () => {
-	var query = story.find({});
-	return query.exec();
-}
-
-exports.saveDocuments = (storyId, title, url, storyType, timeSubmitted, score, bodyText, category) => {
-	var st = new story({
-		storyId: storyId,
-		title: title,
-		url: url,
-		storyType: storyType,
-		timeSubmitted: timeSubmitted,
-		score: score,
-		bodyText: bodyText,
-		category: category
-	});
-	st.save((err) => {
-		if (err) {
-			console.log("error saving this document: ", st.storyId);
-		} else {
-			console.log("saved");
-		}
-	});
-}
+module.exports = Story;
