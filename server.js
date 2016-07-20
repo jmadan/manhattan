@@ -2,7 +2,8 @@ var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 let docDB = require('./modules/docDB');
-let HNRoute = require('./routes/hnroute');
+let storyRoute = require('./routes/hnroute');
+let bayesRoute = require('./routes/bayesroute');
 var app = express();
 
 app.use(morgan('combined', {
@@ -21,7 +22,8 @@ app.get('/api/', function(req, res) {
 	});
 });
 
-app.use('/api/stories', HNRoute);
+app.use('/api/story', storyRoute);
+app.use('/api/bayes', bayesRoute);
 
 app.listen(3000, function() {
 	// news.getNews();
