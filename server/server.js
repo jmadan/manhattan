@@ -1,9 +1,11 @@
 var express = require('express');
+var path = require('path');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 let docDB = require('./modules/docDB');
 let storyRoute = require('./routes/hnroute');
 let bayesRoute = require('./routes/bayesroute');
+let expressHbs = require('express-handlebars');
 var app = express();
 
 app.use(morgan('combined', {
@@ -11,10 +13,24 @@ app.use(morgan('combined', {
 		return res.statusCode < 400
 	}
 }));
+
+app.set('view engine', 'hbs');
+
+app.use(express.static('app/public'));
+
+app.engine('hbs', expressHbs({
+	extname: '.hbs',
+	layoutsDir: './app/views/layouts/',
+	partialsDir: './app/views/partials/',
+	defaultLayout: 'main'
+}));
+
+app.set('views', path.resolve('app/views'));
+
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-	res.json("{message: 'Hello Manhattan'}");
+	res.render('index');
 });
 app.get('/api/', function(req, res) {
 	res.json({

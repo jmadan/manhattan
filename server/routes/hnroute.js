@@ -4,9 +4,12 @@ var mongoose = require('mongoose');
 let rp = require('request-promise');
 let cheerio = require('cheerio');
 let Story = require('../models/story');
-let S = require('string');
 let rq = require('request');
+let fs = require('fs');
+let natural = require('natural');
 
+stemmer = natural.PorterStemmer;
+stemmer.attach();
 
 router.use((req, res, next) => {
 	console.log('story route - time: ', Date.now());
@@ -39,6 +42,24 @@ router.get('/getstory/:storyid', (req, res) => {
 	});
 });
 
+router.get('/delete/:storyid', (req, res) => {
+	Story.remove({
+		storyId: req.params.storyid
+	}, (err) => {
+		if (!err) {
+			res.json({
+				status: 'success',
+				data: 'Deleted'
+			});
+		} else {
+			res.json({
+				status: 'Error',
+				error: 'Try again you Maggot!'
+			});
+		}
+	});
+});
+
 router.get('/getbody/:storyid', (req, res) => {
 	Story.find({
 		storyId: req.params.storyid
@@ -61,7 +82,7 @@ router.get('/getbody/:storyid', (req, res) => {
 					// });
 					res.json({
 						status: 'success',
-						data: parsedHTML('p').text()
+						data: parsedHTML('p').text().tokenizeAndStem()
 					});
 				}).catch((err) => {
 					res.json({
@@ -82,7 +103,7 @@ router.get('/getbody/:storyid', (req, res) => {
 			});
 		}
 	});
-})
+});
 
 router.get('/category/:category', (req, res) => {
 	Story.find({
@@ -137,7 +158,6 @@ router.get('/categorized', (req, res) => {
 	});
 });
 
-
 router.put('/update', (req, res) => {
 	if (req.body) {
 		Story.findById(req.body.id, (err, doc) => {
@@ -166,7 +186,48 @@ router.put('/update', (req, res) => {
 	}
 });
 
+router.get('/updatestorydb', (req, res) => {
+	var startItem, currentMax;
+	getHNMaxStoryInDB().then((doc) => {
+		startItem = parseInt(doc[0].storyId, 10) + 1;
+		rq("https://hacker-news.firebaseio.com/v0/maxitem.json?print=pretty", (err, response, maxItem) => {
+			if (!err) {
+				currentMax = parseInt(maxItem, 10);
+				console.log("{'maxItemInDB':" + startItem + ", 'currentItem':" + currentMax + "}");
+				console.log("difference: ", currentMax - startItem);
+				console.log(typeof currentMax);
+				console.log(typeof startItem);
+				for (var i = startItem; i < startItem + 20; i++) {
+					let url = "https://hacker-news.firebaseio.com/v0/item/" + i + ".json?print=pretty";
+					console.log(url);
+					rq(url, (err, response, itemBody) => {
+						if (!err) {
+							if (itemBody.type == "story" && itemBody.url) {
+								console.log(itemBody);
+								// rq(body.url, (err, response, html) => {
+								// 	if (!err && response.statusCode == 200) {
+								// 		var parsedHTML = cheerio.load(html, {
+								// 			normalizeWhitespace: true
+								// 		});
+								// 		console.log("Item: ", body.id);
+								saveDocuments(itemBody.id, itemBody.title, itemBody.url, itemBody.type, itemBody.time, itemBody.score, 'No Body', 'uncategorized');
+								// 	}
+								// });
+							} else {
+								console.log(itemBody.type);
+							}
+						} else {
+							console.log(err);
+						}
+					});
+				}
 
+			}
+		});
+	}).catch((err) => {
+		console.log(err);
+	});
+});
 
 router.get('/getMaxHNStory', (req, res) => {
 	let maxItem;
@@ -207,20 +268,20 @@ router.get('/getHNDelta', (req, res) => {
 
 router.get('/gethndata', (req, res) => {
 	// Get the max item from the DB abd compare it against what the feed gives to get the delta items
-	getHNMaxStoryInDB().then((maxdoc) => {
-		return maxdoc[0].storyId;
-	}).catch((err) => {
-		console.log(err.message)
-	});
+	// getHNMaxStoryInDB().then((maxdoc) => {
+	// 	return maxdoc[0].storyId;
+	// }).catch((err) => {
+	// 	console.log(err.message)
+	// });
 
-	let maxStoryAtHN = rp("https://hacker-news.firebaseio.com/v0/maxitem.json\?print\=pretty").then((response) => {
-		return ({
-			status: 'success',
-			data: response
-		});
-	}).catch((err) => {
-		console.log(err);
-	});
+	// let maxStoryAtHN = rp("https://hacker-news.firebaseio.com/v0/maxitem.json\?print\=pretty").then((response) => {
+	// 	return ({
+	// 		status: 'success',
+	// 		data: response
+	// 	});
+	// }).catch((err) => {
+	// 	console.log(err);
+	// });
 
 
 
@@ -245,7 +306,6 @@ router.get('/gethndata', (req, res) => {
 	// }).catch((err) => {
 	// 	console.log(err.message);
 	// })
-
 });
 
 router.get('/getStoryData', (req, res) => {
@@ -262,6 +322,34 @@ router.get('/getStoryData', (req, res) => {
 	});
 });
 
+router.get('/gettokens', (req, res) => {
+	Story.find({
+		category: {
+			$ne: 'uncategorized'
+		}
+	}, (err, docs) => {
+		if (!err && docs.length != 0) {
+			for (i = 0; i < docs.length; i++) {
+				docs[i].features = docs[i].bodyText.tokenizeAndStem();
+				docs[i].save((err) => {
+					if (err) {
+						console.log(err);
+					}
+				});
+			}
+			res.json({
+				status: 'success',
+				data: "all saved"
+			});
+		} else {
+			res.json({
+				status: 'failed',
+				error: err.message
+			});
+		}
+	});
+});
+
 function getDocumentBody(doc) {
 	console.log(doc.url + " --- " + doc.storyId);
 	rq(doc.url, (err, response, html) => {
@@ -272,6 +360,7 @@ function getDocumentBody(doc) {
 
 			// let script_pattern = [/<style((.|\W)+?)\<\/style\>/g, /<noscript((.|\W)+?)\<\/noscript\>/g, /<script((.|\W)+?)\<\/script\>/g, /<script(.+?)\>(.+?)\<\/script\>/g, /<script\>(.+?)\<\/script\>/g];
 			doc.bodyText = parsedHTML('p').text();
+			doc.features = parsedHTML('p').text().tokenizeAndStem();
 			doc.save((err) => {
 				if (err) {
 					console.log(err);
@@ -306,6 +395,7 @@ saveDocuments = (storyId, title, url, storyType, timeSubmitted, score, bodyText,
 		timeSubmitted: timeSubmitted,
 		score: score,
 		bodyText: bodyText,
+		features: features,
 		category: category
 	});
 	st.save((err) => {
