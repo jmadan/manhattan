@@ -4,10 +4,11 @@
   "description": "",
   "main": "./server/server.js",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack-dev-server --inline --hot --progress --colors --content-base app",
-    "start": "nodemon ./server/server.js",
-    "test": "mocha ./tests/*",
-    "webpack": "webpack --config ./config/webpack.config.js --colors"
+    "build:webpack": "NODE_ENV=production webpack --config webpack.config.js",
+    "clean": "rimraf dist",
+    "start": "webpack --config webpack.config.js --colors && node devServer.js",
+    "build": "npm run clean && npm run build:webpack",
+    "test": "mocha ./tests/*"
   },
   "keywords": [],
   "author": "Jasdeep Madan",
@@ -28,31 +29,29 @@
     "q": "^1.4.1",
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.6.1",
+    "react-transform-catch-errors": "^1.0.2",
+    "redbox-react": "^1.2.10",
+    "redux": "^3.5.2",
     "request": "^2.73.0",
     "request-promise": "^3.0.0",
     "sinon": "^1.17.4",
     "sinon-mongoose": "^1.2.1"
   },
   "devDependencies": {
-    "babel": "^6.5.2",
-    "babel-core": "^6.11.4",
-    "babel-eslint": "^6.1.2",
+    "babel-core": "^6.13.2",
     "babel-loader": "^6.2.4",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-react-html-attrs": "^2.0.0",
-    "babel-plugin-transform-class-properties": "^6.11.5",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-es2015": "^6.13.2",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
-    "eslint": "^3.2.2",
-    "eslint-config-standard": "^5.3.5",
-    "eslint-plugin-promise": "^2.0.0",
-    "eslint-plugin-react": "^6.0.0",
-    "eslint-plugin-standard": "^2.0.0",
-    "node-libs-browser": "^1.0.0",
     "nodemon": "^1.9.2",
+    "rimraf": "^2.5.4",
     "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.12.2"
+  },
+  "babel":{
+    "presets": ["react", "es2015", "stage-0"]
   }
 }
