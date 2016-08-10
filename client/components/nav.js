@@ -17,7 +17,7 @@ const NavBar = React.createClass({
 			        </div>
 			        <div id='navbar' className='navbar-collapse collapse'>
 			          <ul className='nav navbar-nav navbar-right'>
-			           <li className="active"><Link to="/">Home</Link></li>
+			           <li><Link to="/" activeClassName="active">Home</Link></li>
 			           <li><Link to="/">Sign In</Link></li>
 			           <li><Link to="/">About Me</Link></li>
 			          </ul>

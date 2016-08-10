@@ -6,7 +6,8 @@
   "scripts": {
     "build:webpack": "NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rimraf dist",
-    "start": "webpack --config webpack.config.js --colors && node devServer.js",
+    "start_old": "webpack --config webpack.config.js --colors && node devServer.js",
+    "start": "node server.js",
     "build": "npm run clean && npm run build:webpack",
     "test": "mocha ./tests/*"
   },
@@ -45,13 +46,12 @@
     "babel-preset-es2015": "^6.13.2",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
+    "css-loader": "^0.23.1",
     "nodemon": "^1.9.2",
     "rimraf": "^2.5.4",
+    "style-loader": "^0.13.1",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.12.2"
-  },
-  "babel":{
-    "presets": ["react", "es2015", "stage-0"]
   }
 }

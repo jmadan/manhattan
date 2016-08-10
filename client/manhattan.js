@@ -6,7 +6,7 @@ import Main from './components/main';
 import Home from './components/home';
 import Interest from './components/interest';
 
-const router = (
+let router = (
 	<Router history={browserHistory}>
 		<Route path="/" component={Main}>
 			<IndexRoute component={Home}></IndexRoute>

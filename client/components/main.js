@@ -9,7 +9,7 @@ const Main = React.createClass({
 
 		return (<div className="container">
 			<NavBar />
-			{this.props}
+			{this.props.children}
 			<Footer />
 			</div>);
 	}
