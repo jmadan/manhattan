@@ -1,21 +1,28 @@
 let webpack = require('webpack');
 let path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+const PATHS = {
+    build: path.join(__dirname, '/build')
+};
 
 module.exports = {
 	devtool: 'source-map',
-	entry: ['./client/manhattan'],
+	entry: './server/index.js',
 	output: {
-		path: __dirname + '/app/public/js',
-		filename: 'superman.js',
-		publicPath: __dirname + '/app/public/js',
+		path: PATHS.build,
+		filename: 'server.js'
 	},
 	module: {
-		loaders: [
-			{
-				test: /client\/.+.js$/,
-				exclude: /node_modules/,
-				loader: 'babel-loader'
-			}
-		]
-	}
+		loaders: [{
+			test: /\.js$/,
+			exclude: /node_modules/,
+			loader: 'babel'
+		}]
+	},
+	plugins: [
+        new CleanWebpackPlugin([PATHS.build], {
+            root: process.cwd()
+        })
+    ]
 };
