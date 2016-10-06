@@ -48,7 +48,10 @@ app.use('/api', ClientRouter);
 app.use('/admin/api', AdminRouter);
 
 let PORT = process.env.PORT || 3000;
-let server = app.listen(PORT, 'localhost', function (err) {
+
+app.set('port', PORT);
+
+let server = app.listen(app.get('port'), function (err) {
     if (err) {
         console.log(err);
         return;
