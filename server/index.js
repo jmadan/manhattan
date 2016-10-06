@@ -3,7 +3,6 @@ let path = require('path');
 let bodyParser = require('body-parser');
 let cron = require('node-cron');
 let docDB = require('./modules/docDB');
-let hnNews = require('./modules/hackernews');
 let morgan = require('morgan');
 import ServerConfig from '../config/config';
 
