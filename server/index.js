@@ -8,7 +8,7 @@ let morgan = require('morgan');
 import ServerConfig from '../config/config';
 
 let ClientRouter = require('./routes/ClientRouter');
-import AdminRouter from './routes/AdminROuter';
+import AdminRouter from './routes/AdminRouter';
 
 let app = express();
 
