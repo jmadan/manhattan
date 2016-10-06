@@ -25,7 +25,8 @@ var UserSchema = new Schema({
 	interests: [{
 		type: String
 	}]
-});
+},
+{ versionKey: false});
 
 var User = mongoose.model('user', UserSchema);
 

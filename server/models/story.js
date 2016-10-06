@@ -39,7 +39,9 @@ var StorySchema = new Schema({
 	features: [{
 		type: String
 	}]
-});
+},
+{ versionKey: false}
+);
 
 var Story = mongoose.model('story', StorySchema);
 
