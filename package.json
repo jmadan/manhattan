@@ -30,7 +30,7 @@
     ]
   },
   "dependencies": {
-    "babel": "^6.5.2",
+    "babel-cli": "^6.16.0",
     "babel-polyfill": "^6.16.0",
     "bayes": "0.0.6",
     "body-parser": "^1.15.2",
@@ -46,7 +46,6 @@
     "request-promise-native": "^1.0.3"
   },
   "devDependencies": {
-    "babel-cli": "^6.14.0",
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.13.2",
     "babel-preset-stage-0": "^6.5.0",
