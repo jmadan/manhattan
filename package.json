@@ -30,6 +30,7 @@
     ]
   },
   "dependencies": {
+    "babel": "^6.5.2",
     "babel-polyfill": "^6.16.0",
     "bayes": "0.0.6",
     "body-parser": "^1.15.2",
