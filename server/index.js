@@ -4,8 +4,11 @@ let bodyParser = require('body-parser');
 let cron = require('node-cron');
 let docDB = require('./modules/docDB');
 let hnNews = require('./modules/hackernews');
+let morgan = require('morgan');
+import ServerConfig from '../config/config';
 
 let ClientRouter = require('./routes/ClientRouter');
+import AdminRouter from './routes/AdminROuter';
 
 let app = express();
 
@@ -18,6 +21,8 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+app.use(morgan('combined'));
+
 app.use(function (req, res, next) {
     // Set permissive CORS header - this allows this server to be used only as
     // an API server in conjunction with something like webpack-dev-server.
@@ -25,7 +30,6 @@ app.use(function (req, res, next) {
 
     // Disable caching so we'll always get the latest comments.
     res.setHeader('Cache-Control', 'no-cache');
-    console.log("***********request: ", req.url);
     next();
 });
 
@@ -42,6 +46,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', ClientRouter);
+app.use('/admin/api', AdminRouter);
 
 let PORT = process.env.PORT;
 let server = app.listen(PORT || 3000, 'localhost', function (err) {
@@ -49,8 +54,11 @@ let server = app.listen(PORT || 3000, 'localhost', function (err) {
         console.log(err);
         return;
     }
-    docDB.connectDB();
+    docDB.connectDB(ServerConfig.mongoURI[process.env.NODE_ENV]);
     console.log("Server started http://localhost:3000");
+    cron.schedule('* * * * *', () => {
+        console.log('running the cron');
+    });
     // cron.schedule('* * * * *', () => {
     // console.log('running the cron');
     // hnNews.getLatestHNStories();
