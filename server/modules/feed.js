@@ -19,3 +19,21 @@ export function getFeed(interests) {
 	// });
 	return deferred.promise;
 };
+
+export function deleteStory(storyId) {
+	Story.remove({storyId: storyId}, (err) => {
+		return err;
+	});
+};
+
+export function updateStory(storyId, category) {
+	let deferred = Q.defer();
+	Story.findOneAndUpdate({storyId: storyId}, {category: category}, {new: true}, (err, doc)=>{
+		if(err){
+			deferred.reject(err);
+		} else {
+			deferred.resolve(doc);
+		}
+	});
+	return deferred.promise;
+};
