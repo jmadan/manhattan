@@ -47,14 +47,14 @@ app.get('/', (req, res) => {
 app.use('/api', ClientRouter);
 app.use('/admin/api', AdminRouter);
 
-let PORT = process.env.PORT;
-let server = app.listen(PORT || 3000, 'localhost', function (err) {
+let PORT = process.env.PORT || 3000;
+let server = app.listen(PORT, 'localhost', function (err) {
     if (err) {
         console.log(err);
         return;
     }
     docDB.connectDB(ServerConfig.mongoURI[process.env.NODE_ENV]);
-    console.log("Server started http://localhost:3000");
+    console.log("Server started http://host:"+ PORT);
     cron.schedule('* * * * *', () => {
         console.log('running the cron');
     });
