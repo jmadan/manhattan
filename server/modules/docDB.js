@@ -2,13 +2,11 @@
 
 var mongoose = require('mongoose');
 
-exports.connectDB = () => {
-    console.log(process.env.MANHATTANDB);
-    console.log("before state: ", mongoose.connection.readyState);
+exports.connectDB = (mongoURI) => {
+    console.log("state before connection: ", mongoose.connection.readyState);
     if (mongoose.connection.readyState != 2) {
-        // mongoose.connect("mongodb://127.0.0.1:27017/niteowl");
-        mongoose.connect(process.env.MANHATTANDB);
-        console.log("after state: ", mongoose.connection.readyState);
+        mongoose.connect(mongoURI);
+        console.log("state after connection: ", mongoose.connection.readyState);
         console.log("Mongo Connected");
     } else {
         console.log("Mongo Already Connected");
@@ -16,6 +14,6 @@ exports.connectDB = () => {
 }
 exports.disconnectDB = () => {
     mongoose.disconnect();
-    console.log("state: ", mongoose.connection.readyState);
+    console.log("state after disconnect: ", mongoose.connection.readyState);
     console.log("Mongo Diconnected");
 }
