@@ -11,16 +11,20 @@ var StorySchema = new Schema({
 		type: String
 	},
 	title: {
-		type: String
+		type: String,
+		required: true
 	},
 	url: {
-		type: String
+		type: String,
+		required: true
 	},
 	storyType: {
-		type: String
+		type: String,
+		required: true
 	},
 	timeSubmitted: {
-		type: Date
+		type: Date,
+		default: Date.now()
 	},
 	score: {
 		type: Number
@@ -33,15 +37,15 @@ var StorySchema = new Schema({
 		type: String,
 		default: 'uncategorized'
 	},
-	source: {
+	w source: {
 		type: String
 	},
 	features: [{
 		type: String
 	}]
-},
-{ versionKey: false}
-);
+}, {
+	versionKey: false
+});
 
 var Story = mongoose.model('story', StorySchema);
 
