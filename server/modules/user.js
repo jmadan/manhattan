@@ -3,7 +3,9 @@ let Q = require('q');
 
 exports.userInfo = (userEmail) => {
 	let deferred = Q.defer();
-	User.findOne({email: userEmail}).exec((err, person) => {
+	User.findOne({
+		email: userEmail
+	}).exec((err, person) => {
 		if (err) {
 			deferred.reject(err);
 		} else {
@@ -28,11 +30,14 @@ exports.getUsers = () => {
 
 exports.createUser = (firstName, lastName, email) => {
 	let deferred = Q.defer();
-	// let person = new User({firstName: firstName, lastName: lastName, email: email})
-	User.create({firstName: firstName, lastName: lastName, email: email}, (err, person) => {
-		if(err){
+	User.create({
+		firstName: firstName,
+		lastName: lastName,
+		email: email
+	}, (err, person) => {
+		if (err) {
 			deferred.reject(err);
-		} else{
+		} else {
 			deferred.resolve(person);
 		}
 	});

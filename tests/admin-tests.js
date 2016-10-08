@@ -45,12 +45,12 @@ describe('Admin Category section', () => {
 
 	describe('/POST Create a Category', () => {
 		it('Expect to save a Category', (done) => {
-			let category = {
+			let category = new Category({
 				category: 'test-category',
 				description: 'This is a test category for testing purposes'
-			};
+			});
 			chai.request('http://localhost:3000')
-				.get('/admin/api/category/create')
+				.post('/admin/api/category/create')
 				.send(category)
 				.end((err, res) => {
 					expect(res.body.message).to.eql('Category saved!');
@@ -61,6 +61,5 @@ describe('Admin Category section', () => {
 				});
 		});
 	});
-
 
 });
