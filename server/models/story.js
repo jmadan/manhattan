@@ -37,7 +37,7 @@ var StorySchema = new Schema({
 		type: String,
 		default: 'uncategorized'
 	},
-	w source: {
+	source: {
 		type: String
 	},
 	features: [{
