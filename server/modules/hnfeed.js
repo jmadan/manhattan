@@ -1,25 +1,18 @@
 let fetch = require('isomorphic-fetch');
 let docDB = require('./docDB');
 let async = require('async');
+let cheerio = require('cheerio');
+let request = require('request');
 
-exports.gettext = (item) => {
+let updateitembody = (doc, docBody) => {
+  // console.log(doc);
   docDB.open().then((db) => {
     return db.collection("hnfeed_initial");
   }).then((mcoll) => {
-    return mcoll.find({status: "getBody"}).limit(1).toArray();
-  }).then((docs) => {
-    docs.map((doc) => {
-      fetch(doc.url).then((response)=>{
-        if(response.status >= 400){
-          throw new Error("Got fucked....");
-        }
-        return response.json();
-      }).then((details) => {
-        console.log("doc :", doc.url, "--------", details);
-      }).catch((err)=>{
-        console.log("Error updating: ", err)
-      });
-    })
+    return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "complete", itembody: docBody}});
+  }).then((r) => {
+    docDB.close();
+    console.log("document update: ", r.modifiedCount);
   }).catch((err)=>{
     console.log("Error updating: ", err);
   });
@@ -36,6 +29,23 @@ let updateitem = (doc) => {
     }
   }).then((r) => {
     console.log("document update: ", r.modifiedCount);
+  }).catch((err)=>{
+    console.log("Error updating: ", err);
+  });
+}
+exports.gettext = (item) => {
+  docDB.open().then((db) => {
+    return db.collection("hnfeed_initial");
+  }).then((mcoll) => {
+    return mcoll.find({status: "getBody"}).limit(10).toArray();
+  }).then((docs) => {
+    docDB.close();
+    docs.map((doc) => {
+      request(doc.url, (error, response, html) => {
+        let $ = cheerio.load(html, {normalizeWhitespace: true});
+        updateitembody(doc, $.text());
+      });
+    })
   }).catch((err)=>{
     console.log("Error updating: ", err);
   });
