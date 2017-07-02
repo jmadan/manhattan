@@ -1,43 +1,25 @@
-var express = require('express');
-var router = express.Router();
-import * as Feed from '../modules/feed';
-import * as User from '../modules/user';
-import * as Category from '../modules/category';
+let express = require('express');
+let router = express.Router();
+import admin from '../modules/admin';
 
 router.use((req, res, next) => {
-	console.log('story route - time: ', Date.now());
+	console.log('Request Time: ', Date.now());
 	console.log(req.path);
 	next();
 });
 
 router.get('/', (req, res) => {
-	res.json({
-		message: "Need to call specific end points to get data",
-		error: true
-	});
+	res.render('admin');
 });
 
-router.get('/user/:userEmail', (req, res) => {
-	res.json({
-		user: {},
-		message: "user info",
-		success: true
-	});
-});
-
-router.post('/user/saveinterest', (req, res) => {
-	res.json({
-		message: "User interest saved!",
-		success: true,
-		user: {}
-	});
-});
-
-router.post('/user/updateinterest', (req, res) => {
-	res.json({
-		message: "User interest updated!",
-		success: true,
-		user: {}
+router.get('/all-articles', (req, res) => {
+	admin.getalldocuments(req.query.docs).then((result) => {
+		console.log("I am in*****", result.article_list.length);
+		if(result.error) {
+			res.render('error', {message: result.error});
+		} else{
+			res.render('admin', { article_list: result.article_list});
+		}
 	});
 });
 
@@ -92,4 +74,4 @@ router.post('/category/create', (req, res) => {
 	});
 });
 
-export default router;
+module.exports = router;

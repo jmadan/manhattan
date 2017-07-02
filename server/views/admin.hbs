@@ -1,0 +1,29 @@
+
+<div class="col-lg-12">
+  <p>
+    <h2>This is Admin Page</h2>
+  </p>
+  <hr>
+  <div class="row">
+  {{#if article_list}}
+    <table class="table">
+      <thead class="thead-inverse">
+          <th>#</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Edit/Update</th>
+      </thead>
+      <tbody>
+      {{#each article_list}}
+        <tr>
+            <td>{{hnid}}</td>
+            <td><a href='{{url}}' target='_blank'>{{title}}</a></td>
+            <td>{{#if category}} {{category}} {{else}} No Category {{/if}}</td>
+            <td><button type="button" class="btn btn-primary">Edit</button></td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+  {{/if}}
+</div>
+</div>

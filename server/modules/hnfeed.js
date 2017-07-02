@@ -3,13 +3,16 @@ let docDB = require('./docDB');
 let async = require('async');
 let cheerio = require('cheerio');
 let request = require('request');
+import {lemmatizer} from 'lemmatizer';
 
 let updateitembody = (doc, docBody) => {
+  docBody = docBody.replace('//n/mg', '');
+  docBody = docBody.replace('//n/mg', '');
   // console.log(doc);
   docDB.open().then((db) => {
     return db.collection("hnfeed_initial");
   }).then((mcoll) => {
-    return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "complete", itembody: docBody}});
+    return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "complete", itembody: docBody, tbody: lemmatizer(docBody)}});
   }).then((r) => {
     docDB.close();
     console.log("document update: ", r.modifiedCount);
@@ -43,7 +46,8 @@ exports.gettext = (item) => {
     docs.map((doc) => {
       request(doc.url, (error, response, html) => {
         let $ = cheerio.load(html, {normalizeWhitespace: true});
-        updateitembody(doc, $.text());
+        updateitembody(doc, $('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim());
+        // console.log("text goes here: ", doc.url,  $('body').text().replace('/\s+/mg',''));
       });
     })
   }).catch((err)=>{
