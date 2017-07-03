@@ -1,33 +1,35 @@
 let express = require('express');
 let path = require('path');
 let bodyParser = require('body-parser');
-let cron = require('node-cron');
-let docDB = require('./modules/docDB');
 let morgan = require('morgan');
-import ServerConfig from '../config/config';
-
-let ClientRouter = require('./routes/ClientRouter');
-import AdminRouter from './routes/AdminRouter';
+let hbs = require('express-handlebars');
+let admin = require('./routes/adminrouter');
 
 let app = express();
+//view engine setup
+app.engine('hbs', hbs({
+  extname: 'hbs',
+  defaultLayout: 'applayout',
+  layoutsDir: __dirname + '/views/layouts/'}));
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 
 app.use('/', express.static('app/public'));
 app.use(bodyParser.json());
-
 app.use(bodyParser.json({ type: 'application/json'}));
-
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: false
 }));
 
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 
 app.use(function (req, res, next) {
     // Set permissive CORS header - this allows this server to be used only as
     // an API server in conjunction with something like webpack-dev-server.
     res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // Disable caching so we'll always get the latest comments.
+    // Disable caching so we'll always get the latest.
     res.setHeader('Cache-Control', 'no-cache');
     next();
 });
@@ -41,11 +43,11 @@ app.get('/', (req, res) => {
             'x-sent': true
         }
     };
-    res.json({message: "Welcome to Manhattan Project"});
+    // res.json({message: "Welcome to Manhattan Project"});
+    res.render('index');
 });
 
-app.use('/api', ClientRouter);
-app.use('/admin/api', AdminRouter);
+app.use('/admin', admin);
 
 let PORT = process.env.PORT || 3000;
 
@@ -56,11 +58,8 @@ let server = app.listen(app.get('port'), function (err) {
         console.log(err);
         return;
     }
-    docDB.connectDB(ServerConfig.mongoURI[process.env.NODE_ENV]);
-    console.log("Server started http://host:"+ PORT);
-    cron.schedule('* * * * *', () => {
-        console.log('running the cron');
-    });
+    console.log("Server started http://localhost:"+ PORT);
+
     // cron.schedule('* * * * *', () => {
     // console.log('running the cron');
     // hnNews.getLatestHNStories();
