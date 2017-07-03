@@ -15,7 +15,7 @@ app.engine('hbs', hbs({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.use('/', express.static('app/public'));
+app.use('/', express.static('server/assets'));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/json'}));
 app.use(bodyParser.urlencoded({
