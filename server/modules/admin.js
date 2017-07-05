@@ -12,7 +12,7 @@ exports.getalldocuments = (noofdocs) => {
     return db.collection("hnfeed_initial");
   })
   .then((collection) => {
-    return collection.find({status: "complete"}).limit(noofdocs).toArray();
+    return collection.find({status: "classification pending"}).limit(noofdocs).toArray();
   })
   .then((docs) => {
     docDB.close();
