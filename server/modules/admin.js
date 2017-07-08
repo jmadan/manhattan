@@ -1,7 +1,7 @@
 let docDB = require('./docDB');
 let Q = require('q');
 
-exports.getalldocuments = (noofdocs) => {
+exports.getdocuments = (noofdocs, category) => {
   let deferred = Q.defer();
   if(!noofdocs){
     noofdocs = 1;

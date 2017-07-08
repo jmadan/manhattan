@@ -46,8 +46,10 @@ router.get('/', (req, res) => {
 	res.render('admin', {homepage: true, task_status: taskStatus});
 });
 
-router.get('/all-articles', (req, res) => {
-	admin.getalldocuments(req.query.docs).then((result) => {
+router.get('/articles', (req, res) => {
+	let cat = req.query.category;
+	let article_limit = req.query.limit;
+	admin.getdocuments(article_limit, cat).then((result) => {
 		if(result.error) {
 			res.render('error', {message: result.error});
 		} else{
