@@ -10,7 +10,7 @@ let updateitembody = (doc, docBody, categories) => {
   docBody = docBody.replace('//n/mg', '');
   // console.log(doc);
   docDB.open().then((db) => {
-    return db.collection("hnfeed_initial");
+    return db.collection("hn_feed");
   }).then((mcoll) => {
     if(categories){
       return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "classification complete", itembody: docBody, tbody: lemmatizer(docBody), category: categories}});
@@ -27,7 +27,7 @@ let updateitembody = (doc, docBody, categories) => {
 
 let updateitem = (doc) => {
   docDB.open().then((db) => {
-    return db.collection("hnfeed_initial");
+    return db.collection("hn_feed");
   }).then((mcoll) => {
     if(doc.type == 'story'){
       return mcoll.updateOne({'hnid': doc.id}, {$set: {status: "getBody", title: doc.title, url: doc.url, type: doc.type}});
@@ -42,7 +42,7 @@ let updateitem = (doc) => {
 }
 exports.gettext = (item) => {
   docDB.open().then((db) => {
-    return db.collection("hnfeed_initial");
+    return db.collection("hn_feed");
   }).then((mcoll) => {
     return mcoll.find({status: "getBody"}).limit(10).toArray();
   }).then((docs) => {
@@ -65,7 +65,7 @@ exports.gettext = (item) => {
 
 exports.getfeeditemdetails = () => {
   docDB.open().then((db) => {
-    return db.collection("hnfeed_initial");
+    return db.collection("hn_feed");
   }).then((mcoll) => {
     return mcoll.find({status: "pending"}).limit(10).toArray();
   }).then((results) => {
@@ -96,7 +96,7 @@ let ifStory = (item, callback) => {
 let insertinitiallist = (docs) => {
   console.log("I am in insertinitialfeed function");
   docDB.open().then((db) => {
-    return db.collection("hnfeed_initial");
+    return db.collection("hn_feed");
   }).then((mcoll) => {
     // console.log(checkIdExists(mcollection, hnDoc.id));
     return mcoll.insertMany(docs);
