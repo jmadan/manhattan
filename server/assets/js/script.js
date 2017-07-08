@@ -1,0 +1,3 @@
+exports.updatecategory = () => {
+  alert("hello");
+}

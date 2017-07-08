@@ -5,14 +5,18 @@ let cheerio = require('cheerio');
 let request = require('request');
 import {lemmatizer} from 'lemmatizer';
 
-let updateitembody = (doc, docBody) => {
+let updateitembody = (doc, docBody, categories) => {
   docBody = docBody.replace('//n/mg', '');
   docBody = docBody.replace('//n/mg', '');
   // console.log(doc);
   docDB.open().then((db) => {
     return db.collection("hnfeed_initial");
   }).then((mcoll) => {
-    return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "complete", itembody: docBody, tbody: lemmatizer(docBody)}});
+    if(categories){
+      return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "classification complete", itembody: docBody, tbody: lemmatizer(docBody), category: categories}});
+    } else {
+      return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "classification pending", itembody: docBody, tbody: lemmatizer(docBody)}});
+    }
   }).then((r) => {
     docDB.close();
     console.log("document update: ", r.modifiedCount);
@@ -46,7 +50,11 @@ exports.gettext = (item) => {
     docs.map((doc) => {
       request(doc.url, (error, response, html) => {
         let $ = cheerio.load(html, {normalizeWhitespace: true});
-        updateitembody(doc, $('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim());
+        let metaArray = $('meta').toArray();
+    		let categories = metaArray.filter((m)=>{
+    			return m.attribs.name === 'Keywords' ? m.attribs.content : '';
+    		});
+        updateitembody(doc, $('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim(), categories);
         // console.log("text goes here: ", doc.url,  $('body').text().replace('/\s+/mg',''));
       });
     })

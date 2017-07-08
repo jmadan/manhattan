@@ -1,0 +1,25 @@
+{{#each article}}
+<form>
+  <div class="form-group">
+    <label for="articleId" class="control-label">Article ID:</label>
+    <input type="text" class="form-control" id="articleId" value={{hnid}}>
+  </div>
+  <div class="form-group">
+    <label for="articleTitle" class="control-label">
+      Title: <a href='{{url}}' target='_blank'>{{title}}</a>
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="articleBody" class="control-label">Article Body</label>
+    <textarea class="form-control" id="articleBody" rows="10">{{itembody}}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="category" class="control-label">Category:</label>
+    <input type="text" class="form-control" value='' id="category" />
+  </div>
+  <div class="center-block">
+  <button class="btn btn-primary" type="submit">Update</button>
+</div>
+</form>
+
+{{/each}}

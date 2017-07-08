@@ -4,26 +4,99 @@
     <h2>This is Admin Page</h2>
   </p>
   <hr>
+  {{#if homepage}}
+    <div class="row">
+      <div class="col-md-4">
+        {{#if task_status.initialHNFeed}}
+          <a class="btn btn-warning" href="/admin?task=stopfeed">Stop Hacker News Feed </a>
+        {{else}}
+          <a class="btn btn-primary" href="/admin?task=startfeed">Start Hacker News Feed </a>
+        {{/if}}
+      </div>
+      <div class="col-md-4">
+        {{#if task_status.hnFeedDetail}}
+          <a class="btn btn-warning" href="/admin?task=stopfeeddetail">Stop HN Feed Detail </a>
+        {{else}}
+          <a class="btn btn-primary" href="/admin?task=startfeeddetail">Start HN Feed Detail </a>
+        {{/if}}
+      </div>
+      <div class="col-md-4">
+        {{#if task_status.feedItemBody}}
+          <a class="btn btn-warning" href="/admin?task=stopfeeddetail">Stop HN Feed Item Body </a>
+        {{else}}
+          <a class="btn btn-primary" href="/admin?task=startfeeddetail">Start HN Feed Item Body </a>
+        {{/if}}
+      </div>
+    </div>
+    <br><br>
+    <div class="row">
+      <div class="col-md-4">
+        <a class="btn btn-primary" href="/admin/articles?limit=10&category=false">Show articles without category</a>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary" href="/admin/articles?limit=10&category=true">Show articles with category</a>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary" href="/admin/articles?limit=10&category=true">Show articles with category</a>
+      </div>
+    </div>
+  {{/if}}
+  <hr>
   <div class="row">
   {{#if article_list}}
-    <table class="table">
-      <thead class="thead-inverse">
-          <th>#</th>
-          <th>Title</th>
-          <th>Category</th>
-          <th>Edit/Update</th>
-      </thead>
-      <tbody>
-      {{#each article_list}}
-        <tr>
-            <td>{{hnid}}</td>
-            <td><a href='{{url}}' target='_blank'>{{title}}</a></td>
-            <td>{{#if category}} {{category}} {{else}} No Category {{/if}}</td>
-            <td><button type="button" class="btn btn-primary">Edit</button></td>
-        </tr>
-      {{/each}}
-      </tbody>
-    </table>
+    <form>
+      <table class="table">
+        <thead class="thead-inverse">
+            <th>#</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Edit/Update</th>
+        </thead>
+        <tbody>
+        {{#each article_list}}
+          <tr>
+              <td>{{hnid}}</td>
+              <td><a href='{{url}}' target='_blank'>{{title}}</a></td>
+              <td>{{#if category}} <input name='input_category' id='' type='text' value={{category}} /> {{else}} No Category {{/if}}</td>
+              <td>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCategory" data-whatever='{{hnid}}'>Edit</button>
+                <a role="button" class="btn btn-primary" href="/admin/article/{{hnid}}">Edit</a>
+              </td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </form>
   {{/if}}
 </div>
 </div>
+
+<div class="modal fade modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id='editCategory'>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Edit the Article</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="articleId" class="control-label">Article ID:</label>
+            <input type="text" class="form-control" id="articleId">
+          </div>
+          <div class="form-group">
+            <label for="articleTitle" class="control-label">Article Title</label>
+          </div>
+          <div class="form-group">
+            <label for="category" class="control-label">Category:</label>
+            <select name="category" id="category" class="form-control">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
