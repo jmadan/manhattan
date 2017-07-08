@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 import admin from '../modules/admin';
 import * as cron from '../app';
+import * as cronjob from '../modules/cronjob';
 
 router.use((req, res, next) => {
 	console.log('Request Time: ', Date.now());
@@ -18,7 +19,11 @@ router.get('/', (req, res) => {
 	};
 
 	switch (req.query.task) {
+		case 'start':
+			console.log("starting all the cron jobs...");
+			break;
 		case 'startfeed':
+			console.log("starting the Job");
 			cron.getinitialHNFeed.start();
 			taskStatus.initialHNFeed = true;
 			break;
@@ -42,6 +47,8 @@ router.get('/', (req, res) => {
 			cron.getFeedItemBody.start();
 			taskStatus.feedItemBody = false;
 			break;
+		default:
+			console.log("your command is not my wish!");
 	}
 	res.render('admin', {homepage: true, task_status: taskStatus});
 });

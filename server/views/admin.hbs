@@ -5,6 +5,12 @@
   </p>
   <hr>
   {{#if homepage}}
+  <div class="row">
+    <div class="col-md-12">
+      <a class="btn btn-primary" href="/admin?task=start"> Start the cron Jobs </a>
+    </div>
+  </div>
+  <br><br>
     <div class="row">
       <div class="col-md-4">
         {{#if task_status.initialHNFeed}}
