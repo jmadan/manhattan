@@ -3,7 +3,7 @@ let docDB = require('./docDB');
 let async = require('async');
 let cheerio = require('cheerio');
 let request = require('request');
-import {lemmatizer} from 'lemmatizer';
+let natural = require('./natural');
 
 let updateitembody = (doc, docBody, categories) => {
   docBody = docBody.replace('//n/mg', '');
@@ -12,10 +12,10 @@ let updateitembody = (doc, docBody, categories) => {
   docDB.open().then((db) => {
     return db.collection("hn_feed");
   }).then((mcoll) => {
-    if(categories){
-      return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "classification complete", itembody: docBody, tbody: lemmatizer(docBody), category: categories}});
+    if(categories.length > 0){
+      return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "classification complete", itembody: docBody, tbody: natural.lancasterStem(docBody), category: categories}});
     } else {
-      return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "classification pending", itembody: docBody, tbody: lemmatizer(docBody)}});
+      return mcoll.updateOne({'hnid': doc.hnid}, {$set: {status: "classification pending", itembody: docBody, tbody: natural.lancasterStem(docBody)}});
     }
   }).then((r) => {
     docDB.close();
@@ -29,7 +29,7 @@ let updateitem = (doc) => {
   docDB.open().then((db) => {
     return db.collection("hn_feed");
   }).then((mcoll) => {
-    if(doc.type == 'story'){
+    if(doc.type === 'story' && doc.url != null){
       return mcoll.updateOne({'hnid': doc.id}, {$set: {status: "getBody", title: doc.title, url: doc.url, type: doc.type}});
     } else {
       return mcoll.updateOne({'hnid': doc.id}, {$set: {type: doc.type}});

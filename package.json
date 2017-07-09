@@ -43,7 +43,6 @@
     "htmlparser2": "^3.9.2",
     "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
-    "lemmatizer": "0.0.1",
     "mongodb": "^2.2.28",
     "morgan": "^1.8.2",
     "natural": "^0.5.4",

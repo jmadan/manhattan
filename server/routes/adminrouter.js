@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 import admin from '../modules/admin';
 import * as cron from '../app';
-import * as cronjob from '../modules/cronjob';
+import * as cronjob from '../modules/cronjobs';
 
 router.use((req, res, next) => {
 	console.log('Request Time: ', Date.now());
@@ -36,7 +36,7 @@ router.get('/', (req, res) => {
 			taskStatus.hnFeedDetail = true;
 			break;
 		case 'stopfeeddetail':
-			cron.getHNFeedDetail.start();
+			cron.getHNFeedDetail.stop();
 			taskStatus.hnFeedDetail = false;
 			break;
 		case 'startfeeditembody':
@@ -44,7 +44,7 @@ router.get('/', (req, res) => {
 			taskStatus.feedItemBody = true;
 			break;
 		case 'stopfeeditembody':
-			cron.getFeedItemBody.start();
+			cron.getFeedItemBody.stop();
 			taskStatus.feedItemBody = false;
 			break;
 		default:
@@ -71,57 +71,6 @@ router.get('/article/:id', (req, res) => {
 			res.render('error', {message: result.error});
 		}
 		res.render('article', {article: result.article_list});
-	});
-});
-
-router.get('/feed/:category', (req, res) => {
-	Feed.getFeed(req.params.category).then(feed => res.json({
-		message: "Feed based on the category",
-		success: true,
-		feed: feed
-	}));
-});
-
-router.post('/feed/update/story', (req, res) => {
-	Feed.updateStory(req.body.storyId, req.body.category).then(doc => res.json({
-		message: "Story Updated!",
-		success: true,
-		story: doc
-	}));
-});
-
-router.delete('/feed/delete/:storyId', (req, res) => {
-	let result = Feed.deleteStory(req.params.storyId);
-	if (result == undefined) {
-		res.json({
-			message: "story deleted",
-			success: true
-		});
-	} else {
-		res.json({
-			message: result,
-			error: true
-		});
-	}
-});
-
-router.get('/category/all', (req, res) => {
-	Category.getCategories().then((categories) => {
-		res.json({
-			message: "All Categories",
-			success: true,
-			categories: categories
-		});
-	});
-});
-
-router.post('/category/create', (req, res) => {
-	Category.createCategory(req.body.category, req.body.description).then((category) => {
-		res.json({
-			message: "Category saved!",
-			success: true,
-			category: category
-		});
 	});
 });
 

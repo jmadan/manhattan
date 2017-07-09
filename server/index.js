@@ -4,6 +4,7 @@ let bodyParser = require('body-parser');
 let morgan = require('morgan');
 let hbs = require('express-handlebars');
 let admin = require('./routes/adminrouter');
+let Job = require('./modules/cronjobs');
 
 let app = express();
 //view engine setup
@@ -59,11 +60,7 @@ let server = app.listen(app.get('port'), function (err) {
         return;
     }
     console.log("Server started http://localhost:"+ PORT);
-
-    // cron.schedule('* * * * *', () => {
-    // console.log('running the cron');
-    // hnNews.getLatestHNStories();
-    // hnNews.updateHNStoriesMetaData();
-    // hnNews.updateHNStoriesText();
-    // });
+    Job.getinitialHNFeed.start();
+    Job.getHNFeedDetail.start();
+    Job.getFeedItemBody.start();
 });
