@@ -1,7 +1,6 @@
 let express = require('express');
 let router = express.Router();
 import admin from '../modules/admin';
-import * as cron from '../app';
 import * as cronjob from '../modules/cronjobs';
 
 router.use((req, res, next) => {
