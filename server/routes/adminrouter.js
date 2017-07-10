@@ -23,27 +23,27 @@ router.get('/', (req, res) => {
 			break;
 		case 'startfeed':
 			console.log("starting the Job");
-			cron.getinitialHNFeed.start();
+			cronjob.getinitialHNFeed.start();
 			taskStatus.initialHNFeed = true;
 			break;
 		case 'stopfeed':
-			cron.getinitialHNFeed.stop();
+			cronjob.getinitialHNFeed.stop();
 			taskStatus.initialHNFeed = false;
 			break;
 		case 'startfeeddetail':
-			cron.getHNFeedDetail.start();
+			cronjob.getHNFeedDetail.start();
 			taskStatus.hnFeedDetail = true;
 			break;
 		case 'stopfeeddetail':
-			cron.getHNFeedDetail.stop();
+			cronjob.getHNFeedDetail.stop();
 			taskStatus.hnFeedDetail = false;
 			break;
 		case 'startfeeditembody':
-			cron.getFeedItemBody.start();
+			cronjob.getFeedItemBody.start();
 			taskStatus.feedItemBody = true;
 			break;
 		case 'stopfeeditembody':
-			cron.getFeedItemBody.stop();
+			cronjob.getFeedItemBody.stop();
 			taskStatus.feedItemBody = false;
 			break;
 		default:
