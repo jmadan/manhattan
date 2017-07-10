@@ -60,7 +60,7 @@ let server = app.listen(app.get('port'), function (err) {
         return;
     }
     console.log("Server started http://localhost:"+ PORT);
-    Job.getinitialHNFeed.start();
+    // Job.getinitialHNFeed.start();
     Job.getHNFeedDetail.start();
     Job.getFeedItemBody.start();
 });
