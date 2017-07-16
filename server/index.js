@@ -3,8 +3,7 @@ let path = require('path');
 let bodyParser = require('body-parser');
 let morgan = require('morgan');
 let hbs = require('express-handlebars');
-let admin = require('./routes/adminrouter');
-let Job = require('./modules/cronjobs');
+let adminRouter = require('./routes/adminrouter');
 
 let app = express();
 //view engine setup
@@ -48,19 +47,16 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.use('/admin', admin);
+app.use('/admin', adminRouter);
 
-let PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 5000;
 
 app.set('port', PORT);
 
-let server = app.listen(app.get('port'), function (err) {
+app.listen(app.get('port'), function (err) {
     if (err) {
         console.log(err);
         return;
     }
     console.log("Server started http://localhost:"+ PORT);
-    // Job.getinitialHNFeed.start();
-    Job.getHNFeedDetail.start();
-    Job.getFeedItemBody.start();
 });
