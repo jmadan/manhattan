@@ -1,5 +1,4 @@
 let cron = require('node-cron');
-let hnfeed = require('./hnfeed');
 let hnJobs = require('./hnjobs');
 
 exports.getinitialHNFeed = cron.schedule('* */6 * * *', () => {
