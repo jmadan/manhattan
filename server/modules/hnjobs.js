@@ -34,12 +34,12 @@ let getUrlBody = (doc) => {
         'category': '',
         'status': 'unclassified'
       };
-      console.log("doc to be Inserted: ", docToBeInserted);
+      console.log("doc to be Inserted: ", docToBeInserted.hnid);
 
       MongoClient.connect(dbURI, (err, db)=>{
         db.collection("feed").insertOne(docToBeInserted, (err, records) => {
           db.collection("hn_feed").deleteOne({hnid: records.ops[0].hnid}, (err, result) => {
-            console.log("document inserted and deleted :", result.ok);
+            console.log("document inserted and deleted :", result.result.ok);
             db.close();
           });
         });
