@@ -3,7 +3,7 @@
 const MongoClient = require('mongodb').MongoClient;
 
 let open = () => {
-  let dbURI = process.env.MONGO_URI ? process.env.MONGO_URI : "mongodb://localhost:27017/manhattan";
+  let dbURI = process.env.MONGODB_URI ? process.env.MONGODB_URI : "mongodb://localhost:27017/manhattan";
   return new Promise((resolve, reject) => {
     MongoClient.connect(dbURI, (err, db) => {
       if(err) {
