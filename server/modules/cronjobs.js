@@ -1,17 +1,18 @@
 let cron = require('node-cron');
 let hnfeed = require('./hnfeed');
+let hnJobs = require('./hnjobs');
 
 exports.getinitialHNFeed = cron.schedule('* */6 * * *', () => {
   console.log("initializing intial feed retrieval.........", new Date().toUTCString());
-  hnfeed.getinitialfeedlist();
- });
+  hnJobs.getInitialHNStories();
+}).stop();
 
 exports.getHNFeedDetail = cron.schedule('*/3 * * * *', () => {
    console.log("fetching feed detail from HN.........", new Date().toUTCString());
-   hnfeed.getfeeditemdetails();
-});
+   hnJobs.createFeed();
+}).stop();
 
-exports.getFeedItemBody = cron.schedule('*/5 * * * *', () => {
+exports.getFeedItemBody = cron.schedule('*/5 * * * * *', () => {
   console.log("fetching article body text.........", new Date().toUTCString());
-  hnfeed.gettext();
-});
+  hnJobs.getItemPendingBodyStatus();
+}).stop();
