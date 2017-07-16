@@ -112,7 +112,7 @@ let updateitem = (doc) => {
   docDB.open().then((db) => {
     return db.collection("hn_feed");
   }).then((mcoll) => {
-    if(doc.type === 'story' && doc.url != null){
+    if(doc.type === 'story' && doc.url !== undefined){
       return mcoll.updateOne({'hnid': doc.id}, {$set: {status: "pending text", title: doc.title, url: doc.url, type: doc.type}});
     } else {
       return mcoll.deleteOne({'hnid': doc.id});

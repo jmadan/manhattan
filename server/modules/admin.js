@@ -6,11 +6,10 @@ let getdocuments = (noofdocs, category) => {
   if(!noofdocs){
     noofdocs = 1;
   }
-  docDB.close();
   docDB.open().then((db) => {
     return db.collection("feed");
   }).then((collection) => {
-    return collection.find({'status': 'classification pending'}).limit(parseInt(noofdocs)).toArray();
+    return collection.find({'status': 'unclassified'}).limit(parseInt(noofdocs)).toArray();
   }).then((docs) => {
     docDB.close();
     deferred.resolve({
@@ -28,7 +27,6 @@ let getdocuments = (noofdocs, category) => {
 
 let getdocument = (id) => {
   let deferred = Q.defer();
-  docDB.close();
   docDB.open().then((db) => {
     return db.collection("feed");
   })
@@ -55,7 +53,7 @@ let updatedocument = (hnid, category) => {
   docDB.open().then((db) =>{
     return db.collection('feed');
   }).then((coll) => {
-    return coll.updateOne({hnid: parseInt(hnid)}, {$set: {classification: category, status: 'classified'}});
+    return coll.updateOne({hnid: parseInt(hnid)}, {$set: {category: category, status: 'classified'}});
   }).then((result)=>{
     docDB.close();
     deferred.resolve({
