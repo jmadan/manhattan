@@ -6,7 +6,7 @@ exports.getinitialHNFeed = cron.schedule('* */6 * * *', () => {
   hnJobs.getInitialHNStories();
 }).stop();
 
-exports.getHNFeedDetail = cron.schedule('*/3 * * * *', () => {
+exports.getHNFeedDetail = cron.schedule('*/6 * * * * *', () => {
    console.log("fetching feed detail from HN.........", new Date().toUTCString());
    hnJobs.createFeed();
 }).stop();

@@ -2,7 +2,9 @@ let docDB = require('./docDB');
 let cheerio = require('cheerio');
 let request = require('request');
 let natural = require('./natural');
+let fetch = require('isomorphic-fetch');
 let Q = require('q');
+
 const MongoClient = require('mongodb').MongoClient;
 
 let dbURI = process.env.MONGODB_URI;
@@ -37,7 +39,7 @@ let getUrlBody = (doc) => {
       MongoClient.connect(dbURI, (err, db)=>{
         db.collection("feed").insertOne(docToBeInserted, (err, records) => {
           db.collection("hn_feed").deleteOne({hnid: records.ops[0].hnid}, (err, result) => {
-            console.log("document inserted and deleted :", result);
+            console.log("document inserted and deleted :", result.ok);
             db.close();
           });
         });
@@ -48,8 +50,12 @@ let getUrlBody = (doc) => {
 
 exports.getItemPendingBodyStatus = () => {
   return MongoClient.connect(dbURI, (err, db)=>{
-      db.collection("hn_feed").find({status: "getBody"}).limit(1).toArray((err, items) => {
-        return getUrlBody(items[0]);
+      db.collection("hn_feed").find({status: "pending text"}).limit(1).toArray((err, items) => {
+        if(items.length != 0){
+          return getUrlBody(items[0]);
+        } else {
+          console.log("No Items pending at the moment for getting body text.");
+        }
         db.close();
       });
     });
@@ -102,17 +108,18 @@ exports.getInitialHNStories = () => {
 
 
 let updateitem = (doc) => {
+  console.log("I am in updateItem");
   docDB.open().then((db) => {
     return db.collection("hn_feed");
   }).then((mcoll) => {
     if(doc.type === 'story' && doc.url != null){
-      return mcoll.updateOne({'hnid': doc.id}, {$set: {status: "getBody", title: doc.title, url: doc.url, type: doc.type}});
+      return mcoll.updateOne({'hnid': doc.id}, {$set: {status: "pending text", title: doc.title, url: doc.url, type: doc.type}});
     } else {
-      return mcoll.updateOne({'hnid': doc.id}, {$set: {type: doc.type}});
+      return mcoll.deleteOne({'hnid': doc.id});
     }
-    docDB.close();
   }).then((r) => {
-    console.log("document update: ", r.modifiedCount);
+    console.log("document updated/deleted: ", r.result.ok);
+    docDB.close();
   }).catch((err)=>{
     console.log("Error updating: ", err);
   });
@@ -122,7 +129,7 @@ exports.createFeed = () => {
   docDB.open().then((db) => {
     return db.collection("hn_feed");
   }).then((mcoll) => {
-    return mcoll.find({status: "new"}).limit(10).toArray();
+    return mcoll.find({status: "pending"}).limit(1).toArray();
   }).then((results) => {
     docDB.close();
     results.map((item) => {
@@ -132,6 +139,7 @@ exports.createFeed = () => {
         }
         return response.json();
       }).then((details) => {
+        console.log(details);
         updateitem(details);
       }).catch((err)=>{
         console.log("Error updating: ", err)
