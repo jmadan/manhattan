@@ -119,4 +119,16 @@ router.post('/article', (req, res) => {
 	});
 });
 
+router.get('/article/body/:id', (req, res) => {
+	res.send("this has to be implemented");
+});
+
+router.get('/article/stem/:id', (req, res) => {
+	res.send("this has to be implemented");
+});
+
+router.get('/neural', (req, res) => {
+	res.render('neural');
+});
+
 module.exports = router;

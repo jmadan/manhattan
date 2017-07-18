@@ -66,11 +66,17 @@
           <tr>
               <td>{{hnid}}</td>
               <td><a href='{{url}}' target='_blank'>{{title}}</a></td>
-              <td>{{#if category}} <input name='input_category' id='' type='text' value={{category}} /> {{else}} No Category {{/if}}</td>
+              <td>{{#if category}}
+                <input name='input_category' id='input_category' type='text' value='{{category}}' />
+                {{else}} No Category {{/if}}</td>
               <td>
                 <a role="button" class="btn btn-primary" href="/admin/article/edit/{{hnid}}">Edit</a>
                 &nbsp;&nbsp;
                 <a role="button" class="btn btn-primary" href="/admin/article/delete/{{hnid}}">Delete</a>
+                <br /><br />
+                <a role="button" class="btn btn-primary" href="/admin/article/body/{{hnid}}">Get Body</a>
+                &nbsp;&nbsp;
+                <a role="button" class="btn btn-primary" href="/admin/article/stem/{{hnid}}">Stem It</a>
               </td>
           </tr>
         {{/each}}

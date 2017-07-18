@@ -29,8 +29,9 @@ module.exports = {
     modules: [path.resolve(__dirname, './src'), 'node_modules']
   },
 	plugins: [
-        new CleanWebpackPlugin([PATHS.build], {
-            root: process.cwd()
-        })
-    ]
+    new webpack.optimize.UglifyJsPlugin(),
+    new CleanWebpackPlugin([PATHS.build], {
+      root: process.cwd()
+    })
+  ]
 };

@@ -2,6 +2,7 @@ let docDB = require('./docDB');
 let Q = require('q');
 
 let getdocuments = (noofdocs, category) => {
+  let article_status = category ? 'classified' : 'unclassified';
   let deferred = Q.defer();
   if(!noofdocs){
     noofdocs = 1;
@@ -9,7 +10,7 @@ let getdocuments = (noofdocs, category) => {
   docDB.open().then((db) => {
     return db.collection("feed");
   }).then((collection) => {
-    return collection.find({'status': 'unclassified'}).limit(parseInt(noofdocs)).toArray();
+    return collection.find({'status': article_status}).limit(parseInt(noofdocs)).toArray();
   }).then((docs) => {
     docDB.close();
     deferred.resolve({
