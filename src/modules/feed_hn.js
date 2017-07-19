@@ -4,7 +4,7 @@ const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 const cheerio = require('cheerio');
 const natural = require('./natural');
-const fetch = require('isomorphic-fetch');
+const request = require('request');
 const MongoClient = require('mongodb').MongoClient;
 
 const HN_NewStoriesURL = 'https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty';
@@ -87,6 +87,84 @@ exports.getHackerNewsMetaData = (callback) => {
     });
 }
 
+let getMetaKeywords = (html) => {
+  let $ = cheerio.load(html);
+  let metaArray = $('meta').toArray();
+  let keywords = metaArray.filter((m)=>{
+    if(m.attribs.name === 'keywords'){
+      return m;
+    }
+  });
+  return keywords[0].attribs.content;
+}
+
+let getBodyText = (html) => {
+  let $ = cheerio.load(html, {normalizeWhitespace: true});
+  return $('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim();
+}
+
+let fetchItemBody = (itemList) => {
+  itemList.map((item) => {
+    request(item.url, (err, response, body) => {
+      console.log(item);
+      if(err){
+        console.log("Error while getting the body: ", err);
+      }
+      let bodyText = getBodyText(body);
+      let keywords = getMetaKeywords(body);
+      // console.log('body Text : ', bodyText);
+
+      updateFeedItem({
+        'hn_id': item.hn_id,
+        'url': item.url,
+        'title': item.title,
+        'type': item.type,
+        'itembody': bodyText,
+        'keywords': keywords,
+        'stemmed': natural.lancasterStem(bodyText),
+        'status': 'unclassified'
+      });
+    });
+  });
+}
+
+let updateFeedItem = (item) => {
+  MongoClient.connect(MongoDB_URI, (err, db) => {
+    if(err){
+      console.log("MongoDB connection error: ", err);
+    } else {
+      db.collection("feed").insertOne(item, (err, result)=>{
+        if(err){
+          console.log("Error inserting in Feed collection: ", item.id, err);
+        } else {
+          db.close();
+          console.log("Story inserted", item.id, result.insertedId);
+        }
+      });
+    }
+  });
+}
+
+let getFeedBatch = (mcoll, status, listLimit, callback) => {
+  MongoClient.connect(MongoDB_URI, (err, db) => {
+    if(err){
+      console.log("MongoDB connection error: ", err);
+    } else {
+      db.collection(mcoll).find({status: status}).limit(parseInt(listLimit)).toArray((err, itemList) => {
+        db.close();
+        if(err)
+        {
+          console.log("Error while selecting batch of 10 : ", err);
+        } else {
+          db.close();
+          callback(itemList);
+        }
+      });
+    }
+  });
+}
 // HackerNewsInitialFeed().then((result) => {
 //   console.log("Got the Feed and saved it to DB: ", result.length);
 // });
+
+// getFeedBatch('hn_feed', 'pending body', 1, fetchItemBody);
