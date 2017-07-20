@@ -5,6 +5,7 @@ const await = require('asyncawait/await');
 const cheerio = require('cheerio');
 const natural = require('./natural');
 const request = require('request');
+let fetch = require('isomorphic-fetch');
 const MongoClient = require('mongodb').MongoClient;
 
 const HN_NewStoriesURL = 'https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty';
@@ -38,6 +39,7 @@ exports.HackerNewsInitialFeed = async(() =>{
 });
 
 let updateItem = (story) => {
+  console.log(story);
   MongoClient.connect(MongoDB_URI, (err, db) => {
     if(err){
       console.log("MongoDB connection error: ", err);
@@ -56,10 +58,9 @@ let updateItem = (story) => {
 
 let getData = async((data) => {
   let storyList = await(data.map((d) => {
-    return (fetch(d.url).then((response) => {
-      return response.json();
-    }));
+    return fetch(d.url).then(response => (response.json()));
   }));
+  console.log(storyList);
 
   let filteredStories = storyList.filter((f) => (f.url !== undefined));
   filteredStories.map((story) => {
@@ -68,7 +69,7 @@ let getData = async((data) => {
 
 });
 
-exports.getHackerNewsMetaData = (callback) => {
+exports.getHackerNewsMetaData = () => {
     MongoClient.connect(MongoDB_URI, (err, db) => {
       if(err){
         console.log("MongoDB connection error: ", err);
@@ -80,7 +81,7 @@ exports.getHackerNewsMetaData = (callback) => {
             console.log("Error while selecting batch of 10 : ", err);
           } else {
             db.close();
-            callback(itemList);
+            getData(itemList);
           }
         });
       }
@@ -137,15 +138,18 @@ let updateFeedItem = (item) => {
         if(err){
           console.log("Error inserting in Feed collection: ", item.id, err);
         } else {
-          db.close();
-          console.log("Story inserted", item.id, result.insertedId);
+          db.collection("hn_feed").deleteOne({hn_id: result.ops[0].hn_id}, (err, data) => {
+            console.log("document inserted and deleted :", result.result.ok);
+            db.close();
+            console.log("Story inserted", item.id, result.insertedId);
+          });
         }
       });
     }
   });
 }
 
-let getFeedBatch = (mcoll, status, listLimit, callback) => {
+let getFeedBatch = (mcoll, status, listLimit) => {
   MongoClient.connect(MongoDB_URI, (err, db) => {
     if(err){
       console.log("MongoDB connection error: ", err);
@@ -157,7 +161,7 @@ let getFeedBatch = (mcoll, status, listLimit, callback) => {
           console.log("Error while selecting batch of 10 : ", err);
         } else {
           db.close();
-          callback(itemList);
+          fetchItemBody(itemList);
         }
       });
     }
