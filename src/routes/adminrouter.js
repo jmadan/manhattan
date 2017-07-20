@@ -22,44 +22,44 @@ router.get('/', (req, res) => {
 	switch (req.query.task) {
 		case 'start':
 			console.log("Starting all the cron jobs...");
-			cronjob.getinitialHNFeed.start();
-			cronjob.getHNFeedDetail.start();
-			cronjob.getFeedItemBody.start();
+			cronjob.getHackerNewsFeed.start();
+			cronjob.getHackerNewsFeedMetaData.start();
+			cronjob.gethackerNewsFeedItemBody.start();
 			break;
 		case 'stop':
 			console.log("Stopping all the cron jobs...");
-			cronjob.getinitialHNFeed.stop();
-			cronjob.getHNFeedDetail.stop();
-			cronjob.getFeedItemBody.stop();
+			cronjob.getHackerNewsFeed.stop();
+			cronjob.getHackerNewsFeedMetaData.stop();
+			cronjob.gethackerNewsFeedItemBody.stop();
 			break;
 		case 'startfeed':
 			console.log("starting initial HN Feed job");
-			cronjob.getinitialHNFeed.start();
+			cronjob.getHackerNewsFeed.start();
 			taskStatus.initialHNFeed = true;
 			break;
 		case 'stopfeed':
 			console.log("stopping initial HN Feed job");
-			cronjob.getinitialHNFeed.stop();
+			cronjob.getHackerNewsFeed.stop();
 			taskStatus.initialHNFeed = false;
 			break;
 		case 'startfeeddetail':
 			console.log("starting get HN Feed detail job");
-			cronjob.getHNFeedDetail.start();
+			cronjob.getHackerNewsFeedMetaData.start();
 			taskStatus.hnFeedDetail = true;
 			break;
 		case 'stopfeeddetail':
 			console.log("stopping get initial HN Feed detail job");
-			cronjob.getHNFeedDetail.stop();
+			cronjob.getHackerNewsFeedMetaData.stop();
 			taskStatus.hnFeedDetail = false;
 			break;
 		case 'startfeeditembody':
 			console.log("starting Feed Item Body HN job");
-			cronjob.getFeedItemBody.start();
+			cronjob.gethackerNewsFeedItemBody.start();
 			taskStatus.feedItemBody = true;
 			break;
 		case 'stopfeeditembody':
 			console.log("stopping Feed Item Body HN job");
-			cronjob.getFeedItemBody.stop();
+			cronjob.gethackerNewsFeedItemBody.stop();
 			taskStatus.feedItemBody = false;
 			break;
 		default:

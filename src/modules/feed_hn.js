@@ -1,7 +1,7 @@
 'use strict';
 
 const async = require('asyncawait/async');
-const await = require('asyncawait/await');
+const __await = require('asyncawait/await');
 const cheerio = require('cheerio');
 const natural = require('./natural');
 const request = require('request');
@@ -12,7 +12,7 @@ const HN_NewStoriesURL = 'https://hacker-news.firebaseio.com/v0/newstories.json?
 const MongoDB_URI = process.env.MONGODB_URI;
 
 exports.HackerNewsInitialFeed = async(() =>{
-    let newestStoriesId = await(fetch(HN_NewStoriesURL).then(res => res.json()));
+    let newestStoriesId = __await(fetch(HN_NewStoriesURL).then(res => res.json()));
 
     let newStoriesDetail = newestStoriesId.map(ns => (
       {
@@ -39,7 +39,6 @@ exports.HackerNewsInitialFeed = async(() =>{
 });
 
 let updateItem = (story) => {
-  console.log(story);
   MongoClient.connect(MongoDB_URI, (err, db) => {
     if(err){
       console.log("MongoDB connection error: ", err);
@@ -57,13 +56,12 @@ let updateItem = (story) => {
 }
 
 let getData = async((data) => {
-  let storyList = await(data.map((d) => {
+  let storyList = __await(data.map((d) => {
     return fetch(d.url).then(response => (response.json()));
   }));
-  console.log(storyList);
 
-  let filteredStories = storyList.filter((f) => (f.url !== undefined));
-  filteredStories.map((story) => {
+  // let filteredStories = storyList.filter((f) => (f.url !== undefined));
+  storyList.map((story) => {
     updateItem(story)
   });
 
@@ -92,11 +90,15 @@ let getMetaKeywords = (html) => {
   let $ = cheerio.load(html);
   let metaArray = $('meta').toArray();
   let keywords = metaArray.filter((m)=>{
-    if(m.attribs.name === 'keywords'){
-      return m;
-    }
+      if(m.attribs.name === 'keywords'){
+        return m;
+      }
   });
-  return keywords[0].attribs.content;
+  if(keywords.length > 0){
+    return keywords[0].attribs.content;
+  } else {
+    return "";
+  }
 }
 
 let getBodyText = (html) => {
@@ -106,26 +108,27 @@ let getBodyText = (html) => {
 
 let fetchItemBody = (itemList) => {
   itemList.map((item) => {
-    request(item.url, (err, response, body) => {
-      console.log(item);
-      if(err){
-        console.log("Error while getting the body: ", err);
-      }
-      let bodyText = getBodyText(body);
-      let keywords = getMetaKeywords(body);
-      // console.log('body Text : ', bodyText);
+    if(item.url){
+      request(item.url, (err, response, body) => {
+        if(err){
+          console.log("Error while getting the body: ", err);
+        }
+        let bodyText = getBodyText(body);
+        let keywords = getMetaKeywords(body);
+        // console.log('body Text : ', bodyText);
 
-      updateFeedItem({
-        'hn_id': item.hn_id,
-        'url': item.url,
-        'title': item.title,
-        'type': item.type,
-        'itembody': bodyText,
-        'keywords': keywords,
-        'stemmed': natural.lancasterStem(bodyText),
-        'status': 'unclassified'
+        updateFeedItem({
+          'hn_id': item.hn_id,
+          'url': item.url,
+          'title': item.title,
+          'type': item.type,
+          'itembody': bodyText,
+          'keywords': keywords,
+          'stemmed': natural.lancasterStem(bodyText),
+          'status': 'unclassified'
+        });
       });
-    });
+    }
   });
 }
 
@@ -149,7 +152,7 @@ let updateFeedItem = (item) => {
   });
 }
 
-let getFeedBatch = (mcoll, status, listLimit) => {
+exports.getFeedBatch = (mcoll, status, listLimit) => {
   MongoClient.connect(MongoDB_URI, (err, db) => {
     if(err){
       console.log("MongoDB connection error: ", err);
