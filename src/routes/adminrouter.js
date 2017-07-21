@@ -72,13 +72,17 @@ router.get('/', (req, res) => {
 router.get('/articles', (req, res) => {
 	let category = req.query.category;
 	let list_limit = req.query.limit;
-	admin.getdocuments(list_limit, category).then((result) => {
-			if(result.error) {
-				res.render('error', {message: result.error});
-			} else{
-				res.render('admin', { article_list: result.list});
-			}
-	});
+	if(!category) {
+		res.render('error', {message: 'Invalid url!'});
+	} else {
+		admin.getdocuments(list_limit, category).then((result) => {
+				if(result.error) {
+					res.render('error', {message: result.error});
+				} else{
+					res.render('admin', { article_list: result.list});
+				}
+		});
+	}
 });
 
 router.get('/article/:id', (req, res) => {

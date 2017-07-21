@@ -2,7 +2,7 @@ let docDB = require('./docDB');
 let Q = require('q');
 
 let getdocuments = (noofdocs, category) => {
-  let article_status = category ? 'classified' : 'unclassified';
+  let article_status = category === true ? 'classified' : 'unclassified';
   let deferred = Q.defer();
   if(!noofdocs){
     noofdocs = 1;
