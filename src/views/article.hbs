@@ -2,7 +2,7 @@
 <form action='/admin/article' method='post'>
   <div class="form-group">
     <label for="articleId" class="control-label">Article ID:</label>
-    <input type="text" class="form-control" id="articleId" value={{hnid}} name="articleId">
+    <input type="text" class="form-control" id="articleId" value='{{hn_id}}' name="articleId">
   </div>
   <div class="form-group">
     <label for="articleTitle" class="control-label">
@@ -15,14 +15,22 @@
   </div>
   <div class="form-group">
     <label for="stemwords" class="control-label">Stem Words</label>
-    <textarea class="form-control" id="stemwords" rows="10">{{tbody}}</textarea>
+    <textarea class="form-control" id="stemwords" rows="10">{{stemmed}}</textarea>
   </div>
   <div class="form-group">
     <label for="category" class="control-label">Category:</label>
-    <input type="text" class="form-control" value='{{classification}}' id="category" name="category"/>
+    <input type="text" class="form-control" value='{{category}}' id="category" name="category"/>
   </div>
   <div class="center-block">
   <button class="btn btn-primary" type="submit">Update</button>
+  &nbsp;&nbsp;
+  <a role="button" class="btn btn-primary" href="/admin/article/delete/{{hn_id}}">Delete</a>
+  &nbsp;&nbsp;
+  <a role="button" class="btn btn-primary" href="/admin/article/body/{{hn_id}}">Get Body</a>
+  &nbsp;&nbsp;
+  <a role="button" class="btn btn-primary" href="/admin/article/stem/{{hn_id}}">Stem</a>
+  &nbsp;&nbsp;
+  <a role="button" class="btn btn-primary" href="/admin/article/later/{{hn_id}}">Later</a>
 </div>
 </form>
 

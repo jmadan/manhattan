@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 import * as admin from '../modules/admin';
+import * as article from '../modules/article';
 import * as cronjob from '../modules/cronjobs';
 
 router.use((req, res, next) => {
@@ -22,44 +23,44 @@ router.get('/', (req, res) => {
 	switch (req.query.task) {
 		case 'start':
 			console.log("Starting all the cron jobs...");
-			cronjob.getinitialHNFeed.start();
-			cronjob.getHNFeedDetail.start();
-			cronjob.getFeedItemBody.start();
+			cronjob.getHackerNewsFeed.start();
+			cronjob.getHackerNewsFeedMetaData.start();
+			cronjob.gethackerNewsFeedItemBody.start();
 			break;
 		case 'stop':
 			console.log("Stopping all the cron jobs...");
-			cronjob.getinitialHNFeed.stop();
-			cronjob.getHNFeedDetail.stop();
-			cronjob.getFeedItemBody.stop();
+			cronjob.getHackerNewsFeed.stop();
+			cronjob.getHackerNewsFeedMetaData.stop();
+			cronjob.gethackerNewsFeedItemBody.stop();
 			break;
 		case 'startfeed':
 			console.log("starting initial HN Feed job");
-			cronjob.getinitialHNFeed.start();
+			cronjob.getHackerNewsFeed.start();
 			taskStatus.initialHNFeed = true;
 			break;
 		case 'stopfeed':
 			console.log("stopping initial HN Feed job");
-			cronjob.getinitialHNFeed.stop();
+			cronjob.getHackerNewsFeed.stop();
 			taskStatus.initialHNFeed = false;
 			break;
 		case 'startfeeddetail':
 			console.log("starting get HN Feed detail job");
-			cronjob.getHNFeedDetail.start();
+			cronjob.getHackerNewsFeedMetaData.start();
 			taskStatus.hnFeedDetail = true;
 			break;
 		case 'stopfeeddetail':
 			console.log("stopping get initial HN Feed detail job");
-			cronjob.getHNFeedDetail.stop();
+			cronjob.getHackerNewsFeedMetaData.stop();
 			taskStatus.hnFeedDetail = false;
 			break;
 		case 'startfeeditembody':
 			console.log("starting Feed Item Body HN job");
-			cronjob.getFeedItemBody.start();
+			cronjob.gethackerNewsFeedItemBody.start();
 			taskStatus.feedItemBody = true;
 			break;
 		case 'stopfeeditembody':
 			console.log("stopping Feed Item Body HN job");
-			cronjob.getFeedItemBody.stop();
+			cronjob.gethackerNewsFeedItemBody.stop();
 			taskStatus.feedItemBody = false;
 			break;
 		default:
@@ -72,13 +73,17 @@ router.get('/', (req, res) => {
 router.get('/articles', (req, res) => {
 	let category = req.query.category;
 	let list_limit = req.query.limit;
-	admin.getdocuments(list_limit, category).then((result) => {
-			if(result.error) {
-				res.render('error', {message: result.error});
-			} else{
-				res.render('admin', { article_list: result.list});
-			}
-	});
+	if(!category) {
+		res.render('error', {message: 'Invalid url!'});
+	} else {
+		admin.getdocuments(list_limit, category).then((result) => {
+				if(result.error) {
+					res.render('error', {message: result.error});
+				} else{
+					res.render('admin', { article_list: result.list});
+				}
+		});
+	}
 });
 
 router.get('/article/:id', (req, res) => {
@@ -100,7 +105,7 @@ router.get('/article/edit/:id', (req, res) => {
 });
 
 router.get('/article/delete/:id', (req, res) => {
-	admin.deletedocument(req.params.id).then((result) => {
+	article.deleteDocument(req.params.id).then((result) => {
 		if(result.error) {
 			res.render('error', {message: result.error});
 		}
@@ -111,12 +116,38 @@ router.get('/article/delete/:id', (req, res) => {
 router.post('/article', (req, res) => {
 	let articleId = req.body.articleId;
 	let category = req.body.category;
-	admin.updatedocument(articleId, category).then((response) => {
+	article.updateDocument(articleId, category).then((response) => {
 		if(response.error != true){
 			let uri = '/admin/article/'+ articleId;
 			setTimeout(res.redirect(uri), 1000);
 		}
 	});
 });
+
+router.get('/article/body/:id', (req, res) => {
+	res.send("this has to be implemented");
+});
+
+router.get('/article/stem/:id', (req, res) => {
+	res.send("this has to be implemented");
+});
+
+router.get('/neural', (req, res) => {
+	res.render('neural');
+});
+
+router.get('/article/later/:id', (req, res) => {
+	let articleId = req.params.id;
+	if(articleId !== undefined) {
+		article.changeStatus(articleId, 'refresh').then((result) => {
+			if(result.error) {
+				res.render('error', {message: result.error});
+			} else {
+				res.redirect('/admin/articles?limit=10&category=false');
+			}
+		});
+	}
+});
+
 
 module.exports = router;

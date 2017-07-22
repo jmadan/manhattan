@@ -1,0 +1,93 @@
+
+<div class="col-lg-12">
+  <p>
+    <h2>This is Admin Page</h2>
+  </p>
+  <hr>
+  {{#if homepage}}
+  <div class="row">
+    <div class="col-md-6">
+      <a class="btn btn-primary" href="/admin?task=start"> Start the cron Jobs </a>
+    </div>
+    <div class="col-md-6">
+      <a class="btn btn-primary" href="/admin?task=stop"> Stop the cron Jobs </a>
+    </div>
+  </div>
+  <br><br>
+    <div class="row">
+      <div class="col-md-4">
+        {{#if task_status.initialHNFeed}}
+          <a class="btn btn-warning" href="/admin?task=stopfeed">Stop Hacker News Feed </a>
+        {{else}}
+          <a class="btn btn-primary" href="/admin?task=startfeed">Start Hacker News Feed </a>
+        {{/if}}
+      </div>
+      <div class="col-md-4">
+        {{#if task_status.hnFeedDetail}}
+          <a class="btn btn-warning" href="/admin?task=stopfeeddetail">Stop HN Feed Detail </a>
+        {{else}}
+          <a class="btn btn-primary" href="/admin?task=startfeeddetail">Start HN Feed Detail </a>
+        {{/if}}
+      </div>
+      <div class="col-md-4">
+        {{#if task_status.feedItemBody}}
+          <a class="btn btn-warning" href="/admin?task=stopfeeddetail">Stop HN Feed Item Body </a>
+        {{else}}
+          <a class="btn btn-primary" href="/admin?task=startfeeddetail">Start HN Feed Item Body </a>
+        {{/if}}
+      </div>
+    </div>
+    <br><br>
+    <div class="row">
+      <div class="col-md-4">
+        <a class="btn btn-primary" href="/admin/articles?limit=10&category=false">Show articles without category</a>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary" href="/admin/articles?limit=10&category=true">Show articles with category</a>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary" href="/admin/articles?limit=10&category=true">Show articles with category</a>
+      </div>
+    </div>
+  {{/if}}
+  <hr>
+  <div class="row">
+    <div class="col-lg-12">
+      {{#if article_list}}
+        <form>
+          <table class="table">
+            <thead class="thead-inverse">
+                <th>#</th>
+                <th>Title</th>
+                <th>Edit/Update</th>
+            </thead>
+            <tbody>
+            {{#each article_list}}
+              <tr>
+                <td>{{hn_id}}</td>
+                <td><a href='{{url}}' target='_blank'>{{title}}</a>
+                  <br/>
+                  {{#if category}}
+                    <input name='input_category' id='input_category' type='text' value='{{category}}' />
+                    {{else}} No Category {{/if}}
+                </td>
+                <td>
+                  <a role="button" class="btn btn-primary" href="/admin/article/edit/{{hn_id}}">Edit</a>
+                  &nbsp;&nbsp;
+                  <a role="button" class="btn btn-primary" href="/admin/article/delete/{{hn_id}}">Delete</a>
+                  <br /><br />
+                  <a role="button" class="btn btn-primary" href="/admin/article/body/{{hn_id}}">Get Body</a>
+                  &nbsp;&nbsp;
+                  <a role="button" class="btn btn-primary" href="/admin/article/stem/{{hn_id}}">Stem</a>
+                  &nbsp;&nbsp;
+                  <a role="button" class="btn btn-primary" href="/admin/article/later/{{hn_id}}">Later</a>
+                </td>
+              </tr>
+            {{/each}}
+            </tbody>
+          </table>
+        </form>
+      {{/if}}
+    </div>
+  </div>
+</div>
