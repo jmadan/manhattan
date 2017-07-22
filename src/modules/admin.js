@@ -2,16 +2,18 @@ let docDB = require('./docDB');
 let Q = require('q');
 
 let getdocuments = (noofdocs, category) => {
-  let article_status = category === true ? 'classified' : 'unclassified';
+  let article_status = category === 'true' ? 'classified' : 'unclassified';
   let deferred = Q.defer();
   if(!noofdocs){
     noofdocs = 1;
   }
+  
   docDB.open().then((db) => {
     return db.collection("feed");
   }).then((collection) => {
     return collection.find({'status': article_status}).limit(parseInt(noofdocs)).toArray();
   }).then((docs) => {
+    // console.log(docs);
     docDB.close();
     deferred.resolve({
       error: false,

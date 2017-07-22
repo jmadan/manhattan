@@ -80,7 +80,8 @@ router.get('/articles', (req, res) => {
 				if(result.error) {
 					res.render('error', {message: result.error});
 				} else{
-					res.render('admin', { article_list: result.list});
+					let payload = {article_list: result.list, list_empty: result.list.length == 0 ? true : false};
+					res.render('admin', payload);
 				}
 		});
 	}
