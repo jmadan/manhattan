@@ -1,5 +1,5 @@
 let cron = require('node-cron');
-let hnJobs = require('./feed_hn');
+let hnJobs = require('./hackernews_feed');
 
 exports.getHackerNewsFeed = cron.schedule('* */6 * * *', () => {
   console.log("initializing initial feed retrieval from hackerNews", new Date().toUTCString());
