@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 import * as admin from '../modules/admin';
+import * as article from '../modules/article';
 import * as cronjob from '../modules/cronjobs';
 
 router.use((req, res, next) => {
@@ -104,7 +105,7 @@ router.get('/article/edit/:id', (req, res) => {
 });
 
 router.get('/article/delete/:id', (req, res) => {
-	admin.deletedocument(req.params.id).then((result) => {
+	article.deleteDocument(req.params.id).then((result) => {
 		if(result.error) {
 			res.render('error', {message: result.error});
 		}
@@ -115,7 +116,7 @@ router.get('/article/delete/:id', (req, res) => {
 router.post('/article', (req, res) => {
 	let articleId = req.body.articleId;
 	let category = req.body.category;
-	admin.updatedocument(articleId, category).then((response) => {
+	article.updateDocument(articleId, category).then((response) => {
 		if(response.error != true){
 			let uri = '/admin/article/'+ articleId;
 			setTimeout(res.redirect(uri), 1000);
@@ -134,5 +135,19 @@ router.get('/article/stem/:id', (req, res) => {
 router.get('/neural', (req, res) => {
 	res.render('neural');
 });
+
+router.get('/article/later/:id', (req, res) => {
+	let articleId = req.params.id;
+	if(articleId !== undefined) {
+		article.changeStatus(articleId, 'refresh').then((result) => {
+			if(result.error) {
+				res.render('error', {message: result.error});
+			} else {
+				res.redirect('/admin/articles?limit=10&category=false');
+			}
+		});
+	}
+});
+
 
 module.exports = router;

@@ -72,13 +72,15 @@
                     {{else}} No Category {{/if}}
                 </td>
                 <td>
-                  <a role="button" class="btn btn-primary" href="/admin/article/edit/{{hnid}}">Edit</a>
+                  <a role="button" class="btn btn-primary" href="/admin/article/edit/{{hn_id}}">Edit</a>
                   &nbsp;&nbsp;
-                  <a role="button" class="btn btn-primary" href="/admin/article/delete/{{hnid}}">Delete</a>
+                  <a role="button" class="btn btn-primary" href="/admin/article/delete/{{hn_id}}">Delete</a>
                   <br /><br />
-                  <a role="button" class="btn btn-primary" href="/admin/article/body/{{hnid}}">Get Body</a>
+                  <a role="button" class="btn btn-primary" href="/admin/article/body/{{hn_id}}">Get Body</a>
                   &nbsp;&nbsp;
-                  <a role="button" class="btn btn-primary" href="/admin/article/stem/{{hnid}}">Stem It</a>
+                  <a role="button" class="btn btn-primary" href="/admin/article/stem/{{hn_id}}">Stem</a>
+                  &nbsp;&nbsp;
+                  <a role="button" class="btn btn-primary" href="/admin/article/later/{{hn_id}}">Later</a>
                 </td>
               </tr>
             {{/each}}
@@ -89,33 +91,3 @@
     </div>
   </div>
 </div>
-
-<div class="modal fade modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id='editCategory'>
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Edit the Article</h4>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="articleId" class="control-label">Article ID:</label>
-            <input type="text" class="form-control" id="articleId">
-          </div>
-          <div class="form-group">
-            <label for="articleTitle" class="control-label">Article Title</label>
-          </div>
-          <div class="form-group">
-            <label for="category" class="control-label">Category:</label>
-            <select name="category" id="category" class="form-control">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->

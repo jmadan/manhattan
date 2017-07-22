@@ -32,7 +32,7 @@ let getdocument = (id) => {
     return db.collection("feed");
   })
   .then((collection) => {
-    return collection.find({hnid: parseInt(id)}).limit(1).toArray();
+    return collection.find({hn_id: parseInt(id)}).limit(1).toArray();
   })
   .then((docs) => {
     docDB.close();
@@ -49,48 +49,4 @@ let getdocument = (id) => {
   return deferred.promise;
 }
 
-let updatedocument = (hnid, category) => {
-  let deferred = Q.defer();
-  docDB.open().then((db) =>{
-    return db.collection('feed');
-  }).then((coll) => {
-    return coll.updateOne({hnid: parseInt(hnid)}, {$set: {category: category, status: 'classified'}});
-  }).then((result)=>{
-    docDB.close();
-    deferred.resolve({
-      error: false,
-      message: "document updated",
-      docID: hnid
-    });
-  }).catch((err) =>{
-    deferred.reject({
-      error: true,
-      message: err
-    });
-  });
-  return deferred.promise;
-}
-
-let deletedocument = (hnid) => {
-  let deferred = Q.defer();
-  docDB.open().then((db) =>{
-    return db.collection('feed');
-  }).then((coll) => {
-    return coll.deleteOne({hnid: parseInt(hnid)});
-  }).then((result)=>{
-    docDB.close();
-    deferred.resolve({
-      error: false,
-      message: "document with ID "+ hnid +" deleted",
-      docID: hnid
-    });
-  }).catch((err) =>{
-    deferred.reject({
-      error: true,
-      message: err
-    });
-  });
-  return deferred.promise;
-}
-
-export {getdocument, getdocuments, updatedocument, deletedocument}
+export {getdocument, getdocuments}
