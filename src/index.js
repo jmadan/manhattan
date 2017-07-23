@@ -29,13 +29,11 @@ app.use(function (req, res, next) {
     // an API server in conjunction with something like webpack-dev-server.
     res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // Disable caching so we'll always get the latest.
     res.setHeader('Cache-Control', 'no-cache');
     next();
 });
 
 app.get('/', (req, res) => {
-    // res.render('index');
     var options = {
         dotfiles: 'deny',
         headers: {
@@ -43,13 +41,12 @@ app.get('/', (req, res) => {
             'x-sent': true
         }
     };
-    // res.json({message: "Welcome to Manhattan Project"});
     res.render('index');
 });
 
 app.use('/admin', adminRouter);
 
-let PORT = process.env.PORT || 5000;
+let PORT = process.env.PORT || 3000;
 
 app.set('port', PORT);
 

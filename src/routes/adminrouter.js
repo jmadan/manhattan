@@ -92,7 +92,7 @@ router.get('/article/:id', (req, res) => {
 		if(result.error) {
 			res.render('error', {message: result.error});
 		}
-		res.render('article', {article: result.list});
+		res.render('article', {article: result.list, error: req.query.err, msg: req.query.msg, err: req.query.err});
 	});
 });
 
@@ -119,8 +119,10 @@ router.post('/article', (req, res) => {
 	let category = req.body.category;
 	article.updateDocument(articleId, category).then((response) => {
 		if(response.error != true){
-			let uri = '/admin/article/'+ articleId;
-			setTimeout(res.redirect(uri), 1000);
+			setTimeout(res.redirect(req.originalUrl+"/"+articleId+"?msg=updated"), 1000);
+		} else {
+			console.log(response.error);
+			setTimeout(res.redirect(req.originalUrl+"/"+articleId+"?err=error"), 1000);
 		}
 	});
 });

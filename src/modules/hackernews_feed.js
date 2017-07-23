@@ -124,7 +124,7 @@ let fetchItemBody = (itemList) => {
           'type': item.type,
           'itembody': bodyText,
           'keywords': keywords,
-          'stemmed': natural.lancasterStem(bodyText),
+          'stem-words': natural.lancasterStem(bodyText),
           'status': 'unclassified'
         });
       });
