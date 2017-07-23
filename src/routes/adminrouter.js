@@ -115,14 +115,12 @@ router.get('/article/delete/:id', (req, res) => {
 });
 
 router.post('/article', (req, res) => {
-	let articleId = req.body.articleId;
-	let category = req.body.category;
-	article.updateDocument(articleId, category).then((response) => {
-		if(response.error != true){
-			setTimeout(res.redirect(req.originalUrl+"/"+articleId+"?msg=updated"), 1000);
+	article.updateDocument(req.body).then((response) => {
+		if(response.error == false){
+			setTimeout(res.redirect(req.originalUrl+"/"+req.body.hn_id+"?msg=updated"), 1000);
 		} else {
 			console.log(response.error);
-			setTimeout(res.redirect(req.originalUrl+"/"+articleId+"?err=error"), 1000);
+			setTimeout(res.redirect(req.originalUrl+"/"+req.body.hn_id+"?err=error"), 1000);
 		}
 	});
 });

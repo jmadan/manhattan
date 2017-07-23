@@ -55,18 +55,19 @@ let deleteDocument = (id) => {
   return deferred.promise;
 }
 
-let updateDocument = (id, category) => {
+let updateDocument = (article) => {
+  console.log(article.hn_id);
   let deferred = Q.defer();
   docDB.open().then((db) =>{
     return db.collection('feed');
   }).then((coll) => {
-    return coll.updateOne({hn_id: parseInt(id)}, {$set: {category: category, status: 'classified'}});
+    return coll.updateOne({hn_id: parseInt(article.hn_id)}, {$set: {keywords: article.keywrds, category: article.category, status: 'classified'}});
   }).then((result)=>{
     docDB.close();
     deferred.resolve({
       error: false,
       message: "document updated",
-      docID: id
+      docID: article.hn_id
     });
   }).catch((err) =>{
     deferred.reject({
