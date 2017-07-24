@@ -4,6 +4,7 @@ let bodyParser = require('body-parser');
 let morgan = require('morgan');
 let hbs = require('express-handlebars');
 let adminRouter = require('./routes/adminrouter');
+let request = require('request');
 
 let app = express();
 //view engine setup
@@ -56,4 +57,9 @@ app.listen(app.get('port'), function (err) {
         return;
     }
     console.log("Server started http://localhost:"+ PORT);
+    setInterval(function() {
+      request("https://island-of-the-hills.herokuapp.com/",(error, response, html)=>{
+        console.log("calling self to stay awake...")
+      });
+    }, 3000); // every 5 minutes (300000)
 });
