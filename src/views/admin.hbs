@@ -49,15 +49,11 @@
         <a class="btn btn-primary" href="/admin/articles?limit=10&category=true">Show articles with category</a>
       </div>
     </div>
-  {{/if}}
+  {{else}}
 
   <div class="row">
     <div class="col-lg-12">
       {{#if list_empty}}
-        <div class="alert alert-danger" role="alert">
-          <p class="text-center">No records found...</p>
-        </div>
-      {{else}}
         <form>
           <table class="table">
             <thead class="thead-inverse">
@@ -92,7 +88,12 @@
             </tbody>
           </table>
         </form>
+      {{else}}
+        <div class="alert alert-danger" role="alert">
+          <p class="text-center">No records found...</p>
+        </div>
       {{/if}}
     </div>
   </div>
 </div>
+{{/if}}

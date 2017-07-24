@@ -57,7 +57,11 @@ let updateItem = (story) => {
 
 let getData = async((data) => {
   let storyList = __await(data.map((d) => {
-    return fetch(d.url).then(response => (response.json()));
+    return fetch(d.url)
+    .then((response) => {return response.json();}).then((story)=>{
+      console.log(story);
+    })
+    .catch(err => (console.log(err)));
   }));
 
   // let filteredStories = storyList.filter((f) => (f.url !== undefined));
