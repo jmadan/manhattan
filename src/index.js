@@ -61,5 +61,5 @@ app.listen(app.get('port'), function (err) {
       request("https://island-of-the-hills.herokuapp.com/",(error, response, html)=>{
         console.log("calling self to stay awake...")
       });
-    }, 600000); // every 5 minutes (300000)
+    }, 600000);
 });
