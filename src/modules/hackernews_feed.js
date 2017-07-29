@@ -1,17 +1,17 @@
 'use strict';
 
-const async = require('asyncawait/async');
-const __await = require('asyncawait/await');
+// const async = require('asyncawait/async');
+// const __await = require('asyncawait/await');
 const cheerio = require('cheerio');
 const natural = require('./natural');
 const request = require('request');
-let fetch = require('isomorphic-fetch');
+const fetch = require('isomorphic-fetch');
 const MongoClient = require('mongodb').MongoClient;
 
 const HN_NewStoriesURL = 'https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty';
 const MongoDB_URI = process.env.MONGODB_URI;
 
-exports.HackerNewsInitialFeed = async(() =>{
+exports.HackerNewsInitialFeed = async() =>{
     let newestStoriesId = __await(fetch(HN_NewStoriesURL).then(res => res.json()));
 
     let newStoriesDetail = newestStoriesId.map(ns => (
@@ -36,27 +36,27 @@ exports.HackerNewsInitialFeed = async(() =>{
         });
       }
     });
-});
+}
 
 let updateItem = (story) => {
   MongoClient.connect(MongoDB_URI, (err, db) => {
     if(err){
       console.log("MongoDB connection error: ", err);
     } else {
-      db.collection("hn_feed").updateOne({'hn_id': story.id}, {$set: {status: "pending body", title: story.title, url: story.url, type: story.type}}, (err, result)=>{
+      db.collection("hn_feed").updateOne({'hn_id': story.hn_id}, {$set: {status: "pending body", title: story.title, url: story.url, type: story.type}}, (err, result)=>{
         if(err){
-          console.log("error updating the story", story.id, err);
+          console.log("error updating the story", story.hn_id, err);
         } else {
           db.close();
-          console.log("Story updated", story.id, result.result.ok);
+          console.log("Story updated", story.hn_id, result.result.ok);
         }
       });
     }
   });
 }
 
-let getData = async((data) => {
-  let storyList = __await(data.map((d) => {
+let getData = async(data) => {
+  let storyList = await(data.map((d) => {
     return fetch(d.url)
     .then((response) => {return response.json();}).catch(err => console.log(err));
   }));
@@ -65,7 +65,7 @@ let getData = async((data) => {
     updateItem(story)
   });
 
-});
+}
 
 exports.getHackerNewsMetaData = () => {
     MongoClient.connect(MongoDB_URI, (err, db) => {
@@ -106,6 +106,20 @@ let getBodyText = (html) => {
   return $('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim();
 }
 
+let deleteItem = (item) => {
+  MongoClient.connect(MongoDB_URI, (err, db) => {
+    if(err){
+      console.log("MongoDB connection error: ", err);
+    } else {
+      db.collection("hn_feed").deleteOne({hn_id: item.hn_id}, (err, result)=>{
+        if(err){
+          console.log("Error deleting in Feed collection: ", item.hn_id, err);
+        }
+      });
+    }
+  });
+}
+
 let fetchItemBody = (itemList) => {
   itemList.map((item) => {
     if(item.url){
@@ -118,16 +132,18 @@ let fetchItemBody = (itemList) => {
         // console.log('body Text : ', bodyText);
 
         updateFeedItem({
-          'hn_id': item.hn_id,
-          'url': item.url,
-          'title': item.title,
-          'type': item.type,
-          'itembody': bodyText,
-          'keywords': keywords,
-          'stem-words': natural.lancasterStem(bodyText),
-          'status': 'unclassified'
+          hn_id: item.hn_id,
+          url: item.url,
+          title: item.title,
+          type: item.type,
+          itembody: bodyText,
+          keywords: keywords,
+          stemmed: natural.lancasterStem(bodyText),
+          status: 'unclassified'
         });
       });
+    } else {
+      deleteItem(item);
     }
   });
 }
@@ -139,12 +155,12 @@ let updateFeedItem = (item) => {
     } else {
       db.collection("feed").insertOne(item, (err, result)=>{
         if(err){
-          console.log("Error inserting in Feed collection: ", item.id, err);
+          console.log("Error inserting in Feed collection: ", item.hn_id, err);
         } else {
           db.collection("hn_feed").deleteOne({hn_id: result.ops[0].hn_id}, (err, data) => {
             console.log("document inserted and deleted :", result.result.ok);
             db.close();
-            console.log("Story inserted", item.id, result.insertedId);
+            console.log("Story inserted", item.hn_id, result.insertedId);
           });
         }
       });
@@ -170,8 +186,3 @@ exports.getFeedBatch = (mcoll, status, listLimit) => {
     }
   });
 }
-// HackerNewsInitialFeed().then((result) => {
-//   console.log("Got the Feed and saved it to DB: ", result.length);
-// });
-
-// getFeedBatch('hn_feed', 'pending body', 1, fetchItemBody);

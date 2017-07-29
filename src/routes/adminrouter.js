@@ -1,8 +1,10 @@
-let express = require('express');
-let router = express.Router();
+const express = require('express');
+const router = express.Router();
 import * as admin from '../modules/admin';
 import * as article from '../modules/article';
 import * as cronjob from '../modules/cronjobs';
+// const async = require('asyncawait/async');
+// const __await = require('asyncawait/await');
 
 router.use((req, res, next) => {
 	console.log('Request Time: ', Date.now());
@@ -81,7 +83,7 @@ router.get('/articles', (req, res) => {
 					res.render('error', {message: result.error});
 				} else{
 					let payload = {article_list: result.list, list_empty: result.list.length == 0 ? true : false};
-					res.render('admin', payload);
+					res.render('articlelist', payload);
 				}
 		});
 	}
@@ -115,7 +117,7 @@ router.get('/article/delete/:id', (req, res) => {
 });
 
 router.post('/article', (req, res) => {
-	article.updateDocument(req.body).then((response) => {
+	article.updateDocument(req.body, 'category').then((response) => {
 		if(response.error == false){
 			setTimeout(res.redirect(req.originalUrl+"/"+req.body.hn_id+"?msg=updated"), 1000);
 		} else {
@@ -125,12 +127,18 @@ router.post('/article', (req, res) => {
 	});
 });
 
-router.get('/article/body/:id', (req, res) => {
-	res.send("this has to be implemented");
+router.get('/article/body/:id', async(req, res) => {
+	let doc = await(article.getDocument(req.params.id));
+	let docWithBody = await(article.getDocumentBody(doc));
+	let docStatus = await(article.updateDocument(docWithBody, 'body'))
+	res.redirect('/admin/article/edit/'+docStatus.docID+"?msg="+docStatus.message);
 });
 
-router.get('/article/stem/:id', (req, res) => {
-	res.send("this has to be implemented");
+router.get('/article/stem/:id', async(req, res) => {
+		let doc = await(article.getDocument(req.params.id));
+		let stemmedDoc = await(article.getStemmedDoc(doc));
+		let docStatus = await(article.updateDocument(stemmedDoc, 'stem'))
+		res.redirect('/admin/article/edit/'+docStatus.docID+"?msg="+docStatus.message);
 });
 
 router.get('/neural', (req, res) => {

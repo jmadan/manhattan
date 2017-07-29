@@ -1,12 +1,13 @@
-let express = require('express');
-let path = require('path');
-let bodyParser = require('body-parser');
-let morgan = require('morgan');
-let hbs = require('express-handlebars');
-let adminRouter = require('./routes/adminrouter');
-let request = require('request');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const hbs = require('express-handlebars');
+const adminRouter = require('./routes/adminrouter');
+const request = require('request');
 
-let app = express();
+const app = express();
+const server = express();
 //view engine setup
 app.engine('hbs', hbs({
   extname: 'hbs',
@@ -57,9 +58,9 @@ app.listen(app.get('port'), function (err) {
         return;
     }
     console.log("Server started http://localhost:"+ PORT);
-    setInterval(function() {
-      request("https://island-of-the-hills.herokuapp.com/",(error, response, html)=>{
-        console.log("calling self to stay awake...")
-      });
-    }, 600000);
+    // setInterval(function() {
+    //   request("https://island-of-the-hills.herokuapp.com/",(error, response, html)=>{
+    //     console.log("calling self to stay awake...")
+    //   });
+    // }, 600000);
 });
