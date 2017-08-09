@@ -7,9 +7,9 @@ let getdocuments = (noofdocs, category) => {
   if(!noofdocs){
     noofdocs = 1;
   }
-  
+
   docDB.open().then((db) => {
-    return db.collection("feed");
+    return db.collection("feeditems");
   }).then((collection) => {
     return collection.find({'status': article_status}).limit(parseInt(noofdocs)).toArray();
   }).then((docs) => {
@@ -31,7 +31,7 @@ let getdocuments = (noofdocs, category) => {
 let getdocument = (id) => {
   let deferred = Q.defer();
   docDB.open().then((db) => {
-    return db.collection("feed");
+    return db.collection("feeditems");
   })
   .then((collection) => {
     return collection.find({hn_id: parseInt(id)}).limit(1).toArray();

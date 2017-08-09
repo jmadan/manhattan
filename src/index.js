@@ -3,7 +3,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const hbs = require('express-handlebars');
-const adminRouter = require('./routes/adminrouter');
+const admin = require('./routes/adminrouter');
+const api = require('../server/api/routes/api');
 const request = require('request');
 
 const app = express();
@@ -30,7 +31,6 @@ app.use(function (req, res, next) {
     // Set permissive CORS header - this allows this server to be used only as
     // an API server in conjunction with something like webpack-dev-server.
     res.setHeader('Access-Control-Allow-Origin', '*');
-
     res.setHeader('Cache-Control', 'no-cache');
     next();
 });
@@ -46,7 +46,8 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.use('/admin', adminRouter);
+app.use('/admin', admin);
+app.use('/api', api);
 
 let PORT = process.env.PORT || 3000;
 

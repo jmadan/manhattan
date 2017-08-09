@@ -13,7 +13,7 @@
     "build": "babel ./src/index.js -d /build",
     "serve": "nodemon ./build/src/index.js",
     "webpack": "./node_modules/.bin/webpack --progress",
-    "start:dev": "NODE_ENV=dev ./node_modules/.bin/babel-node ./src/index.js",
+    "start:dev": "NODE_ENV=dev node ./build/bundle.js",
     "start": "NODE_ENV=prod && ./node_modules/.bin/babel-node ./src/index.js"
   },
   "keywords": [
@@ -40,6 +40,7 @@
     "cron": "^1.2.1",
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
+    "feedparser": "^2.2.1",
     "htmlparser2": "^3.9.2",
     "isomorphic-fetch": "^2.2.1",
     "mongodb": "^2.2.28",
@@ -49,16 +50,22 @@
     "parse5": "^3.0.2",
     "q": "^1.5.0",
     "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "synaptic": "^1.0.12"
   },
   "devDependencies": {
     "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.6.0",
+    "chai": "^4.1.1",
+    "chai-http": "^3.0.0",
     "clean-webpack-plugin": "^0.1.10",
     "css-loader": "^0.28.4",
     "file-loader": "^0.11.2",
+    "handlebars-loader": "^1.5.0",
     "mocha": "^3.4.2",
+    "mocha-as-promised": "^2.0.0",
     "rimraf": "^2.5.4",
+    "sinon": "^3.0.0",
     "style-loader": "^0.18.2",
     "webpack": "^3.3.0",
     "webpack-node-externals": "^1.6.0"

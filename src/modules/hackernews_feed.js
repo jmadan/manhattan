@@ -25,7 +25,7 @@ exports.HackerNewsInitialFeed = async() =>{
       if(err){
         console.log("MongoDB connection error: ", err);
       } else {
-        db.collection("hn_feed").insertMany(newStoriesDetail, (err, result) => {
+        db.collection("feed").insertMany(newStoriesDetail, (err, result) => {
           if(err)
           {
             console.log("Error while inserting many IDs: ", err);
@@ -43,7 +43,7 @@ let updateItem = (story) => {
     if(err){
       console.log("MongoDB connection error: ", err);
     } else {
-      db.collection("hn_feed").updateOne({'hn_id': story.hn_id}, {$set: {status: "pending body", title: story.title, url: story.url, type: story.type}}, (err, result)=>{
+      db.collection("feed").updateOne({'hn_id': story.hn_id}, {$set: {status: "pending body", title: story.title, url: story.url, type: story.type}}, (err, result)=>{
         if(err){
           console.log("error updating the story", story.hn_id, err);
         } else {
@@ -72,8 +72,7 @@ exports.getHackerNewsMetaData = () => {
       if(err){
         console.log("MongoDB connection error: ", err);
       } else {
-        db.collection("hn_feed").find({status: "new"}).limit(10).toArray((err, itemList) => {
-          db.close();
+        db.collection("feed").find({status: "new"}).limit(10).toArray((err, itemList) => {
           if(err)
           {
             console.log("Error while selecting batch of 10 : ", err);
@@ -111,7 +110,7 @@ let deleteItem = (item) => {
     if(err){
       console.log("MongoDB connection error: ", err);
     } else {
-      db.collection("hn_feed").deleteOne({hn_id: item.hn_id}, (err, result)=>{
+      db.collection("feed").deleteOne({hn_id: item.hn_id}, (err, result)=>{
         if(err){
           console.log("Error deleting in Feed collection: ", item.hn_id, err);
         }
@@ -153,11 +152,11 @@ let updateFeedItem = (item) => {
     if(err){
       console.log("MongoDB connection error: ", err);
     } else {
-      db.collection("feed").insertOne(item, (err, result)=>{
+      db.collection("feeditems").insertOne(item, (err, result)=>{
         if(err){
           console.log("Error inserting in Feed collection: ", item.hn_id, err);
         } else {
-          db.collection("hn_feed").deleteOne({hn_id: result.ops[0].hn_id}, (err, data) => {
+          db.collection("feed").deleteOne({hn_id: result.ops[0].hn_id}, (err, data) => {
             console.log("document inserted and deleted :", result.result.ok);
             db.close();
             console.log("Story inserted", item.hn_id, result.insertedId);
