@@ -33,6 +33,15 @@ router.get('/articles/:id',function(req, res) {
   });
 });
 
+router.get('/article/edit/:id', (req, res) => {
+	article.getItem(req.params.id).then((result) => {
+		if(result.error) {
+			res.render('error', {message: result.error});
+		}
+		res.render('article', {article: result.list});
+	});
+});
+
 router.get('/category', function(req, res) {
   category.getCategories().then((docs)=>{
     res.json(docs);
@@ -40,7 +49,9 @@ router.get('/category', function(req, res) {
 })
 
 router.get('/nlp/data/refresh', (req,res)=>{
-  nlp.get
+  nlp.groupStemWordsByCategories().then((result) => {
+    res.send(result);
+  })
 })
 
 module.exports = router
