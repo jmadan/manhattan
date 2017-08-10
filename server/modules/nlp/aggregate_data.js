@@ -6,7 +6,7 @@ const Mongo = require('../mongodb');
 
 
 
-let groupStemWordsByCategory = (category) => {
+let getStemWordsByCategory = (category) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       if(err){reject(err);}
@@ -14,11 +14,9 @@ let groupStemWordsByCategory = (category) => {
       db.collection("feeditems").aggregate([
         { $match: { "category": category } },
         {$group:{_id:"$category", count: {$sum: 1}, stemwords:{"$addToSet": "$stemwords"}}}], function(err, docs){
-        docs.map((d) => {
-          let query = "{category:"+d._id+"},{$set:{stemwords:"+d.stemwords+"}}";
-          // Mongo.updateDocument("wordbag","{category:"++"}")
-          console.log(query);
-        })
+          db.close();
+          if(err){reject(err)}
+          resolve(docs);
       });
     });
   });
@@ -48,4 +46,4 @@ let groupStemWordsByCategories = () => {
   });
 }
 
-module.exports = {groupStemWordsByCategory, groupStemWordsByCategories}
+module.exports = {getStemWordsByCategory, groupStemWordsByCategories}

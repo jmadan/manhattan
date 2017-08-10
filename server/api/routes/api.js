@@ -54,4 +54,10 @@ router.get('/nlp/data/refresh', (req,res)=>{
   })
 })
 
+router.get('/nlp/data/category/:category', (req,res)=>{
+  nlp.getStemWordsByCategory(req.params.category).then((result) => {
+    res.send(result);
+  })
+})
+
 module.exports = router
