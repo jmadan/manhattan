@@ -11,7 +11,6 @@
             <thead class="thead-inverse">
                 <th>#</th>
                 <th>Title</th>
-                <th>Edit/Update</th>
             </thead>
             <tbody>
                 {{#each article_list}}
@@ -20,20 +19,18 @@
                     <td><a href='{{url}}' target='_blank'>{{title}}</a>
                       <br/>
                       {{#if category}}
-                        {{{category}}}
-                        <input name='input_category' id='input_category' type='text' value='{{{category}}}' />
+                          {{{category}}}
                         {{else}} No Category {{/if}}
-                    </td>
-                    <td>
-                      <a role="button" class="btn btn-primary" href="/admin/article/edit/{{hn_id}}">Edit</a>
+                      <br/>
+                      <a role="button" class="btn btn-primary" href="/admin/article/edit/{{_id}}">Edit</a>
                       &nbsp;&nbsp;
-                      <a role="button" class="btn btn-primary" href="/admin/article/delete/{{hn_id}}">Delete</a>
-                      <br /><br />
-                      <a role="button" class="btn btn-primary" href="/admin/article/body/{{hn_id}}">Get Body</a>
+                      <a role="button" class="btn btn-primary" href="/admin/article/delete/{{_id}}">Delete</a>
                       &nbsp;&nbsp;
-                      <a role="button" class="btn btn-primary" href="/admin/article/stem/{{hn_id}}">Stem</a>
+                      <a role="button" class="btn btn-primary" href="/admin/article/body/{{_id}}">Get Body</a>
                       &nbsp;&nbsp;
-                      <a role="button" class="btn btn-primary" href="/admin/article/later/{{hn_id}}">Later</a>
+                      <a role="button" class="btn btn-primary" href="/admin/article/stem/{{_id}}">Stem</a>
+                      &nbsp;&nbsp;
+                      <a role="button" class="btn btn-primary" href="/admin/article/later/{{_id}}">Later</a>
                     </td>
                   </tr>
                 {{/each}}
