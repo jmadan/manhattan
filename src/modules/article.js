@@ -3,6 +3,7 @@ import request from 'request';
 const Q = require('q');
 const cheerio = require('cheerio');
 const natural = require('./natural');
+let ObjectId = require('mongodb').ObjectID;
 
 
 let changeStatus = (id, status) => {
@@ -10,7 +11,7 @@ let changeStatus = (id, status) => {
   docDB.open().then((db) =>{
     return db.collection('feed');
   }).then((coll) => {
-    return coll.updateOne({hn_id: parseInt(id)}, {$set: {status: status}});
+    return coll.updateOne({_id: ObjectId(id)}, {$set: {status: status}});
   }).then((result)=>{
     docDB.close();
     if(result.nModified == 1){
@@ -42,7 +43,7 @@ let deleteDocument = (id) => {
   docDB.open().then((db) =>{
     return db.collection('feed');
   }).then((coll) => {
-    return coll.deleteOne({hn_id: parseInt(id)});
+    return coll.deleteOne({_id: ObjectId(id)});
   }).then((result)=>{
     docDB.close();
     deferred.resolve({
@@ -68,26 +69,26 @@ let updateDocument = (article, prop) => {
     switch (prop)
     {
       case 'stem':
-        return coll.updateOne({hn_id: parseInt(article.hn_id)}, {$set: {stemmed: article.stemwords}});
+        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {stemwords: article.stemwords}});
         break;
       case 'keywords':
-        return coll.updateOne({hn_id: parseInt(article.hn_id)}, {$set: {keywords: article.keywrds}});
+        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {keywords: article.keywrds}});
         break;
       case 'body':
-        return coll.updateOne({hn_id: parseInt(article.hn_id)}, {$set: {itembody: article.itembody}});
+        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {itembody: article.itembody}});
         break;
       case 'category':
-        return coll.updateOne({hn_id: parseInt(article.hn_id)}, {$set: {keywords: article.keywrds, category: article.category, status: 'classified'}});
+        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {keywords: article.keywrds, category: article.category, status: 'classified'}});
         break;
       default:
-        return coll.updateOne({hn_id: parseInt(article.hn_id)}, {$set: {title: article.title}});
+        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {title: article.title}});
     }
   }).then((result)=>{
     docDB.close();
     deferred.resolve({
       error: false,
       message: "document updated",
-      docID: article.hn_id
+      docID: article._id
     });
   }).catch((err) =>{
     deferred.reject({
@@ -126,9 +127,9 @@ let search = (query, docLimit) => {
 let getDocument = (id) => {
   let deferred = Q.defer();
   docDB.open().then((db) =>{
-    return db.collection('feed');
+    return db.collection('feeditems');
   }).then((coll) => {
-    return coll.find({hn_id: parseInt(id)}).limit(1).toArray();
+    return coll.find({_id: ObjectId(id)}).limit(1).toArray();
   }).then((doc)=>{
     docDB.close();
     deferred.resolve(doc[0]);

@@ -129,6 +129,7 @@ router.post('/article', (req, res) => {
 
 router.get('/article/body/:id', async(req, res) => {
 	let doc = await(article.getDocument(req.params.id));
+	console.log(doc);
 	let docWithBody = await(article.getDocumentBody(doc));
 	let docStatus = await(article.updateDocument(docWithBody, 'body'))
 	res.redirect('/admin/article/edit/'+docStatus.docID+"?msg="+docStatus.message);

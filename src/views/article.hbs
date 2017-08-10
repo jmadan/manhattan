@@ -12,7 +12,7 @@
 <form action='/admin/article' method='post'>
   <div class="form-group">
     <label for="hn_id" class="control-label">Article ID:</label>
-    <input type="text" class="form-control" id="hn_id" value='{{hn_id}}' name="hn_id">
+    <input type="text" class="form-control" id="id" value='{{_id}}' name="id">
   </div>
   <div class="form-group">
     <label for="articleTitle" class="control-label">
@@ -38,13 +38,13 @@
   <div class="center-block">
   <button class="btn btn-primary" type="submit">Update</button>
   &nbsp;&nbsp;
-  <a role="button" class="btn btn-primary" href="/admin/article/delete/{{hn_id}}">Delete</a>
+  <a role="button" class="btn btn-primary" href="/admin/article/delete/{{_id}}">Delete</a>
   &nbsp;&nbsp;
-  <a role="button" class="btn btn-primary" href="/admin/article/body/{{hn_id}}">Get Body</a>
+  <a role="button" class="btn btn-primary" href="/admin/article/body/{{_id}}">Get Body</a>
   &nbsp;&nbsp;
-  <a role="button" class="btn btn-primary" href="/admin/article/stem/{{hn_id}}">Stem</a>
+  <a role="button" class="btn btn-primary" href="/admin/article/stem/{{_id}}">Stem</a>
   &nbsp;&nbsp;
-  <a role="button" class="btn btn-primary" href="/admin/article/later/{{hn_id}}">Later</a>
+  <a role="button" class="btn btn-primary" href="/admin/article/later/{{_id}}">Later</a>
 </div>
 </form>
 

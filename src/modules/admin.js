@@ -1,4 +1,5 @@
 let docDB = require('./docDB');
+let ObjectId = require('mongodb').ObjectID;
 let Q = require('q');
 
 let getdocuments = (noofdocs, category) => {
@@ -34,7 +35,7 @@ let getdocument = (id) => {
     return db.collection("feeditems");
   })
   .then((collection) => {
-    return collection.find({hn_id: parseInt(id)}).limit(1).toArray();
+    return collection.find({_id: ObjectId(id)}).limit(1).toArray();
   })
   .then((docs) => {
     docDB.close();
