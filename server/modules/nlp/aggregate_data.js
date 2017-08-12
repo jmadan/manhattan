@@ -22,6 +22,21 @@ let getStemWordsByCategory = (category) => {
   });
 }
 
+let getStemWordsByCategories = () => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      if(err){reject(err);}
+
+      db.collection("feeditems").aggregate([
+        {$group:{_id:"$category", count: {$sum: 1}, stemwords:{"$addToSet": "$stemwords"}}}], function(err, docs){
+          db.close();
+          if(err){reject(err)}
+          resolve(docs);
+      });
+    });
+  });
+}
+
 let groupStemWordsByCategories = () => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
@@ -46,4 +61,4 @@ let groupStemWordsByCategories = () => {
   });
 }
 
-module.exports = {getStemWordsByCategory, groupStemWordsByCategories}
+module.exports = {getStemWordsByCategory, groupStemWordsByCategories, getStemWordsByCategories}

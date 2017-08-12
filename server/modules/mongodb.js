@@ -1,6 +1,6 @@
 "use strict";
 
-const MongoClient = require("mongodb");
+const MongoClient = require("mongodb").MongoClient;
 const DBURI = process.env.MONGODB_URI;
 
 let insertDocuments = (coll, docs) => {
@@ -30,12 +30,11 @@ let updateDocument = (coll, query) => {
   });
 }
 
-let test = () => {
+let getDocuments = (coll,query) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
       if(err){reject(err);}
-      db.collection("wordbag").
-      updateOne({"category":"Writers Block"},{$set:{"stemwords":["skip","main","cont","advert","clos","search","chronic","hom","new","facul","stud","admin","lead","govern","glob","technolog","peopl","gazet","fin","research","admit","aid","athlet","publ","commun","colleg","gradu","opin","review","com","book","let","crossword","dat","almanac","high","educ","sal","titl","ix","investig","ide","lab","foc","collect","adv","job","employ","seek","spec","report","cur","issu","arch","forum","video","interview","blog","tick","lingu","franc","profhack","camp","viewpoint","academ","priv","policy","agr","copyright"]}},{upsert: true}, (err, result) => {
+      db.collection(coll).find(query).limit(50).toArray((err, result) => {
         db.close();
         if(err){reject(err)}
         resolve(result);
@@ -44,4 +43,5 @@ let test = () => {
   });
 }
 
-module.exports = {insertDocuments, updateDocument, test}
+
+module.exports = {insertDocuments, updateDocument, getDocuments}

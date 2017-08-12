@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const feed = require('../../modules/feed/feedparser');
-const article = require('../../modules/feed/article');
-const category = require('../../modules/category');
-const nlp = require('../../modules/nlp/aggregate_data');
+const feed = require('../modules/feed/feedparser');
+const article = require('../modules/feed/article');
+const category = require('../modules/category');
+const nlp = require('../modules/nlp/aggregate_data');
+const tdata = require('../modules/nlp/trainingdata');
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
@@ -58,6 +59,11 @@ router.get('/nlp/data/category/:category', (req,res)=>{
   nlp.getStemWordsByCategory(req.params.category).then((result) => {
     res.send(result);
   })
+})
+
+router.get('/nlp/trainingdata', async(req,res)=>{
+  let data = await tdata.fetchTrainingData();
+  res.json(data);
 })
 
 module.exports = router
