@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const hbs = require('express-handlebars');
 const admin = require('./routes/adminrouter');
-const api = require('../server/api/routes/api');
+const api = require('../server/api/api');
 const request = require('request');
 
 const app = express();

@@ -9,7 +9,7 @@ let ObjectId = require('mongodb').ObjectID;
 let changeStatus = (id, status) => {
   let deferred = Q.defer();
   docDB.open().then((db) =>{
-    return db.collection('feed');
+    return db.collection('feeditems');
   }).then((coll) => {
     return coll.updateOne({_id: ObjectId(id)}, {$set: {status: status}});
   }).then((result)=>{
@@ -41,7 +41,7 @@ let changeStatus = (id, status) => {
 let deleteDocument = (id) => {
   let deferred = Q.defer();
   docDB.open().then((db) =>{
-    return db.collection('feed');
+    return db.collection('feeditems');
   }).then((coll) => {
     return coll.deleteOne({_id: ObjectId(id)});
   }).then((result)=>{
@@ -63,22 +63,21 @@ let deleteDocument = (id) => {
 let updateDocument = (article, prop) => {
   let deferred = Q.defer();
   docDB.open().then((db) => {
-    return db.collection('feed');
+    return db.collection('feeditems');
   }).then((coll) => {
-    console.log(prop);
     switch (prop)
     {
       case 'stem':
         return coll.updateOne({_id: ObjectId(article._id)}, {$set: {stemwords: article.stemwords}});
         break;
       case 'keywords':
-        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {keywords: article.keywrds}});
+        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {keywords: article.keywords}});
         break;
       case 'body':
         return coll.updateOne({_id: ObjectId(article._id)}, {$set: {itembody: article.itembody}});
         break;
       case 'category':
-        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {keywords: article.keywrds, category: article.category, status: 'classified'}});
+        return coll.updateOne({_id: ObjectId(article._id)}, {$set: {keywords: article.keywords, category: article.category, status: 'classified'}});
         break;
       default:
         return coll.updateOne({_id: ObjectId(article._id)}, {$set: {title: article.title}});
@@ -149,7 +148,7 @@ let getDocumentBody = (doc) => {
       deferred.reject(error);
     }
     let $ = cheerio.load(html, {normalizeWhitespace: true});
-    let articleText = $('body').text().replace('/\s+/gm',' ').replace('([^a-zA-Z])+', ' ').trim();
+    let articleText = $('body').text().replace('/\s+/gm',' ').replace('([^a-zA-Z])+', ' ').toLowerCase();
     doc["itembody"] = articleText;
     deferred.resolve(doc);
   });
@@ -157,7 +156,18 @@ let getDocumentBody = (doc) => {
 }
 
 let getStemmedDoc = (doc) => {
-  doc["stemwords"] = natural.lancasterStem(doc.itembody);
+  let corpus = {}, bagofwords=[];
+  let text = natural.lancasterStem(doc.itembody);
+  text.map((t) => {
+    if(t.length>=4 && t.length<20){
+      if(!corpus[t]){
+        corpus[t];
+      }
+      bagofwords.push(String(t.toLowerCase()));
+    }
+  });
+  doc.stemwords = bagofwords;
+  doc.corpus = corpus;
   return doc;
 }
 
