@@ -1,6 +1,6 @@
 "use strict";
 
-const MongoClient = require("mongodb").MongoClient;
+const MongoClient = require("mongodb");
 const DBURI = process.env.MONGODB_URI;
 
 let insertDocuments = (coll, docs) => {
@@ -30,18 +30,4 @@ let updateDocument = (coll, query) => {
   });
 }
 
-let getDocuments = (coll,query) => {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db)=>{
-      if(err){reject(err);}
-      db.collection(coll).find(query).limit(50).toArray((err, result) => {
-        db.close();
-        if(err){reject(err)}
-        resolve(result);
-      });
-    });
-  });
-}
-
-
-module.exports = {insertDocuments, updateDocument, getDocuments}
+module.exports = {insertDocuments, updateDocument}
