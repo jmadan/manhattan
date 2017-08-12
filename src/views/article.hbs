@@ -8,44 +8,41 @@
     <p class="text-center">{{err}}</p>
   </div>
 {{/if}}
-{{#each article}}
 <form action='/admin/article' method='post'>
   <div class="form-group">
     <label for="hn_id" class="control-label">Article ID:</label>
-    <input type="text" class="form-control" id="id" value='{{_id}}' name="id">
+    <input type="text" class="form-control" id="id" value='{{article._id}}' name="id">
   </div>
   <div class="form-group">
     <label for="articleTitle" class="control-label">
-      Title: <a href='{{url}}'>{{title}}</a>
+      Title: <a href='{{article.url}}'>{{article.title}}</a>
     </label>
   </div>
   <div class="form-group">
     <label for="articleBody" class="control-label">Article Body</label>
-    <textarea class="form-control" name="articleBody" id="articleBody" rows="10">{{itembody}}</textarea>
+    <textarea class="form-control" name="articleBody" id="articleBody" rows="10">{{article.itembody}}</textarea>
   </div>
   <div class="form-group">
     <label for="stemwords" class="control-label">Stem Words</label>
-    <textarea class="form-control" name="stemwords" id="stemwords" rows="10">{{stemwords}}</textarea>
+    <textarea class="form-control" name="stemwords" id="stemwords" rows="10">{{article.stemwords}}</textarea>
   </div>
   <div class="form-group">
     <label for="keywrds" class="control-label">Keywords</label>
-    <textarea class="form-control" id="keywrds" name="keywrds" rows="3">{{keywords}}</textarea>
+    <textarea class="form-control" id="keywrds" name="keywrds" rows="3">{{article.keywords}}</textarea>
   </div>
   <div class="form-group">
     <label for="category" class="control-label">Category:</label>
-    <input type="text" class="form-control" value='{{category}}' id="category" name="category"/>
+    <input type="text" class="form-control" value='{{article.category}}' id="category" name="category"/>
   </div>
   <div class="center-block">
   <button class="btn btn-primary" type="submit">Update</button>
   &nbsp;&nbsp;
-  <a role="button" class="btn btn-primary" href="/admin/article/delete/{{_id}}">Delete</a>
+  <a role="button" class="btn btn-primary" href="/admin/article/delete/{{article._id}}">Delete</a>
   &nbsp;&nbsp;
-  <a role="button" class="btn btn-primary" href="/admin/article/body/{{_id}}">Get Body</a>
+  <a role="button" class="btn btn-primary" href="/admin/article/body/{{article._id}}">Get Body</a>
   &nbsp;&nbsp;
-  <a role="button" class="btn btn-primary" href="/admin/article/stem/{{_id}}">Stem</a>
+  <a role="button" class="btn btn-primary" href="/admin/article/stem/{{article._id}}">Stem</a>
   &nbsp;&nbsp;
-  <a role="button" class="btn btn-primary" href="/admin/article/later/{{_id}}">Later</a>
+  <a role="button" class="btn btn-primary" href="/admin/article/later/{{article._id}}">Later</a>
 </div>
 </form>
-
-{{/each}}

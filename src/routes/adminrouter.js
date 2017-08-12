@@ -90,20 +90,20 @@ router.get('/articles', (req, res) => {
 });
 
 router.get('/article/:id', (req, res) => {
-	admin.getdocument(req.params.id).then((result) => {
+	article.getDocument(req.params.id).then((result) => {
 		if(result.error) {
 			res.render('error', {message: result.error});
 		}
-		res.render('article', {article: result.list, error: req.query.err, msg: req.query.msg, err: req.query.err});
+		res.render('article', {article: result, error: req.query.err, msg: req.query.msg, err: req.query.err});
 	});
 });
 
 router.get('/article/edit/:id', (req, res) => {
-	admin.getdocument(req.params.id).then((result) => {
+	article.getDocument(req.params.id).then((result) => {
 		if(result.error) {
 			res.render('error', {message: result.error});
 		}
-		res.render('article', {article: result.list});
+		res.render('article', {article: result});
 	});
 });
 
@@ -117,19 +117,25 @@ router.get('/article/delete/:id', (req, res) => {
 });
 
 router.post('/article', (req, res) => {
-	article.updateDocument(req.body, 'category').then((response) => {
+	let item = {
+		_id: req.body.id,
+		category: req.body.category,
+		itembody: req.body.articleBody,
+		keywords: req.body.keywrds,
+		stemwords: req.body.stemwords
+	}
+	article.updateDocument(item, 'category').then((response) => {
 		if(response.error == false){
-			setTimeout(res.redirect(req.originalUrl+"/"+req.body.hn_id+"?msg=updated"), 1000);
+			setTimeout(res.redirect(req.originalUrl+"/"+item._id+"?msg=updated"), 1000);
 		} else {
 			console.log(response.error);
-			setTimeout(res.redirect(req.originalUrl+"/"+req.body.hn_id+"?err=error"), 1000);
+			setTimeout(res.redirect(req.originalUrl+"/"+item._id+"?err=error"), 1000);
 		}
 	});
 });
 
 router.get('/article/body/:id', async(req, res) => {
 	let doc = await(article.getDocument(req.params.id));
-	console.log(doc);
 	let docWithBody = await(article.getDocumentBody(doc));
 	let docStatus = await(article.updateDocument(docWithBody, 'body'))
 	res.redirect('/admin/article/edit/'+docStatus.docID+"?msg="+docStatus.message);
