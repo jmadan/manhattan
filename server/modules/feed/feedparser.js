@@ -9,7 +9,7 @@ const lancasterStemmer = natural.LancasterStemmer;
 
 const DBURI = process.env.MONGODB_URI;
 
-let getFeedProviders = () => {
+let getRSSFeedProviders = () => {
   return new Promise(function (resolve, reject) {
     MongoClient.connect(DBURI,(err, db)=>{
       if(err){
@@ -24,31 +24,33 @@ let getFeedProviders = () => {
   });
 }
 
-let getFeedItems = (url) => {
+let getFeedItems = (provider) => {
   let feedList = [];
   return new Promise((resolve, reject) =>{
-    rp(url)
+    rp(provider.url)
     .then((res)=>{
       let $ = cheerio.load(res,{withDomLvl1: true, normalizeWhitespace: true, xmlMode: true, decodeEntities: true});
+      let lastBuildDate = $("lastBuildDate").text();
       $("item").each(function() {
         feedList.push({
           title: $(this).find('title').text(),
           url: $(this).find('link').text(),
           status: "pending body",
           type: "story",
-          timestamp: Date.parse($(this).find('pubDate').text())/1000
+          timestamp: Date.parse($(this).find('pubDate').text())/1000,
+          provider: provider.name,
+          topic: provider.topic
         });
       });
-      console.log(feedList);
       resolve(feedList);
     })
     .catch(err => reject(err));
   });
 }
 
-let insertFeed = (items)=>{
+let saveRssFeed = (items)=>{
   return new Promise(function (resolve, reject) {
-    MongoClient.connect(MongoDB_URI, (err, db) => {
+    MongoClient.connect(DBURI, (err, db) => {
       if(err){
         reject(err);
       } else {
@@ -62,16 +64,15 @@ let insertFeed = (items)=>{
   });
 }
 
-let feedJob = async () => {
-  let itemsArray =[];
-  let providerList = await getFeedProviders();
-  await Promise.all(
-    providerList.list.map((f) => {
-      let feedItems = getFeedItems(f.url);
-      itemsArray.push(feedItems);
-    })
-  );
-  insertFeed(itemsArray);
+async function returnNew (val, index, arr) {
+  val["data"] = await getFeedItems(val);
+  return val;
+}
+
+let getFeedForProviders = async(providers) => {
+  // let providerList = await getRSSFeedProviders();
+  let flist = await Promise.all(providers.list.map(returnNew));
+  return flist;
 }
 
 let getItemsPendingDetails = () => {
@@ -142,4 +143,4 @@ let getItemDetails = async() => {
     updateAndMoveFeedItem(doc).then((response => console.log("deleted Response", response.result.n)));
   }));
 }
-module.exports = {feedJob, getItemDetails};
+module.exports = {getFeedForProviders, getItemDetails, getRSSFeedProviders, saveRssFeed};
