@@ -12,7 +12,8 @@ describe('tests for article', ()=>{
     }
     let expected = {
       itembody: "This is a test!",
-      stemwords: ['test']
+      stemwords: ['test'],
+      corpus:{}
     };
     let returned = article.getStemmedDoc(doc);
       expect(returned).to.be.an('object');

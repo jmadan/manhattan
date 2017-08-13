@@ -6,23 +6,32 @@ let expect = chai.expect;
 import * as feedParser from '../../server/modules/feed/feedparser';
 
 describe('Testing the FeedParser logic', ()=>{
-  it('should return feed lists', function(){
+  it('should return RSS feed list', function(){
     this.timeout(3000);
-    return feedParser.getRSSFeedList().then((value)=>{
-      expect(value).to.have.property('feedlist').to.be.an('array').that.is.not.empty;
+    return feedParser.getRSSFeedProviders().then((value)=>{
+      expect(value).to.have.property('list').to.be.an('array').that.is.not.empty;
     });
   });
 
-  it('expect to get feed details', function(){
-    this.timeout(3000);
-    let url="https://medium.com/feed/the-story";
-    return feedParser.getRSSFeedDetails(url).then((result)=>{
-      expect(result).to.be.an('array');
-      expect(result).to.be.an('array').that.is.not.empty;
-    })
-  })
+  it('expect to have rss feed retrived for every provider', function(){
+    let providers = {list:[
+      {
+        "_id":"5982fda4734d1d04a1b3fdeb",
+        "name":"techcrunch",
+        "url":"http://feeds.feedburner.com/TechCrunch/",
+        "topic":"all"
+      },
+      {
+        "_id":"598301e4734d1d04a1b3ff3f",
+        "name":"venturebeat",
+        "url":"http://feeds.feedburner.com/venturebeat/SZYF",
+        "topic":"all"
+      }]
+    };
+    return feedParser.getFeedForProviders(providers).then((value)=>{
+      expect(value).to.be.an('array');
+      expect(value).to.have.lengthOf(2);
+    });
+  });
 
-  it('expect to get RSS feed based on the feed list returned from DB', function(){
-    
-  })
 });

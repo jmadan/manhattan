@@ -1,7 +1,6 @@
 "use strict";
 
 const synaptic = require('synaptic');
-// const MongoClient = require('mongodb').MongoClient;
 const MongoDB = require('../mongodb');
 
 
