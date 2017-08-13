@@ -66,4 +66,15 @@ router.get('/nlp/trainingdata', async(req,res)=>{
   res.json(data);
 })
 
+router.get('/feed/getproviders', (req, res) => {
+  feed.getRSSFeedProviders().then((result)=>{
+    res.json(result);
+  })
+})
+
+router.get('/feed/getprovidersfeed', (req, res) => {
+  feed.getFeedForProviders().then((result)=>{
+    res.json(result);
+  })
+})
 module.exports = router
