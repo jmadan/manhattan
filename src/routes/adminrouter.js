@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 import * as admin from '../modules/admin';
 import * as article from '../modules/article';
-import * as cronjob from '../modules/cronjobs';
-// const async = require('asyncawait/async');
-// const __await = require('asyncawait/await');
 
 router.use((req, res, next) => {
 	console.log('Request Time: ', Date.now());
@@ -13,62 +10,7 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-
-	let taskStatus={
-		'name': '',
-		'status': '',
-		'initialHNFeed': false,
-		'hnFeedDetail': false,
-		'feedItemBody': false
-	};
-
-	switch (req.query.task) {
-		case 'start':
-			console.log("Starting all the cron jobs...");
-			cronjob.getHackerNewsFeed.start();
-			cronjob.getHackerNewsFeedMetaData.start();
-			cronjob.gethackerNewsFeedItemBody.start();
-			break;
-		case 'stop':
-			console.log("Stopping all the cron jobs...");
-			cronjob.getHackerNewsFeed.stop();
-			cronjob.getHackerNewsFeedMetaData.stop();
-			cronjob.gethackerNewsFeedItemBody.stop();
-			break;
-		case 'startfeed':
-			console.log("starting initial HN Feed job");
-			cronjob.getHackerNewsFeed.start();
-			taskStatus.initialHNFeed = true;
-			break;
-		case 'stopfeed':
-			console.log("stopping initial HN Feed job");
-			cronjob.getHackerNewsFeed.stop();
-			taskStatus.initialHNFeed = false;
-			break;
-		case 'startfeeddetail':
-			console.log("starting get HN Feed detail job");
-			cronjob.getHackerNewsFeedMetaData.start();
-			taskStatus.hnFeedDetail = true;
-			break;
-		case 'stopfeeddetail':
-			console.log("stopping get initial HN Feed detail job");
-			cronjob.getHackerNewsFeedMetaData.stop();
-			taskStatus.hnFeedDetail = false;
-			break;
-		case 'startfeeditembody':
-			console.log("starting Feed Item Body HN job");
-			cronjob.gethackerNewsFeedItemBody.start();
-			taskStatus.feedItemBody = true;
-			break;
-		case 'stopfeeditembody':
-			console.log("stopping Feed Item Body HN job");
-			cronjob.gethackerNewsFeedItemBody.stop();
-			taskStatus.feedItemBody = false;
-			break;
-		default:
-			console.log("your command is not my wish!");
-	}
-	res.render('admin', {homepage: true, task_status: taskStatus});
+	res.render('admin', {homepage: true});
 });
 
 //route - return list of articles based on the list limit and if they have been classified or not

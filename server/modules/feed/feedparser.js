@@ -136,9 +136,6 @@ let updateAndMoveFeedItem = (item)=>{
 
 let fetchContents = async(items) => {
   let itemsArray = await Promise.all(items.map(makeRequests));
-  // await Promise.all(stemmedItem.map((doc) => {
-  //   updateAndMoveFeedItem(doc).then((response => console.log("deleted Response", response.result.n)));
-  // }));
   return itemsArray;
 }
 module.exports = {getFeedForProviders, getRSSFeedProviders, saveRssFeed, fetchItemsWithStatusPendingBody, fetchContents, updateAndMoveFeedItem};
