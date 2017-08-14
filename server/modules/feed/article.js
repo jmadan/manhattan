@@ -5,6 +5,9 @@ const cheerio = require('cheerio');
 const MongoClient = require('mongodb').MongoClient;
 let ObjectID = require('mongodb').ObjectID;
 const DBURI = process.env.MONGODB_URI;
+const textract = require('textract');
+const natural = require('natural');
+const lancasterStemmer = natural.LancasterStemmer;
 
 exports.getItemDetails = (item) => {
   return new Promise((resolve, reject) => {
@@ -17,10 +20,25 @@ exports.getItemDetails = (item) => {
   });
 }
 
+exports.getArticleText = (item) => {
+  textract.fromUrl(item.url, (function( error, text ) {
+    return text;
+  }));
+}
+
+exports.getArticleStemWords = (item) => {
+  return new Promise((resolve, reject) =>{
+    textract.fromUrl(item.url, (function( error, text ) {
+      item.stemwords = lancasterStemmer.tokenizeAndStem(text);
+      resolve(item);
+    }));
+  });
+}
+
 exports.getItem = (id) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
-      db.collection('feed').findOne({"_id": ObjectID(id)},(err, item)=>{
+      db.collection('feeditems').findOne({"_id": ObjectID(id)},(err, item)=>{
         if(err){
           reject(err);
         } else{

@@ -43,6 +43,14 @@ router.get('/article/edit/:id', (req, res) => {
 	});
 });
 
+router.get('/article/stem/:id', (req,res)=>{
+  article.getItem(req.params.id).then((item)=>{
+     article.getArticleStemWords(item).then((article) =>{
+       res.json({article: article});
+     })
+  })
+})
+
 router.get('/category', function(req, res) {
   category.getCategories().then((docs)=>{
     res.json(docs);
@@ -66,13 +74,13 @@ router.get('/nlp/trainingdata', async(req,res)=>{
   res.json(data);
 })
 
-router.get('/feed/getproviders', (req, res) => {
+router.get('/feed/providers', (req, res) => {
   feed.getRSSFeedProviders().then((result)=>{
     res.json(result);
   })
 })
 
-router.get('/feed/getprovidersfeed', (req, res) => {
+router.get('/feed/providers/list', (req, res) => {
   feed.getFeedForProviders().then((result)=>{
     res.json(result);
   })

@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 const MongoClient = require('mongodb').MongoClient;
 let ObjectId = require('mongodb').ObjectID;
 const natural = require('natural');
+const textract = require('textract');
 
 const lancasterStemmer = natural.LancasterStemmer;
 
@@ -15,7 +16,7 @@ let getRSSFeedProviders = () => {
       if(err){
         reject(err);
       }
-      db.collection("feedproviders").find().toArray((err, providerList)=>{
+      db.collection("feedproviders").find({status:"active"}).toArray((err, providerList)=>{
         db.close();
         if(err){reject(err);}
         resolve({list: providerList});
@@ -93,12 +94,18 @@ let fetchItemsWithStatusPendingBody = () => {
 }
 
 let makeRequests = async(item) => {
-  return await rp(item.url).then((response) => {
-    let $ = cheerio.load(response);
-    item.stemwords = lancasterStemmer.tokenizeAndStem($('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim());
-    item.status = "unclassified";
-    return item;
-  });
+  return await textract.fromUrl(item.url, function( error, text ) {
+    item.stemwords = lancasterStemmer.tokenizeAndStem(text);
+      item.status = "unclassified";
+      return item;
+  })
+
+  // return await rp(item.url).then((response) => {
+  //   let $ = cheerio.load(response);
+  //   item.stemwords = lancasterStemmer.tokenizeAndStem($('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim());
+  //   item.status = "unclassified";
+  //   return item;
+  // });
 }
 
 let updateAndMoveFeedItem = (item)=>{

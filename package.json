@@ -52,7 +52,8 @@
     "q": "^1.5.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
-    "synaptic": "^1.0.12"
+    "synaptic": "^1.0.12",
+    "textract": "^2.1.2"
   },
   "devDependencies": {
     "babel-loader": "^7.1.1",
