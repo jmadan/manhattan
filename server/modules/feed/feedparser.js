@@ -70,12 +70,11 @@ async function returnNew (val, index, arr) {
 }
 
 let getFeedForProviders = async(providers) => {
-  // let providerList = await getRSSFeedProviders();
   let flist = await Promise.all(providers.list.map(returnNew));
   return flist;
 }
 
-let getItemsPendingDetails = () => {
+let fetchItemsWithStatusPendingBody = () => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=> {
       if(err){
@@ -93,8 +92,8 @@ let getItemsPendingDetails = () => {
   });
 }
 
-let getItemBody = (item) => {
-  return rp(item.url).then((response) => {
+let makeRequests = async(item) => {
+  return await rp(item.url).then((response) => {
     let $ = cheerio.load(response);
     item.stemwords = lancasterStemmer.tokenizeAndStem($('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim());
     item.status = "unclassified";
@@ -115,6 +114,9 @@ let updateAndMoveFeedItem = (item)=>{
             type: item.type,
             keywords: item.keywords,
             stemwords: item.stemwords,
+            timestamp: item.timestamp,
+            provider: item.provider,
+            topic: item.topic,
             status: 'unclassified'
           }, (err, result) => {
           if(err){
@@ -132,15 +134,11 @@ let updateAndMoveFeedItem = (item)=>{
   });
 }
 
-let getItemDetails = async() => {
-  let itemArray = [];
-  let items = await getItemsPendingDetails();
-  let stemmedItem = await Promise.all(
-    items.map((item) => {
-      return getItemBody(item);
-    }));
-  await Promise.all(stemmedItem.map((doc) => {
-    updateAndMoveFeedItem(doc).then((response => console.log("deleted Response", response.result.n)));
-  }));
+let fetchContents = async(items) => {
+  let itemsArray = await Promise.all(items.map(makeRequests));
+  // await Promise.all(stemmedItem.map((doc) => {
+  //   updateAndMoveFeedItem(doc).then((response => console.log("deleted Response", response.result.n)));
+  // }));
+  return itemsArray;
 }
-module.exports = {getFeedForProviders, getItemDetails, getRSSFeedProviders, saveRssFeed};
+module.exports = {getFeedForProviders, getRSSFeedProviders, saveRssFeed, fetchItemsWithStatusPendingBody, fetchContents, updateAndMoveFeedItem};
