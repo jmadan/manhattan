@@ -148,7 +148,7 @@ let getDocumentBody = (doc) => {
       deferred.reject(error);
     }
     let $ = cheerio.load(html, {normalizeWhitespace: true});
-    let articleText = $('body').text().replace('/\s+/gm',' ').replace('([^a-zA-Z])+', ' ').toLowerCase();
+    let articleText = $('body').text().replace('/\s+/gm',' ').replace('([^a-zA-Z])+', ' ');
     doc["itembody"] = articleText;
     deferred.resolve(doc);
   });
@@ -163,7 +163,7 @@ let getStemmedDoc = (doc) => {
       if(!corpus[t]){
         corpus[t];
       }
-      bagofwords.push(String(t.toLowerCase()));
+      bagofwords.push(String(t));
     }
   });
   doc.stemwords = bagofwords;

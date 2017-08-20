@@ -99,13 +99,6 @@ let makeRequests = async(item) => {
       item.status = "unclassified";
       return item;
   })
-
-  // return await rp(item.url).then((response) => {
-  //   let $ = cheerio.load(response);
-  //   item.stemwords = lancasterStemmer.tokenizeAndStem($('body').text().replace('/\s+/mg','').replace(/[^a-zA-Z ]/g, "").trim());
-  //   item.status = "unclassified";
-  //   return item;
-  // });
 }
 
 let updateAndMoveFeedItem = (item)=>{
