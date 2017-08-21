@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const feed = require('../modules/feed/feedparser');
-const article = require('../modules/feed/article');
+const article = require('../modules/article');
 const category = require('../modules/category');
 const nlp = require('../modules/nlp/aggregate_data');
 const tdata = require('../modules/nlp/trainingdata');
@@ -13,34 +13,23 @@ router.use(function(req, res, next) {
 })
 
 router.get('/', function(req, res) {
-  res.json({message: "done"})
+  res.json({message: "You need to call a specific endpoint to get anything back"})
 })
 
-router.get('/feeds',function(req, res) {
-  feed.getRSSFeedList().then((feedList)=>{
-    res.json({feeds: feedList});
-  }).catch((err)=>{
-    res.json({error: err});
-  })
-});
-
-router.get('/feeds/:name',function(req, res) {
-  res.json({message: "it needs to be Implemented"});
-});
-
-router.get('/articles/:id',function(req, res) {
+router.get('/article/:id',function(req, res) {
+  let stem = req.query.stem != undefined ? true : false;
   article.getItem(req.params.id).then((response)=>{
-    res.json({article: response});
-  });
-});
-
-router.get('/article/edit/:id', (req, res) => {
-	article.getItem(req.params.id).then((result) => {
-		if(result.error) {
+    if(result.error) {
 			res.render('error', {message: result.error});
 		}
-		res.render('article', {article: result.list});
-	});
+    if(stem){
+      article.getArticleStemWords(item).then((article) =>{
+        res.json({article: article});
+      })
+    } else {
+      res.json({article: article});
+    }
+  });
 });
 
 router.get('/article/stem/:id', (req,res)=>{
@@ -51,9 +40,15 @@ router.get('/article/stem/:id', (req,res)=>{
   })
 })
 
+router.get('/article/category/:category', (req, res)=>{
+  article.getArticleBasedOnCategory(req.params.category).then((result) => {
+    console.log(result);
+  })
+})
+
 router.get('/category', function(req, res) {
   category.getCategories().then((docs)=>{
-    res.json(docs);
+    res.json({categories: docs});
   }).catch(err=>console.log(err));
 })
 
@@ -80,10 +75,32 @@ router.get('/feed/provider/list', (req, res) => {
   })
 })
 
-router.get('/feed/provider/getrss', (req, res) => {
-  feed.getFeedForProviders().then((result)=>{
-    res.json(result);
-  })
+router.get('/feed/provider/:name', (req, res) => {
+  let topic = req.query.topic != undefined ? req.query.topic : 'all';
+  console.log("topic: ", topic);
+  feed.getRSSFeedProviders().then((result)=>{
+    return result.list.filter((provider) => {
+      if(provider.name === req.params.name && provider.topic === topic){
+        return provider;
+      } else {
+        return null;
+      }
+    });
+  }).then((provider)=>{
+    if(!provider.length){
+      res.json({
+        "error": "No Feed found with given name and topic",
+        "name":req.params.name,
+        "topic": topic
+      })
+    } else{
+      res.json({
+        "provider": provider,
+        "name": provider.name,
+        "topic": provider.topic
+      })
+    }
+  });
 })
 
 
