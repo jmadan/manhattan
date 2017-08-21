@@ -39,7 +39,7 @@ let getDistinctCategories = ()=>{
       if(err){
         console.log(err);
       } else {
-        db.collection("feed").distinct("category", (err, result)=>{
+        db.collection("feeditems").distinct("category", (err, result)=>{
           if(err){
             reject(err);
           }

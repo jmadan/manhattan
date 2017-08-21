@@ -63,3 +63,17 @@ exports.saveItem = (item) => {
     });
   });
 }
+
+exports.getArticleBasedOnCategory = (category) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db)=>{
+      db.collection('feeditems').find({"category": category.toLowerCase()}).toArray((err, item)=>{
+        if(err){
+          reject(err);
+        } else{
+          resolve(item);
+        }
+      });
+    });
+  });
+}
