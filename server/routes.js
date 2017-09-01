@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const feed = require('./modules/feed/feedparser');
 const article = require('./modules/article');
+const provider = require('./modules/provider');
 const category = require('./modules/category');
 const nlp = require('./modules/nlp/aggregate_data');
 const tdata = require('./modules/nlp/trainingdata');
@@ -46,7 +47,7 @@ router.get('/articles/categories/:category', (req, res)=>{
   })
 })
 
-router.get('/category', function(req, res) {
+router.get('/categories', function(req, res) {
   category.getCategories().then((docs)=>{
     res.json({categories: docs});
   }).catch(err=>console.log(err));
@@ -69,13 +70,19 @@ router.get('/nlp/trainingdata', async(req,res)=>{
   res.json(data);
 })
 
-router.get('/feed/providers/list', (req, res) => {
-  feed.getRSSFeedProviders().then((result)=>{
+router.get('/providers/list', (req, res) => {
+  provider.fetchProviders().then((result)=>{
     res.json(result);
   })
 })
 
-router.get('/feed/providers/:name', (req, res) => {
+router.post('/providers/new', (req, res) => {
+  provider.newProvider(req.body).then((result) => {
+    res.json(result);
+  });
+})
+
+router.get('/providers/:name', (req, res) => {
   let topic = req.query.topic != undefined ? req.query.topic : 'all';
   console.log("topic: ", topic);
   feed.getRSSFeedProviders().then((result)=>{
@@ -102,6 +109,7 @@ router.get('/feed/providers/:name', (req, res) => {
     }
   });
 })
+
 
 
 module.exports = router

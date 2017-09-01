@@ -4,19 +4,11 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const hbs = require('express-handlebars');
 const api = require('./routes');
-// const request = require('request');
+const request = require('request');
 
 const app = express();
-//view engine setup
-app.engine('hbs', hbs({
-  extname: 'hbs',
-  defaultLayout: 'applayout',
-  layoutsDir: __dirname + '/views/layouts/'}));
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
-
-app.use('/', express.static('server/assets'));
+// app.use('/', express.static('server/assets'));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/json'}));
 app.use(bodyParser.urlencoded({
@@ -41,7 +33,7 @@ app.get('/', (req, res) => {
             'x-sent': true
         }
     };
-    res.render('index');
+    res.json({"message": "this is the Manhattan API home..."});
 });
 
 app.use('/api', api);
