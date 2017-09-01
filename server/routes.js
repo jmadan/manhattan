@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const feed = require('../modules/feed/feedparser');
-const article = require('../modules/article');
-const category = require('../modules/category');
-const nlp = require('../modules/nlp/aggregate_data');
-const tdata = require('../modules/nlp/trainingdata');
+const feed = require('./modules/feed/feedparser');
+const article = require('./modules/article');
+const category = require('./modules/category');
+const nlp = require('./modules/nlp/aggregate_data');
+const tdata = require('./modules/nlp/trainingdata');
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
@@ -102,6 +102,7 @@ router.get('/feed/providers/:name', (req, res) => {
     }
   });
 })
+
 
 
 module.exports = router

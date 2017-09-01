@@ -4,6 +4,7 @@ const Q = require('q');
 const cheerio = require('cheerio');
 const natural = require('./natural');
 let ObjectId = require('mongodb').ObjectID;
+const textract = require('textract');
 
 
 let changeStatus = (id, status) => {
@@ -142,17 +143,26 @@ let getDocument = (id) => {
 }
 
 let getDocumentBody = (doc) => {
-  let deferred = Q.defer();
-  request(doc.url, (error, response, html)=>{
-    if(error){
-      deferred.reject(error);
-    }
-    let $ = cheerio.load(html, {normalizeWhitespace: true});
-    let articleText = $('body').text().replace('/\s+/gm',' ').replace('([^a-zA-Z])+', ' ');
-    doc["itembody"] = articleText;
-    deferred.resolve(doc);
-  });
-  return deferred.promise;
+  return new Promise((resolve, reject) => {
+    textract.fromUrl(doc.url, (function( error, text ) {
+      doc.itembody = text.replace('/\s+/gm',' ').replace('([^a-zA-Z])+', ' ');
+      doc.stemwords = lancasterStemmer.tokenizeAndStem(text);
+      resolve(doc);
+    }));
+  })
+
+  //----------------
+  // let deferred = Q.defer();
+  // request(doc.url, (error, response, html)=>{
+  //   if(error){
+  //     deferred.reject(error);
+  //   }
+  //   let $ = cheerio.load(html, {normalizeWhitespace: true});
+  //   let articleText = $('body').text().replace('/\s+/gm',' ').replace('([^a-zA-Z])+', ' ');
+  //   doc["itembody"] = articleText;
+  //   deferred.resolve(doc);
+  // });
+  // return deferred.promise;
 }
 
 let getStemmedDoc = (doc) => {

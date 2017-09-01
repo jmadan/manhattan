@@ -33,4 +33,24 @@ let fetchFeedContent = () => {
   });
 }
 
-module.exports = { fetchRSSFeed, fetchFeedContent }
+let updateFeed = () => {
+  cron.schedule('*/10 * * * * *', () => {
+    console.log("updating article content from feeditems***...", new Date().toUTCString());
+    feed.fetchAndUpdate().then((docs) => {
+      feed.fetchContents(docs).then((d) => {
+        console.log(d.length);
+      });
+    });
+    // feed.fetchItemsWithStatusPendingBody().then((result)=>{
+    //   feed.fetchContents(result).then((res)=>{
+    //     res.map((r)=>{
+    //       feed.updateAndMoveFeedItem(r).then((result)=>{
+    //         console.log(result.result.n + " Documents saved.");
+    //       });
+    //     })
+    //   })
+    // })
+  });
+}
+
+module.exports = { fetchRSSFeed, fetchFeedContent, updateFeed }

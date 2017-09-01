@@ -26,10 +26,13 @@ let letsrunit = async(id) => {
   let dictionary = await trainingdata.createDict(docs);
   let tData = await trainingdata.formattedData(docs, dictionary);
 
+  let categoryMap = await trainingdata.getCategoryMap();
+  let categoryArray = Object.keys(categoryMap);
+
   let ann_train = tData.map(function (pair) {
     return {
       input: pair[0],
-      output: vec_result(pair[1], 3)
+      output: vec_result(pair[1], 71)
     };
   });
   net.train(ann_train);
@@ -42,7 +45,8 @@ let letsrunit = async(id) => {
         console.log(item.url);
         let predict = net.run(trainingdata.convertToVector(item, dictionary));
         console.log(predict);
-        console.log([maxarg(predict)]);
+        console.log(maxarg(predict));
+        console.log(categoryArray[maxarg(predict)]);
       }
     });
   })

@@ -1,10 +1,11 @@
 "use strict";
 
-const synaptic = require('synaptic');
+// const synaptic = require('synaptic');
 const MongoDB = require('../mongodb');
 const MongoClient = require("mongodb");
 const DBURI = process.env.MONGODB_URI;
 const mimir = require('./mimir');
+const category = require('../category');
 
 let fetchDocs = async() => {
   return await MongoDB.getDocuments("feeditems", {status:'classified'}).then((docs) => {
@@ -39,4 +40,17 @@ let convertToVector = async(doc, dict) => {
   return await mimir.bow(doc.stemwords.toString(), dict);
 }
 
-module.exports = {fetchDocs, formattedData, createDict, convertToVector }
+let getCategoryMap = async() => {
+  let categoryMap = {};
+  await category.getDistinctCategories().then((items) => {
+    items.forEach((item, i) => {
+      // console.log(item);
+      if(item){
+        categoryMap[item] = i;
+      }
+    })
+  });
+  return categoryMap;
+}
+
+module.exports = {fetchDocs, formattedData, createDict, convertToVector, getCategoryMap }

@@ -93,11 +93,14 @@ let fetchItemsWithStatusPendingBody = () => {
   });
 }
 
-let makeRequests = async(item) => {
-  return await textract.fromUrl(item.url, function( error, text ) {
-    item.stemwords = lancasterStemmer.tokenizeAndStem(text);
-      item.status = "unclassified";
-      return item;
+let makeRequests = (item) => {
+  return new Promise((resolve, reject) => {
+    textract.fromUrl(item.url, function( error, text ) {
+      item.stemwords = lancasterStemmer.tokenizeAndStem(text);
+      item.itembody = text.replace('/\s+/gm',' ').replace('([^a-zA-Z])+', ' ');
+        // item.status = "unclassified";
+      resolve(item);
+    })
   })
 }
 
@@ -136,6 +139,42 @@ let updateAndMoveFeedItem = (item)=>{
 
 let fetchContents = async(items) => {
   let itemsArray = await Promise.all(items.map(makeRequests));
+  console.log(itemsArray.length);
   return itemsArray;
 }
-module.exports = {getFeedForProviders, getRSSFeedProviders, saveRssFeed, fetchItemsWithStatusPendingBody, fetchContents, updateAndMoveFeedItem};
+
+let fetchAndUpdate = () => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db)=> {
+      if(err){
+        reject(err)
+      } else {
+        db.collection("feeditems").find({status: "classified"}).toArray((err, docs)=>{
+          db.close();
+          if(err){
+            reject(err);
+          }
+          resolve(docs);
+        })
+      }
+    })
+  });
+}
+
+let tempUpdate = () =>{
+  MongoClient.connect(DBURI, (err, db)=> {
+    if(err){
+      reject(err)
+    } else {
+      db.collection("feeditems").updateMany({status: "classified"}, {$set:{status: "unclassified"}}, (err, r)=>{
+        db.close();
+        if(err){
+          console.log(err)
+        }
+        console.log(r);
+      })
+    }
+  })
+}
+
+module.exports = {tempUpdate, makeRequests, getFeedForProviders, getRSSFeedProviders, saveRssFeed, fetchItemsWithStatusPendingBody, fetchContents, updateAndMoveFeedItem, fetchAndUpdate};
