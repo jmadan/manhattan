@@ -17,6 +17,59 @@ router.get('/', function(req, res) {
   res.json({message: "You need to call a specific endpoint to get anything back"})
 })
 
+//  **********Providers routes**************
+router.get('/providers/list', (req, res) => {
+  provider.fetchProviders().then((result)=>{
+    res.json(result);
+  })
+})
+
+router.post('/providers/new', (req, res) => {
+  provider.newProvider(req.body).then((result) => {
+    res.json(result);
+  });
+})
+
+router.put('/providers/:status/:id', (req, res) => {
+  provider.updateProvider(req.params.status, req.params.id).then((response) =>{
+    if(response.lastErrorObject.n == 1){
+      res.json({message: "Status "+ req.params.status +" updated", doc: response.value._id})
+    } else{
+      res.json({message: "Error while updating...", error: response})
+    }
+  })
+})
+
+router.get('/providers/:name', (req, res) => {
+  let topic = req.query.topic != undefined ? req.query.topic : 'all';
+  console.log("topic: ", topic);
+  feed.getRSSFeedProviders().then((result)=>{
+    return result.list.filter((provider) => {
+      if(provider.name === req.params.name && provider.topic === topic){
+        return provider;
+      } else {
+        return null;
+      }
+    });
+  }).then((provider)=>{
+    if(!provider.length){
+      res.json({
+        "error": "No Feed found with given name and topic",
+        "name":req.params.name,
+        "topic": topic
+      })
+    } else{
+      res.json({
+        "provider": provider,
+        "name": provider.name,
+        "topic": provider.topic
+      })
+    }
+  });
+})
+
+// ************** Articles Reoutes ****************
+
 router.get('/articles/:id',function(req, res) {
   let stem = req.query.stem != undefined ? true : false;
   article.getItem(req.params.id).then((response)=>{
@@ -70,45 +123,6 @@ router.get('/nlp/trainingdata', async(req,res)=>{
   res.json(data);
 })
 
-router.get('/providers/list', (req, res) => {
-  provider.fetchProviders().then((result)=>{
-    res.json(result);
-  })
-})
-
-router.post('/providers/new', (req, res) => {
-  provider.newProvider(req.body).then((result) => {
-    res.json(result);
-  });
-})
-
-router.get('/providers/:name', (req, res) => {
-  let topic = req.query.topic != undefined ? req.query.topic : 'all';
-  console.log("topic: ", topic);
-  feed.getRSSFeedProviders().then((result)=>{
-    return result.list.filter((provider) => {
-      if(provider.name === req.params.name && provider.topic === topic){
-        return provider;
-      } else {
-        return null;
-      }
-    });
-  }).then((provider)=>{
-    if(!provider.length){
-      res.json({
-        "error": "No Feed found with given name and topic",
-        "name":req.params.name,
-        "topic": topic
-      })
-    } else{
-      res.json({
-        "provider": provider,
-        "name": provider.name,
-        "topic": provider.topic
-      })
-    }
-  });
-})
 
 
 

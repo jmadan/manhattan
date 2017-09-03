@@ -35,3 +35,17 @@ exports.newProvider = (data) => {
     });
   });
 }
+
+exports.updateProvider = (status, id) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db)=>{
+      db.collection('feedproviders').findOneAndUpdate(
+        {"_id": ObjectID(id)},{$set:{status: status}}, (err, result) =>{
+          if(err){
+            reject(err);
+          }
+          resolve(result);
+        })
+    });
+  });
+}
