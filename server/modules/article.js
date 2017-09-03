@@ -9,6 +9,33 @@ const textract = require('textract');
 const natural = require('natural');
 const lancasterStemmer = natural.LancasterStemmer;
 
+exports.fetchArticles = (status) => {
+  return new Promise((resolve, reject) => {
+      MongoClient.connect(DBURI, (err, db)=>{
+        db.collection('feeditems').find({status: status}).limit(10).toArray((err, docs) =>{
+          if(err){
+            reject(err);
+          }
+          resolve(docs);
+        })
+      })
+  })
+}
+
+exports.getArticle = (id) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db)=>{
+      db.collection('feeditems').findOne({"_id": ObjectID(id)},(err, item)=>{
+        if(err){
+          reject(err);
+        } else{
+          resolve(item);
+        }
+      });
+    });
+  });
+}
+
 exports.getItemDetails = (item) => {
   return new Promise((resolve, reject) => {
     rp(item.url).then((response) =>{
@@ -35,19 +62,19 @@ exports.getArticleStemWords = (item) => {
   });
 }
 
-exports.getItem = (id) => {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db)=>{
-      db.collection('feeditems').findOne({"_id": ObjectID(id)},(err, item)=>{
-        if(err){
-          reject(err);
-        } else{
-          resolve(item);
-        }
-      });
-    });
-  });
-}
+// exports.getItem = (id) => {
+//   return new Promise((resolve, reject) => {
+//     MongoClient.connect(DBURI, (err, db)=>{
+//       db.collection('feeditems').findOne({"_id": ObjectID(id)},(err, item)=>{
+//         if(err){
+//           reject(err);
+//         } else{
+//           resolve(item);
+//         }
+//       });
+//     });
+//   });
+// }
 
 exports.saveItem = (item) => {
   return new Promise((resolve, reject) => {

@@ -70,28 +70,45 @@ router.get('/providers/:name', (req, res) => {
 
 // ************** Articles Reoutes ****************
 
-router.get('/articles/:id',function(req, res) {
-  let stem = req.query.stem != undefined ? true : false;
-  article.getItem(req.params.id).then((response)=>{
-    if(result.error) {
-			res.render('error', {message: result.error});
-		}
-    if(stem){
-      article.getArticleStemWords(item).then((article) =>{
-        res.json({article: article});
-      })
-    } else {
-      res.json({article: article});
-    }
-  });
-});
+router.get('/articles/status/:status', (req, res)=>{
+  article.fetchArticles(req.params.status).then((result) => {
+    res.json({result: result});
+  })
+})
+
+router.get('/articles/:id', (req, res) => {
+  article.getArticle(req.params.id).then((result) => {
+    res.json({result: result});
+  })
+})
+
+
+// router.get('/articles/:id',function(req, res) {
+//   let stem = req.query.stem != undefined ? true : false;
+//   article.getItem(req.params.id).then((response)=>{
+//     if(result.error) {
+// 			res.render('error', {message: result.error});
+// 		}
+//     if(stem){
+//       article.getArticleStemWords(item).then((article) =>{
+//         res.json({article: article});
+//       })
+//     } else {
+//       res.json({article: article});
+//     }
+//   });
+// });
 
 router.get('/articles/stem/:id', (req,res)=>{
-  article.getItem(req.params.id).then((item)=>{
+  article.getArticle(req.params.id).then((item)=>{
      article.getArticleStemWords(item).then((article) =>{
-       res.json({article: article});
+       res.json({result: article});
      })
   })
+})
+
+router.put('/articles/:id', (req, res)=>{
+  console.log(req.body);
 })
 
 router.get('/articles/categories/:category', (req, res)=>{
@@ -99,6 +116,9 @@ router.get('/articles/categories/:category', (req, res)=>{
     console.log(result);
   })
 })
+
+
+// ********** Category Routes ************
 
 router.get('/categories', function(req, res) {
   category.getCategories().then((docs)=>{

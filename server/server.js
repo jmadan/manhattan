@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
             'x-sent': true
         }
     };
-    res.json({"message": "this is the Manhattan API home..."});
+    res.json({message: "this is the Manhattan API home..."});
 });
 
 app.use('/api', api);
