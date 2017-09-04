@@ -83,21 +83,17 @@ router.get('/articles/:id', (req, res) => {
 })
 
 
-// router.get('/articles/:id',function(req, res) {
-//   let stem = req.query.stem != undefined ? true : false;
-//   article.getItem(req.params.id).then((response)=>{
-//     if(result.error) {
-// 			res.render('error', {message: result.error});
-// 		}
-//     if(stem){
-//       article.getArticleStemWords(item).then((article) =>{
-//         res.json({article: article});
-//       })
-//     } else {
-//       res.json({article: article});
-//     }
-//   });
-// });
+router.get('/articles/stem/:id',function(req, res) {
+  // let stem = req.query.stem != undefined ? true : false;
+  article.getArticle(req.params.id).then((response)=>{
+    if(result.error) {
+			res.render('error', {message: result.error});
+		}
+    article.getArticleStemWords(item).then((article) =>{
+        res.json({result: article});
+      })
+  });
+});
 
 router.get('/articles/stem/:id', (req,res)=>{
   article.getArticle(req.params.id).then((item)=>{
@@ -108,7 +104,9 @@ router.get('/articles/stem/:id', (req,res)=>{
 })
 
 router.put('/articles/:id', (req, res)=>{
-  console.log(req.body);
+  article.updateArticle(req.params.id, req.body).then((response) => {
+    res.json(response);
+  })
 })
 
 router.get('/articles/categories/:category', (req, res)=>{

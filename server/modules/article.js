@@ -36,6 +36,22 @@ exports.getArticle = (id) => {
   });
 }
 
+exports.updateArticle = (data) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(data.id)},
+        {$set: {itembody: data.itembody, keywords: data.keywords, stemwords: data.stemwords}},
+        (err, doc) => {
+          if(err){
+            reject(err)
+          }
+          resolve(doc)
+        }
+      )
+    })
+  })
+}
+
 exports.getItemDetails = (item) => {
   return new Promise((resolve, reject) => {
     rp(item.url).then((response) =>{
@@ -56,25 +72,12 @@ exports.getArticleText = (item) => {
 exports.getArticleStemWords = (item) => {
   return new Promise((resolve, reject) =>{
     textract.fromUrl(item.url, (function( error, text ) {
+      item.itembody = text;
       item.stemwords = lancasterStemmer.tokenizeAndStem(text);
       resolve(item);
     }));
   });
 }
-
-// exports.getItem = (id) => {
-//   return new Promise((resolve, reject) => {
-//     MongoClient.connect(DBURI, (err, db)=>{
-//       db.collection('feeditems').findOne({"_id": ObjectID(id)},(err, item)=>{
-//         if(err){
-//           reject(err);
-//         } else{
-//           resolve(item);
-//         }
-//       });
-//     });
-//   });
-// }
 
 exports.saveItem = (item) => {
   return new Promise((resolve, reject) => {
