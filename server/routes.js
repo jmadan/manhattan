@@ -95,16 +95,14 @@ router.get('/articles/stem/:id',function(req, res) {
   });
 });
 
-router.get('/articles/stem/:id', (req,res)=>{
-  article.getArticle(req.params.id).then((item)=>{
-     article.getArticleStemWords(item).then((article) =>{
-       res.json({result: article});
-     })
+router.put('/articles/:id', (req, res)=>{
+  article.updateArticle(req.params.id, req.body).then((response) => {
+    res.json(response);
   })
 })
 
-router.put('/articles/:id', (req, res)=>{
-  article.updateArticle(req.params.id, req.body).then((response) => {
+router.put('/articles/status/:id/:status', (req, res)=>{
+  article.updateArticle(req.params.id, req.params.status).then((response) => {
     res.json(response);
   })
 })

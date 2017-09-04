@@ -52,6 +52,22 @@ exports.updateArticle = (data) => {
   })
 }
 
+exports.updateArticleStatus = (id, status) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(data.id)},
+        {$set: {status: status}},
+        (err, doc) => {
+          if(err){
+            reject(err)
+          }
+          resolve(doc)
+        }
+      )
+    })
+  })
+}
+
 exports.getItemDetails = (item) => {
   return new Promise((resolve, reject) => {
     rp(item.url).then((response) =>{
