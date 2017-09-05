@@ -95,7 +95,7 @@ router.get('/articles/stem/:id',function(req, res) {
   });
 });
 
-router.put('/articles/:id', (req, res)=>{
+router.put('/articles/:id/update', (req, res)=>{
   article.updateArticle(req.params.id, req.body).then((response) => {
     res.json({result: response});
   })
@@ -113,8 +113,8 @@ router.get('/articles/categories/:category', (req, res)=>{
   })
 })
 
-router.put('/articles/categories/:category', (req, res)=>{
-  article.updateArticleCategory(req.params.id, req.params.category).then((result) => {
+router.put('/articles/:id/category/update', (req, res)=>{
+  article.updateArticleCategory(req.params.id, req.body.category).then((result) => {
     res.json({result: result})
   })
 })
