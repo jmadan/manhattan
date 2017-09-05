@@ -52,6 +52,23 @@ exports.updateArticle = (data) => {
   })
 }
 
+exports.updateArticleCategory = (id, category) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(data.id)},
+        {$set: {category: category}},
+        (err, doc) => {
+          if(err){
+            reject(err)
+          }
+          resolve(doc)
+        }
+      )
+    })
+  })
+}
+
+
 exports.updateArticleStatus = (id, status) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
