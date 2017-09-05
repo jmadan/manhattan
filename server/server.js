@@ -22,6 +22,8 @@ app.use(function (req, res, next) {
     // an API server in conjunction with something like webpack-dev-server.
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Access-Control-Allow-Headers: Origin, Content-Type, Authorization, X-Auth-Token');
+    res.setHeader('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS');
     next();
 });
 
