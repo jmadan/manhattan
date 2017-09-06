@@ -18,13 +18,13 @@ router.get('/', function(req, res) {
 })
 
 //  **********Providers routes**************
-router.get('/providers/list', (req, res) => {
+router.get('/providers', (req, res) => {
   provider.fetchProviders().then((result)=>{
     res.json(result);
   })
 })
 
-router.post('/providers/new', (req, res) => {
+router.post('/providers', (req, res) => {
   provider.newProvider(req.body).then((result) => {
     res.json(result);
   });
@@ -84,15 +84,13 @@ router.get('/articles/:id', (req, res) => {
 
 
 router.get('/articles/stem/:id',function(req, res) {
-  // let stem = req.query.stem != undefined ? true : false;
-  article.getArticle(req.params.id).then((response)=>{
-    if(result.error) {
-			res.render('error', {message: result.error});
-		}
+  article.getArticle(req.params.id).then((item)=>{
     article.getArticleStemWords(item).then((article) =>{
         res.json({result: article});
       })
-  });
+  }).catch((err)=>{
+    res.json({error: err})
+  })
 });
 
 router.put('/articles/:id/update', (req, res)=>{
@@ -101,8 +99,8 @@ router.put('/articles/:id/update', (req, res)=>{
   })
 })
 
-router.put('/articles/status/:id/:status', (req, res)=>{
-  article.updateArticle(req.params.id, req.params.status).then((response) => {
+router.put('/articles/:id/status/update', (req, res)=>{
+  article.updateArticleStatus(req.body.id, req.body.status).then((response) => {
     res.json({result: response});
   })
 })

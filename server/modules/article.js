@@ -72,7 +72,7 @@ exports.updateArticleCategory = (id, category) => {
 exports.updateArticleStatus = (id, status) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(data.id)},
+      db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(id)},
         {$set: {status: status}},
         (err, doc) => {
           if(err){
@@ -104,11 +104,19 @@ exports.getArticleText = (item) => {
 
 exports.getArticleStemWords = (item) => {
   return new Promise((resolve, reject) =>{
-    textract.fromUrl(item.url, (function( error, text ) {
-      item.itembody = text;
-      item.stemwords = lancasterStemmer.tokenizeAndStem(text);
-      resolve(item);
-    }));
+    try{
+      textract.fromUrl(item.url, (function( error, text ) {
+        if(text){
+          item.itembody = text;
+          item.stemwords = lancasterStemmer.tokenizeAndStem(text);
+          resolve(item);
+        }
+        reject(error);
+      }));
+    } catch(err){
+      reject(error);
+    }
+
   });
 }
 
