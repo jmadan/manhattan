@@ -36,11 +36,12 @@ exports.getArticle = (id) => {
   });
 }
 
-exports.updateArticle = (data) => {
+exports.updateArticle = (id, data) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(data.id)},
-        {$set: {itembody: data.itembody, keywords: data.keywords, stemwords: data.stemwords}},
+        {$set: {itembody: data.itembody, keywords: data.keywords, stemwords: data.stemwords, category: data.category, status:"classified"}},
+        {returnOriginal: false},
         (err, doc) => {
           if(err){
             reject(err)
@@ -73,7 +74,7 @@ exports.updateArticleStatus = (id, status) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(id)},
-        {$set: {status: status}},
+        {$set: {status: status}},{returnOriginal: false},
         (err, doc) => {
           if(err){
             reject(err)

@@ -86,22 +86,34 @@ router.get('/articles/:id', (req, res) => {
 router.get('/articles/stem/:id',function(req, res) {
   article.getArticle(req.params.id).then((item)=>{
     article.getArticleStemWords(item).then((article) =>{
-        res.json({result: article});
+        res.json({article: article, status_code:200, article_updated: false});
       })
   }).catch((err)=>{
     res.json({error: err})
   })
 });
 
-router.put('/articles/:id/update', (req, res)=>{
-  article.updateArticle(req.params.id, req.body).then((response) => {
-    res.json({result: response});
-  })
+router.put('/articles/:id', (req, res)=>{
+  if(req.params.id === req.body.id){
+    article.updateArticle(req.params.id, req.body).then((response) => {
+      if(response.lastErrorObject.n === 1){
+        res.json({article: response.value, status_code:200, article_updated: true});
+      } else{
+        res.json({article: response.value, status_code:200, article_updated: false});
+      }
+    })
+  } else {
+    res.json({message: "Mismatch of document and url parameters", error: true})
+  }
 })
 
 router.put('/articles/:id/status/update', (req, res)=>{
   article.updateArticleStatus(req.body.id, req.body.status).then((response) => {
-    res.json({result: response});
+    if(response.lastErrorObject.n === 1){
+      res.json({article: response.value, status_code:200, article_updated: true});
+    } else{
+      res.json({article: response.value, status_code:200, article_updated: false});
+    }
   })
 })
 
