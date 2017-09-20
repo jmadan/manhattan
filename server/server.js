@@ -1,56 +1,74 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
-const hbs = require('express-handlebars');
-const api = require('./routes');
-const request = require('request');
+const config = require('../config');
+const restify = require('restify');
+const corsMiddleware = require('restify-cors-middleware');
+const bunyan = require('bunyan');
+// const provider = require('./modules/provider');
+const provider = require('./route/provider');
+const article = require('./route/article');
+const category = require('./route/category');
 
-const app = express();
-
-// app.use('/', express.static('server/assets'));
-app.use(bodyParser.json());
-app.use(bodyParser.json({ type: 'application/json'}));
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
-
-app.use(morgan('dev'));
-
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, X-Auth-Token');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-    next();
+const cors = corsMiddleware({
+  preflightMaxAge: 5,
+  origins: ['*'],
+  allowHeaders: ['API-Token'],
+  exposeHeaders: ['API-Token-Expiry']
 });
 
-app.get('/', (req, res) => {
-    var options = {
-        dotfiles: 'deny',
-        headers: {
-            'x-timestamp': Date.now(),
-            'x-sent': true
-        }
-    };
-    res.json({message: "this is the Manhattan API home..."});
+let log = bunyan.createLogger({name: 'Manhattan'});
+
+
+const server = restify.createServer({
+  name: config.name,
+  url: config.base_url,
+  version: '1.0.0',
+  log: log
 });
 
-app.use('/api', api);
+server.pre(restify.pre.sanitizePath());
+server.use(restify.plugins.acceptParser(server.acceptable));
+server.use(restify.plugins.queryParser());
+server.use(restify.plugins.bodyParser());
+server.use(restify.plugins.fullResponse());
+server.pre(cors.preflight);
+server.use(cors.actual);
 
-let PORT = process.env.PORT || 4000;
 
-app.set('port', PORT);
+server.get('/', (req, res, next) => {
+  res.json({message: 'this is the Manhattan home...'});
+  return next();
+});
 
-app.listen(app.get('port'), function (err) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    console.log("Server started http://localhost:"+ PORT);
-    // setInterval(function() {
-    //   request("https://island-of-the-hills.herokuapp.com/",(error, response, html)=>{
-    //     console.log("calling self to stay awake...")
-    //   });
-    // }, 600000);
+server.get('/api', (req, res, next) => {
+  res.json({message: 'this is the Manhattan API home...'});
+  return next();
+});
+
+server.get('/api/provider', provider.getProviders);
+// server.get('/api/provider/:status/:id', provider.getProviders);
+server.get('/api/provider/:name/:topic', provider.getProviderByTopic);
+server.post('/api/provider', provider.createProvider);
+
+server.get('/api/article/status/:status', article.getArticleByStatus);
+server.get('/api/article/:id', article.getArticleById);
+server.put('/api/article/:id', article.updateArticle);
+server.get('/api/article/stem/:id', article.stemArticleById);
+// server.get('/api/article/classify/:id', article.classifyArticle);
+
+server.get('/api/category', category.getCategories);
+
+server.on('after', restify.plugins.auditLogger({
+  event: 'after',
+  name: 'Manhattan',
+  log: log}
+));
+
+
+server.on('uncaughtException', (req, res, route, err) => {
+  let auditor = restify.auditLogger({log: log});
+  auditor(req, res, route, err);
+  res.send(500, 'Unexpected Error Occured');
+});
+
+server.listen(config.port, ()=>{
+  log.info('%s listening at %s', server.name, server.url);
 });
