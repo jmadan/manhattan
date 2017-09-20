@@ -52,7 +52,7 @@ server.get('/api/article/status/:status', article.getArticleByStatus);
 server.get('/api/article/:id', article.getArticleById);
 server.put('/api/article/:id', article.updateArticle);
 server.get('/api/article/stem/:id', article.stemArticleById);
-// server.get('/api/article/classify/:id', article.classifyArticle);
+server.get('/api/article/classify/:id', article.classifyArticle);
 
 server.get('/api/category', category.getCategories);
 

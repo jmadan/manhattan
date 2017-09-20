@@ -21,7 +21,7 @@ function maxarg(array) {
   return array.indexOf(Math.max.apply(Math, array));
 }
 
-let letsrunit = async(id) => {
+let letsrunit = async(doc) => {
   let docs = await trainingdata.fetchDocs();
   let dictionary = await trainingdata.createDict(docs);
   let tData = await trainingdata.formattedData(docs, dictionary);
@@ -37,19 +37,25 @@ let letsrunit = async(id) => {
   });
   net.train(ann_train);
 
-  MongoClient.connect(DBURI, (err, db)=>{
-    db.collection('feeditems').findOne({"status": "unclassified"},(err, item)=>{
-      if(err){
-        console.log(err);
-      } else{
-        console.log(item.url);
-        let predict = net.run(trainingdata.convertToVector(item, dictionary));
-        console.log(predict);
-        console.log(maxarg(predict));
-        console.log(categoryArray[maxarg(predict)]);
-      }
-    });
-  })
+  let predict = net.run(trainingdata.convertToVector(doc, dictionary));
+
+  return categoryArray[maxarg(predict)];
+
+  // MongoClient.connect(DBURI, (err, db)=>{
+  //   db.collection('feeditems').findOne({"status": "unclassified"},(err, item)=>{
+  //     if(err){
+  //       console.log(err);
+  //     } else{
+  //       console.log(item.url);
+  //       let predict = net.run(trainingdata.convertToVector(item, dictionary));
+  //       console.log(predict);
+  //       console.log(maxarg(predict));
+  //       console.log(categoryArray[maxarg(predict)]);
+  //     }
+  //   });
+  // })
 }
 
-letsrunit();
+module.exports = {
+  classify: letsrunit
+}

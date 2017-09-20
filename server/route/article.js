@@ -1,5 +1,6 @@
 'use strict';
 const article = require('../modules/article');
+const brain = require('../modules/nlp/brain');
 
 function getArticleByStatus(req, res, next) {
   article.fetchArticles(req.params.status).then((result) => {
@@ -64,13 +65,21 @@ function updateArticle(req, res, next) {
 //   })
 // })
 
-// router.get('/article/classify/:id', (res, req, next) => {
-//   res.json({"message":"...In progress..."})
-// })
+function classifyArticle(req, res, next) {
+  if(req.params.id) {
+    article.getArticle(req.params.id).then((doc) => {
+      return brain.classify(doc);
+    }).then((category) => {
+      res.json({category: category});
+    });
+  }
+  next();
+}
 
 module.exports = {
   getArticleByStatus: getArticleByStatus,
   getArticleById: getArticleById,
   stemArticleById: stemArticleById,
-  updateArticle: updateArticle
+  updateArticle: updateArticle,
+  classifyArticle: classifyArticle
 }
