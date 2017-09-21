@@ -21,6 +21,34 @@ function maxarg(array) {
   return array.indexOf(Math.max.apply(Math, array));
 }
 
+let createBrain = async () => {
+  let distinctCategories = 68;
+  let docs = await trainingdata.fetchDocs();
+  let dictionary = await trainingdata.createDict(docs);
+  let tData = await trainingdata.formattedData(docs, dictionary);
+
+  let categoryMap = await trainingdata.getCategoryMap();
+  let categoryArray = Object.keys(categoryMap);
+
+  let ann_train = tData.map(function (pair) {
+    return {
+      input: pair[0],
+      output: vec_result(pair[1], distinctCategories)
+    };
+  });
+  net.train(ann_train, {
+    errorThresh: 0.003,  // error threshold to reach
+    iterations: 100000,   // maximum training iterations
+    log: true,           // console.log() progress periodically
+    logPeriod: 10000,       // number of iterations between logging
+    learningRate: 0.3    // learning rate
+  });
+  let jsonBrain = net.toJSON();
+
+  //Now save it to Store for suture use
+
+};
+
 let letsrunit = async(doc) => {
   let docs = await trainingdata.fetchDocs();
   let dictionary = await trainingdata.createDict(docs);
@@ -35,25 +63,17 @@ let letsrunit = async(doc) => {
       output: vec_result(pair[1], 71)
     };
   });
-  net.train(ann_train);
+  net.train(ann_train, {
+  errorThresh: 0.003,  // error threshold to reach
+  iterations: 100000,   // maximum training iterations
+  log: true,           // console.log() progress periodically
+  logPeriod: 10000,       // number of iterations between logging
+  learningRate: 0.3    // learning rate
+});
 
   let predict = net.run(trainingdata.convertToVector(doc, dictionary));
 
-  return categoryArray[maxarg(predict)];
-
-  // MongoClient.connect(DBURI, (err, db)=>{
-  //   db.collection('feeditems').findOne({"status": "unclassified"},(err, item)=>{
-  //     if(err){
-  //       console.log(err);
-  //     } else{
-  //       console.log(item.url);
-  //       let predict = net.run(trainingdata.convertToVector(item, dictionary));
-  //       console.log(predict);
-  //       console.log(maxarg(predict));
-  //       console.log(categoryArray[maxarg(predict)]);
-  //     }
-  //   });
-  // })
+  return (categoryArray[maxarg(predict)]);
 }
 
 module.exports = {
