@@ -1,5 +1,6 @@
 const synaptic = require("synaptic");
 let trainingdata = require('./trainingdata');
+let article = require('../article');
 
 function vec_result(res, num_classes) {
   var i = 0,
@@ -11,58 +12,86 @@ function vec_result(res, num_classes) {
   return vec;
 }
 
-function synapticBrain(){
-  let distinctCategories = 67;
-  const trainer = new Trainer(myNetwork);
-
-  let docs = await trainingdata.fetchDocs();
-  let dictionary = await trainingdata.createDict(docs);
-  let tData = await trainingdata.formattedData(docs, dictionary);
-
-  let categoryMap = await trainingdata.getCategoryMap();
-  let categoryArray = Object.keys(categoryMap);
-
-  return tData.map(function (pair) {
-    return {
-      input: pair[0],
-      output: vec_result(pair[1], distinctCategories)
-    };
-  });
+function maxarg(array) {
+    return array.indexOf(Math.max.apply(Math, array));
 }
 
-function synapticSun = (doc) => {
-  const Layer = synaptic.Layer;
-  const Network = synaptic.Network;
-  const Trainer = synaptic.Trainer;
+let createDictionary = async () => {
+    let docs = await trainingdata.fetchDocs();
+    return await trainingdata.createDict(docs);
+};
 
-  const inputLayer = new Layer(1000);
-  const hiddenLayer = new Layer(500);
-  const outputLayer = new Layer(10);
+let synapticBrain = async () => {
+    let distinctCategories = 67;
+    let docs = await trainingdata.fetchDocs();
+    let dictionary = await trainingdata.createDict(docs);
+    let tData = await trainingdata.formattedData(docs, dictionary);
 
-  inputLayer.project(hiddenLayer);
-  hiddenLayer.project(outputLayer);
+    let categoryMap = await trainingdata.getCategoryMap();
+    let categoryArray = Object.keys(categoryMap);
+    // console.log(categoryMap[tData[0].output]);
+    // vec_result(tData[0].output, distinctCategories);
+    // console.log(vec_result(tData[0].output, distinctCategories));
 
-  const myNetwork = new Network({
-      input: inputLayer,
-      hidden: [hiddenLayer],
-      output: outputLayer
-  });
+    return tData.map((pair) => {
+        return {
+          input: pair.input,
+          output: vec_result(categoryMap[pair.output], distinctCategories)
+        };
+    });
+}
 
-  const trainer = new Trainer(myNetwork);
+let synapticSun = async () => {
+    const Layer = synaptic.Layer;
+    const Network = synaptic.Network;
+    const Trainer = synaptic.Trainer;
 
-  let trainingData = synapticBrain();
+    const inputLayer = new Layer(100);
+    const hiddenLayer = new Layer(10);
+    const outputLayer = new Layer(3);
 
-  trainer.train(trainingData, {
-      rate: .2,
-      iterations: 100,
-      error: .1,
-      shuffle: true,
-      log: 10,
-      cost: Trainer.cost.CROSS_ENTROPY
-  });
+    inputLayer.project(hiddenLayer);
+    hiddenLayer.project(outputLayer);
 
-  testDoc = trainingdata.convertToVector(doc, dictionary);
+    const myNetwork = new Network({
+        input: inputLayer,
+        hidden: [hiddenLayer],
+        output: outputLayer
+    });
 
-  console.log(myNetwork.activate(testDoc.input));
-  console.log(testDoc.output);
+    const trainer = new Trainer(myNetwork);
+
+    let distinctCategories = 67;
+    let docs = await trainingdata.fetchDocs();
+    let dictionary = await trainingdata.createDict(docs);
+    let tData = await trainingdata.formattedData(docs, dictionary);
+
+    let categoryMap = await trainingdata.getCategoryMap();
+    let categoryArray = Object.keys(categoryMap);
+
+    let trainData = tData.map((pair) => {
+        return {
+          input: pair.input,
+          output: vec_result(categoryMap[pair.output], distinctCategories)
+        };
+    });
+
+    trainer.train(trainData, {
+        rate: .2,
+        iterations: 70,
+        error: .1,
+        shuffle: true,
+        log: 100,
+        cost: Trainer.cost.CROSS_ENTROPY
+    });
+
+    article.fetchArticles("unclassified").then(async(results) => {
+      let testDoc = await trainingdata.convertToVector(results[0], dictionary);
+    //   console.log(myNetwork.activate(testDoc));
+      console.log(categoryArray[maxarg(myNetwork.activate(testDoc))]);
+    });
+}
+
+module.exports = {
+    synapticSun: synapticSun
 }

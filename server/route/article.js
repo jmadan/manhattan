@@ -1,6 +1,7 @@
 'use strict';
 const article = require('../modules/article');
 const brain = require('../modules/nlp/brain');
+const snn = require('../modules/nlp/synaptic');
 
 function getArticleByStatus(req, res, next) {
   article.fetchArticles(req.params.status).then((result) => {
@@ -76,10 +77,19 @@ function classifyArticle(req, res, next) {
   next();
 }
 
+let getSynaptic = (req, res, next) => {
+  article.fetchArticles("unclassified").then(async (results) => {
+    // res.json({result: await(snn.synapticSun(results[0]))});
+    res.json({result: 'initiated'});
+    return next();
+  });
+}
+
 module.exports = {
   getArticleByStatus: getArticleByStatus,
   getArticleById: getArticleById,
   stemArticleById: stemArticleById,
   updateArticle: updateArticle,
-  classifyArticle: classifyArticle
+  classifyArticle: classifyArticle,
+  getSynaptic: getSynaptic
 }

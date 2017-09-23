@@ -16,7 +16,6 @@ const cors = corsMiddleware({
 
 let log = bunyan.createLogger({name: 'Manhattan'});
 
-
 const server = restify.createServer({
   name: config.name,
   url: config.base_url,
@@ -54,7 +53,9 @@ server.put('/api/article/:id', article.updateArticle);
 server.get('/api/article/stem/:id', article.stemArticleById);
 server.get('/api/article/classify/:id', article.classifyArticle);
 
-server.get('/api/category', category.getCategories);
+server.get('/api/nlp/synaptic', article.getSynaptic);
+
+// server.get('/api/category', category.getCategories);
 
 server.on('after', restify.plugins.auditLogger({
   event: 'after',
