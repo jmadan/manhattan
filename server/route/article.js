@@ -19,14 +19,15 @@ function getArticleById(req, res, next) {
 
 
 function stemArticleById(req, res, next) {
-  // article.getArticle(req.params.id).then((item)=>{
-  //   article.getArticleStemWords(item).then((article) =>{
-  //       res.json({article: article, status_code:200, article_updated: false});
-  //     })
-  // }).catch((err)=>{
-  //   res.json({error: err})
-  // })
-  return next();
+  article.getArticle(req.params.id).then((item)=>{
+    article.getArticleStemWords(item).then((article) =>{
+        res.json({article: article, article_updated: false});
+        return next();
+      })
+  }).catch((err)=>{
+    res.json({error: err})
+    return next();
+  });
 }
 
 function updateArticle(req, res, next) {
