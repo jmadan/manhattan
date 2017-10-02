@@ -1,7 +1,8 @@
 const config = require('../config');
 const restify = require('restify');
 const corsMiddleware = require('restify-cors-middleware');
-const bunyan = require('bunyan');
+// const bunyan = require('bunyan');
+const log = require('./utils/logger');
 // const provider = require('./modules/provider');
 const provider = require('./route/provider');
 const article = require('./route/article');
@@ -14,7 +15,8 @@ const cors = corsMiddleware({
   exposeHeaders: ['API-Token-Expiry']
 });
 
-let log = bunyan.createLogger({name: 'Manhattan'});
+// let log = bunyan.createLogger({name: 'Manhattan'});
+// let log = new Logger();
 
 const server = restify.createServer({
   name: config.name,
@@ -55,17 +57,19 @@ server.get('/api/article/classify/:id', article.classifyArticle);
 
 server.get('/api/nlp/synaptic', article.getSynaptic);
 
-// server.get('/api/category', category.getCategories);
+server.get('/api/category', category.getCategories);
+server.post('/api/category', category.newCategory);
 
 server.on('after', restify.plugins.auditLogger({
   event: 'after',
   name: 'Manhattan',
-  log: log}
+  log: log
+}
 ));
 
 
 server.on('uncaughtException', (req, res, route, err) => {
-  let auditor = restify.auditLogger({log: log});
+  let auditor = restify.auditlog({log: log});
   auditor(req, res, route, err);
   res.send(500, 'Unexpected Error Occured');
 });

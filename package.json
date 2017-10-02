@@ -10,12 +10,8 @@
     "clean": "rimraf build",
     "lint": "require-lint",
     "compile": "npm run clean && ./node_modules/.bin/babel server --out-dir build",
-    "dev": "babel-node ./server/server.js",
     "test": "npm run lint && NODE_ENV=test nyc mocha ./tests/* --compilers js:babel-core/register",
-    "build": "babel ./server/server.js -d /build",
-    "serve": "nodemon ./build/server/server.js",
-    "webpack": "./node_modules/.bin/webpack --progress",
-    "start": "./node_modules/.bin/babel-node ./build/server.js"
+    "start": "npm run compile && ./node_modules/.bin/babel-node ./build/server.js"
   },
   "keywords": [
     "node",
@@ -68,6 +64,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "chai": "^4.1.1",
+    "eslint": "^4.7.2",
     "mocha": "^3.5.3",
     "mocha-as-promised": "^2.0.0",
     "nyc": "^11.1.0",

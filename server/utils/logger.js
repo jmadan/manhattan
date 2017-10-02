@@ -1,16 +1,26 @@
-let Logger = require('bunyan');
+let Bunyan = require('bunyan');
 
-let log = new Logger({
+let log = new Bunyan({
   name: 'Manhattan',
-  event: 'after'
+  event: 'after',
+  streams: [
+    {
+      level: 'info',
+      stream: process.stdout
+    },
+    {
+      level: 'error',
+      path: '/var/tmp/myapp-error.log'
+    }
+  ]
 });
 
-Logger = function () { };
+// Logger = function () { };
 
-Logger.prototype = {
-  getSystemLogger: function () {
-    return log;
-  }
-};
+// Logger.prototype = {
+//   getSystemLogger: function () {
+//     return log;
+//   }
+// };
 
-module.exports = Logger;
+module.exports = log;

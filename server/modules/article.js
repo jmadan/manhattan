@@ -149,3 +149,20 @@ exports.getArticleBasedOnCategory = (category) => {
     });
   });
 }
+
+exports.updateItem = (item) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(item.id)},
+        {$set: {itembody: item.itembody, keywords: item.keywords, stemwords: item.stemwords, category: item.category}},
+        {returnOriginal: false},
+        (err, doc) => {
+          if(err){
+            reject(err)
+          }
+          resolve(doc)
+        }
+      )
+    })
+  })
+}

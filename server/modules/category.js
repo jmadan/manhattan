@@ -1,47 +1,46 @@
-'use strict';
 
 const MongoClient = require('mongodb').MongoClient;
-let BSON = require('mongodb').BSONPure;
+// let BSON = require('mongodb').BSONPure;
 const DBURI = process.env.MONGODB_URI;
 
 let getCategories = ()=>{
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
-      db.collection('categories').distinct("category", (err, result)=>{
-        if(err){
-          reject(err);
+      db.collection('categories').find({}).toArray((error, docs) =>{
+        if (error) {
+          reject(error);
         }
         db.close();
-        resolve(result);
-      })
+        resolve(docs);
+      });
     });
   });
-}
+};
 
-let saveCategory = (category) => {
+let saveCategory = (item) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
-      db.collection('categories').insert("category").insertOne(item,(err, savedItem)=>{
-        if(err){
-          reject(err);
-        } else{
+      db.collection('categories').insertOne(item, (error, response) => {
+        if (error) {
+          reject(error);
+        } else {
           db.close();
-          resolve(savedItem);
+          resolve({doc: response.ops, insertedCount: response.insertedCount});
         }
       });
     });
   });
-}
+};
 
 let getDistinctCategories = ()=>{
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
-      if(err){
-        console.log(err);
+      if (err) {
+        reject(err);
       } else {
-        db.collection("feeditems").distinct("category", (err, result)=>{
-          if(err){
-            reject(err);
+        db.collection('feeditems').distinct('category', (error, result)=>{
+          if (error) {
+            reject(error);
           }
           db.close();
           resolve(result);
@@ -49,17 +48,17 @@ let getDistinctCategories = ()=>{
       }
     });
   });
-}
+};
 
-let deleteCategory = (category)=>{
+let updateCategory = (category)=>{
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
-      if(err){
-        console.log(err);
+      if (err) {
+        reject(err);
       } else {
-        db.collection("categories").deleteOne({name: category}, (err, result)=>{
-          if(err){
-            reject(err);
+        db.collection('categories').updateOne({name: category.name}, (error, result)=>{
+          if (error) {
+            reject(error);
           }
           db.close();
           resolve(result);
@@ -67,6 +66,29 @@ let deleteCategory = (category)=>{
       }
     });
   });
-}
+};
 
-module.exports = {getDistinctCategories, saveCategory, getCategories}
+// let deleteCategory = (category)=>{
+//   return new Promise((resolve, reject) => {
+//     MongoClient.connect(DBURI, (err, db)=>{
+//       if(err){
+//         console.log(err);
+//       } else {
+//         db.collection("categories").deleteOne({name: category}, (err, result)=>{
+//           if(err){
+//             reject(err);
+//           }
+//           db.close();
+//           resolve(result);
+//         });
+//       }
+//     });
+//   });
+// }
+
+module.exports = {
+  getDistinctCategories,
+  saveCategory,
+  getCategories,
+  updateCategory
+};
