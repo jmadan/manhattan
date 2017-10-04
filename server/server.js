@@ -1,12 +1,15 @@
 const config = require('../config');
 const restify = require('restify');
 const corsMiddleware = require('restify-cors-middleware');
-// const bunyan = require('bunyan');
 const log = require('./utils/logger');
-// const provider = require('./modules/provider');
-const provider = require('./route/provider');
-const article = require('./route/article');
-const category = require('./route/category');
+const providerRoute = require('./route/provider');
+const articleRoute = require('./route/article');
+const categoryRoute = require('./route/category');
+
+const initialSetup = require('./initial');
+
+const redis = require('./utils/redis');
+const neural = require('./modules/nlp/synaptic');
 
 const cors = corsMiddleware({
   preflightMaxAge: 5,
@@ -44,21 +47,21 @@ server.get('/api', (req, res, next) => {
   return next();
 });
 
-server.get('/api/provider', provider.getProviders);
+server.get('/api/provider', providerRoute.getProviders);
 // server.get('/api/provider/:status/:id', provider.getProviders);
-server.get('/api/provider/:name/:topic', provider.getProviderByTopic);
-server.post('/api/provider', provider.createProvider);
+server.get('/api/provider/:name/:topic', providerRoute.getProviderByTopic);
+server.post('/api/provider', providerRoute.createProvider);
 
-server.get('/api/article/status/:status', article.getArticleByStatus);
-server.get('/api/article/:id', article.getArticleById);
-server.put('/api/article/:id', article.updateArticle);
-server.get('/api/article/stem/:id', article.stemArticleById);
-server.get('/api/article/classify/:id', article.classifyArticle);
+server.get('/api/article/status/:status', articleRoute.getArticleByStatus);
+server.get('/api/article/:id', articleRoute.getArticleById);
+server.put('/api/article/:id', articleRoute.updateArticle);
+server.get('/api/article/stem/:id', articleRoute.stemArticleById);
+server.get('/api/article/classify/:id', articleRoute.getSynaptic);
 
-server.get('/api/nlp/synaptic', article.getSynaptic);
+server.get('/api/nlp/synaptic', articleRoute.getSynaptic);
 
-server.get('/api/category', category.getCategories);
-server.post('/api/category', category.newCategory);
+server.get('/api/category', categoryRoute.getCategories);
+server.post('/api/category', categoryRoute.newCategory);
 
 server.on('after', restify.plugins.auditLogger({
   event: 'after',
@@ -76,4 +79,12 @@ server.on('uncaughtException', (req, res, route, err) => {
 
 server.listen(config.port, ()=>{
   log.info('%s listening at %s', server.name, server.url);
+
+  // initialSetup.distinctCategoryNumber().then((num) => {
+  //   initialSetup.createDictionary();
+  //   initialSetup.formattedTrainingData(num).then((ts) => {
+  //     initialSetup.createNetwork(ts);
+  //   }).catch(er =>console.log(er));
+  // }).catch(e=>console.log(e));
+
 });

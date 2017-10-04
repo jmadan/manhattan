@@ -79,10 +79,10 @@ function classifyArticle(req, res, next) {
 }
 
 let getSynaptic = (req, res, next) => {
-  article.fetchArticles("unclassified").then(async (results) => {
-    // res.json({result: await(snn.synapticSun(results[0]))});
-    res.json({result: 'initiated'});
-    return next();
+  article.getArticle(req.params.id).then((doc) => {
+    snn.synapticClassify(doc).then((dc) => {
+      res.json({document: dc});
+    });
   });
 }
 
