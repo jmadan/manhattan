@@ -21,7 +21,7 @@ function getArticleById(req, res, next) {
 function stemArticleById(req, res, next) {
   article.getArticle(req.params.id).then((item)=>{
     article.getArticleStemWords(item).then((article) =>{
-        res.json({article: article, article_updated: false});
+        res.json({article: article, articleUpdated: false});
         return next();
       })
   }).catch((err)=>{
@@ -34,9 +34,9 @@ function updateArticle(req, res, next) {
   if(req.params.id === req.body.id){
     article.updateArticle(req.params.id, req.body).then((response) => {
       if(response.lastErrorObject.n === 1){
-        res.json({article: response.value, article_updated: true});
+        res.json({article: response.value, articleUpdated: true});
       } else {
-        res.json({article: response.value, article_updated: false});
+        res.json({article: response.value, articleUpdated: false});
       }
     });
   } else {
@@ -48,9 +48,9 @@ function updateArticle(req, res, next) {
 // router.put('/articles/:id/status/update', (req, res)=>{
 //   article.updateArticleStatus(req.body.id, req.body.status).then((response) => {
 //     if(response.lastErrorObject.n === 1){
-//       res.json({article: response.value, status_code:200, article_updated: true});
+//       res.json({article: response.value, status_code:200, articleUpdated: true});
 //     } else{
-//       res.json({article: response.value, status_code:200, article_updated: false});
+//       res.json({article: response.value, status_code:200, articleUpdated: false});
 //     }
 //   })
 // })
@@ -81,9 +81,14 @@ function classifyArticle(req, res, next) {
 let getSynaptic = (req, res, next) => {
   article.getArticle(req.params.id).then((doc) => {
     snn.synapticClassify(doc).then((dc) => {
-      res.json({document: dc});
+      if(dc.category) {
+        res.json({article: dc, articleUpdated: true});
+      } else{
+        res.json({article: dc, articleUpdated: false});
+      }
     });
   });
+  next();
 }
 
 module.exports = {
