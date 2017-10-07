@@ -39,8 +39,8 @@ exports.getArticle = (id) => {
 exports.updateArticle = (id, data) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(data.id)},
-        {$set: {itembody: data.itembody, keywords: data.keywords, stemwords: data.stemwords, category: data.category, status:"classified"}},
+      db.collection("feeditems").findOneAndUpdate({"_id": ObjectID(data._id)},
+        {$set: {itembody: data.itembody, keywords: data.keywords, stemwords: data.stemwords, category: data.category, status: data.status}},
         {returnOriginal: false},
         (err, doc) => {
           if(err){

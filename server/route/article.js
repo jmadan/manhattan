@@ -31,7 +31,7 @@ function stemArticleById(req, res, next) {
 }
 
 function updateArticle(req, res, next) {
-  if(req.params.id === req.body.id){
+  if(req.params.id === req.body._id){
     article.updateArticle(req.params.id, req.body).then((response) => {
       if(response.lastErrorObject.n === 1){
         res.json({article: response.value, articleUpdated: true});
