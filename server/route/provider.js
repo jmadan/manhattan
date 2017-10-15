@@ -5,7 +5,7 @@ function getProviders(req, res, next) {
   provider.fetchProviders().then((result)=>{
     res.json(result);
   })
-  .catch(e=>res.json({error: e}));
+    .catch(e=>res.json({error: e}));
   return next();
 }
 
@@ -31,34 +31,34 @@ function getProviderByTopic(req, res, next) {
   let topic = req.params.topic !== undefined ? req.params.topic : 'all';
   provider.fetchProviders().then((result)=>{
     return result.filter((provider) => {
-      if(provider.name === req.params.name && provider.topic === topic){
+      if (provider.name === req.params.name && provider.topic === topic) {
         return provider;
-      } else {
-        return null;
       }
+      return null;
     });
-  }).then((provider)=>{
-    if(!provider.length){
-      var err = new restify.errors.NotFoundError('No Feed found with given name and topic');
-      return next(err);
+  })
+    .then((provider)=>{
+      if (!provider.length) {
+        let err = new restify.errors.NotFoundError('No Feed found with given name and topic');
+        return next(err);
       // res.json({
       //   "error": "No Feed found with given name and topic",
       //   "name":req.params.name,
       //   "topic": topic
       // })
-    } else{
+      }
       res.json({
-        "provider": provider,
-        "name": provider.name,
-        "topic": provider.topic
-      })
-    }
-    return next();
-  });
+        provider: provider,
+        'name': provider.name,
+        'topic': provider.topic
+      });
+
+      return next();
+    });
 }
 
 module.exports = {
   getProviders: getProviders,
   getProviderByTopic: getProviderByTopic,
   createProvider: createProvider
-}
+};

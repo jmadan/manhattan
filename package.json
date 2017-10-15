@@ -40,7 +40,7 @@
     "bayes": "0.0.6",
     "brain": "^0.7.0",
     "bunyan": "^1.8.12",
-    "cheerio": "^1.0.0-rc.1",
+    "cheerio": "^1.0.0-rc.2",
     "cron": "^1.2.1",
     "feedparser": "^2.2.1",
     "htmlparser2": "^3.9.2",
@@ -52,11 +52,11 @@
     "pg": "7.1.2",
     "redis": "^2.8.0",
     "request": "^2.81.0",
-    "request-promise": "^4.2.1",
+    "request-promise": "^4.2.2",
     "restify": "^6.0.0",
     "restify-cors-middleware": "^1.0.1",
     "synaptic": "^1.0.12",
-    "textract": "^2.1.2",
+    "textract": "^2.2.0",
     "url": "^0.11.0"
   },
   "devDependencies": {

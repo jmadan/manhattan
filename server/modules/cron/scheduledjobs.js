@@ -1,41 +1,42 @@
-"use strict";
+'use strict';
 
-const cron = require("node-cron");
-const feed = require("../feed/feedparser");
+const cron = require('node-cron');
+const feed = require('../feed/feedparser');
 
 let fetchRSSFeed = () => {
   cron.schedule('* * */6 * * *', () => {
-    console.log("initializing initial feed retrieval...", new Date().toUTCString());
+    console.log('initializing initial feed retrieval...', new Date().toUTCString());
     feed.getRSSFeedProviders().then((providers)=>{
       return feed.getFeedForProviders(providers);
-    }).then((flist) => {
-      flist.map((f)=>{
-        feed.saveRssFeed(f.data).then((result)=>{
-          console.log(result.result.n + " Documents saved.");
-        });
-      })
     })
+      .then((flist) => {
+        flist.map((f)=>{
+          feed.saveRssFeed(f.data).then((result)=>{
+            console.log(result.result.n + ' Documents saved.');
+          });
+        });
+      });
   });
-}
+};
 
 let fetchFeedContent = () => {
   cron.schedule('*/10 * * * * *', () => {
-    console.log("fetching article content from feed...", new Date().toUTCString());
+    console.log('fetching article content from feed...', new Date().toUTCString());
     feed.fetchItemsWithStatusPendingBody().then((result)=>{
       feed.fetchContents(result).then((res)=>{
         res.map((r)=>{
           feed.updateAndMoveFeedItem(r).then((result)=>{
-            console.log(result.result.n + " Documents saved.");
+            console.log(result.result.n + ' Documents saved.');
           });
-        })
-      })
-    })
+        });
+      });
+    });
   });
-}
+};
 
 let updateFeed = () => {
   cron.schedule('*/10 * * * * *', () => {
-    console.log("updating article content from feeditems***...", new Date().toUTCString());
+    console.log('updating article content from feeditems***...', new Date().toUTCString());
     feed.fetchAndUpdate().then((docs) => {
       feed.fetchContents(docs).then((d) => {
         console.log(d.length);
@@ -51,6 +52,6 @@ let updateFeed = () => {
     //   })
     // })
   });
-}
+};
 
-module.exports = { fetchRSSFeed, fetchFeedContent, updateFeed }
+module.exports = { fetchRSSFeed, fetchFeedContent, updateFeed };

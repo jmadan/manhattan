@@ -5,11 +5,12 @@ const log = require('./utils/logger');
 const providerRoute = require('./route/provider');
 const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
+const userRoute = require('./route/user');
 
-const initialSetup = require('./initial');
+// const initialSetup = require('./initial');
 
-const redis = require('./utils/redis');
-const neural = require('./modules/nlp/synaptic');
+// const redis = require('./utils/redis');
+// const neural = require('./modules/nlp/synaptic');
 
 const cors = corsMiddleware({
   preflightMaxAge: 5,
@@ -58,10 +59,13 @@ server.put('/api/article/:id', articleRoute.updateArticle);
 server.get('/api/article/stem/:id', articleRoute.stemArticleById);
 server.get('/api/article/classify/:id', articleRoute.getSynaptic);
 
-server.get('/api/nlp/synaptic', articleRoute.getSynaptic);
+// server.get('/api/nlp/synaptic', articleRoute.getSynaptic);
 
 server.get('/api/category', categoryRoute.getCategories);
 server.post('/api/category', categoryRoute.newCategory);
+
+server.get('/api/user', userRoute.fetchUser);
+server.get('/api/user/:id/feed', userRoute.fetchUserFeed);
 
 server.on('after', restify.plugins.auditLogger({
   event: 'after',

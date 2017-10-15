@@ -6,7 +6,7 @@ const snn = require('../modules/nlp/synaptic');
 function getArticleByStatus(req, res, next) {
   article.fetchArticles(req.params.status).then((result) => {
     res.json({result: result});
-  })
+  });
   return next();
 }
 
@@ -21,26 +21,27 @@ function getArticleById(req, res, next) {
 function stemArticleById(req, res, next) {
   article.getArticle(req.params.id).then((item)=>{
     article.getArticleStemWords(item).then((article) =>{
-        res.json({article: article, articleUpdated: false});
-        return next();
-      })
-  }).catch((err)=>{
-    res.json({error: err})
-    return next();
-  });
+      res.json({article: article, articleUpdated: false});
+      return next();
+    });
+  })
+    .catch((err)=>{
+      res.json({error: err});
+      return next();
+    });
 }
 
 function updateArticle(req, res, next) {
-  if(req.params.id === req.body._id){
+  if (req.params.id === req.body._id) {
     article.updateArticle(req.params.id, req.body).then((response) => {
-      if(response.lastErrorObject.n === 1){
+      if (response.lastErrorObject.n === 1) {
         res.json({article: response.value, articleUpdated: true});
       } else {
         res.json({article: response.value, articleUpdated: false});
       }
     });
   } else {
-    res.json({message: "Mismatch of document and url parameters", error: true});
+    res.json({message: 'Mismatch of document and url parameters', error: true});
   }
   return next();
 }
@@ -68,12 +69,13 @@ function updateArticle(req, res, next) {
 // })
 
 function classifyArticle(req, res, next) {
-  if(req.params.id) {
+  if (req.params.id) {
     article.getArticle(req.params.id).then((doc) => {
       return brain.classify(doc);
-    }).then((category) => {
-      res.json({category: category});
-    });
+    })
+      .then((category) => {
+        res.json({category: category});
+      });
   }
   next();
 }
@@ -81,15 +83,15 @@ function classifyArticle(req, res, next) {
 let getSynaptic = (req, res, next) => {
   article.getArticle(req.params.id).then((doc) => {
     snn.synapticClassify(doc).then((dc) => {
-      if(dc.category) {
+      if (dc.category) {
         res.json({article: dc, articleUpdated: true});
-      } else{
+      } else {
         res.json({article: dc, articleUpdated: false});
       }
     });
   });
   next();
-}
+};
 
 module.exports = {
   getArticleByStatus: getArticleByStatus,
@@ -98,4 +100,4 @@ module.exports = {
   updateArticle: updateArticle,
   classifyArticle: classifyArticle,
   getSynaptic: getSynaptic
-}
+};

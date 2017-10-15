@@ -36,6 +36,11 @@ let getFeedItems = (provider) => {
         feedList.push({
           title: $(this).find('title').text(),
           url: $(this).find('link').text(),
+          description: $(this).find('description').text(),
+          img: $(this).find('media\\:thumbnail').attr('url'),
+          author: $(this).find('dc\\:creator').text(),
+          category: $(this).find('category').text(),
+          keywords: $(this).find('media\\:keywords').text(),
           status: "pending body",
           type: "story",
           timestamp: Date.parse($(this).find('pubDate').text())/1000,
@@ -177,4 +182,13 @@ let tempUpdate = () =>{
   })
 }
 
-module.exports = {tempUpdate, makeRequests, getFeedForProviders, getRSSFeedProviders, saveRssFeed, fetchItemsWithStatusPendingBody, fetchContents, updateAndMoveFeedItem, fetchAndUpdate};
+module.exports = {
+  makeRequests, 
+  getFeedForProviders, 
+  getRSSFeedProviders, 
+  saveRssFeed, 
+  fetchItemsWithStatusPendingBody, 
+  fetchContents, 
+  updateAndMoveFeedItem, 
+  fetchAndUpdate
+};
