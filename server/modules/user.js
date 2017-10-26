@@ -20,7 +20,7 @@ let fetchUser = (id) => {
 let fetchUserFeed = (user) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
-      db.collection('feeditems').find({status: 'classified', category: {$in: user.interests}},{url: 1, title: 1, keywords: 1, category: 1, publisher: 1, author: 1})
+      db.collection('feeditems').find({status: 'classified', category: {$in: user.interests}}, {url: 1, title: 1, keywords: 1, category: 1, publisher: 1, author: 1})
         .limit(50)
         .toArray((error, docs) =>{
           if (error) {
@@ -32,7 +32,37 @@ let fetchUserFeed = (user) => {
   });
 };
 
+let userExists = (email) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db.collection('users').find({email: email})
+        .toArray((err, user) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(user);
+        });
+    });
+  });
+};
+
+// let newUser = (user) => {
+//   return new Promise((resolve, reject) => {
+//     MongoClient.connect(DBURI, (err, db)=>{
+//       db.collection('users').find({: 'classified', category: {$in: user.interests}},{url: 1, title: 1, keywords: 1, category: 1, publisher: 1, author: 1})
+//         .limit(50)
+//         .toArray((error, docs) =>{
+//           if (error) {
+//             reject(error);
+//           }
+//           resolve(docs);
+//         });
+//     });
+//   });
+// };
+
 module.exports = {
   fetchUser,
-  fetchUserFeed
+  fetchUserFeed,
+  userExists
 };

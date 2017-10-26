@@ -93,11 +93,39 @@ let getSynaptic = (req, res, next) => {
   next();
 };
 
+let getBrain = (req, res, next) => {
+  article.getArticle(req.params.id).then((doc) => {
+    brain.brainClassify(doc).then((dc) => {
+      if (dc.category) {
+        res.json({article: dc, articleUpdated: true});
+      } else {
+        res.json({article: dc, articleUpdated: false});
+      }
+    });
+  });
+  next();
+};
+
+let getSynaptic1 = (req, res, next) => {
+  article.getArticle(req.params.id).then((doc) => {
+    snn.synapticClassify1(doc).then((dc) => {
+      if (dc.category) {
+        res.json({article: dc, articleUpdated: true});
+      } else {
+        res.json({article: dc, articleUpdated: false});
+      }
+    });
+  });
+  next();
+};
+
 module.exports = {
-  getArticleByStatus: getArticleByStatus,
-  getArticleById: getArticleById,
-  stemArticleById: stemArticleById,
-  updateArticle: updateArticle,
-  classifyArticle: classifyArticle,
-  getSynaptic: getSynaptic
+  getArticleByStatus,
+  getArticleById,
+  stemArticleById,
+  updateArticle,
+  classifyArticle,
+  getSynaptic,
+  getBrain,
+  getSynaptic1
 };

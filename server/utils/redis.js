@@ -28,16 +28,16 @@ function setRedis(key, val) {
 }
 
 function getRedis(key) {
-    return new Promise((resolve, reject) => {
-      let client = redisConnect();
-        client.get(key, (err, reply) => {
-            if(err) {
-                reject(err);
-            }
-            resolve(JSON.parse(reply));
-        });
-        redisQuit(client);
+  return new Promise((resolve, reject) => {
+    let client = redisConnect();
+    client.get(key, (err, reply) => {
+      if(err) {
+        reject(err);
+      }
+      resolve(JSON.parse(reply));
     });
+    redisQuit(client);
+  });
 }
 
 function delRedis(key) {
@@ -47,20 +47,20 @@ function delRedis(key) {
 }
 
 function checkRedis (key) {
-    return new Promise((resolve, reject) => {
-      let client = redisConnect();
-        client.exists(key, (err, reply) => {
-            if(err){
-                reject(err);
-            }
-            if (reply === 1) {
-                resolve(true);
-            } else {
-                resolve(false);
-            }
-        });
-        redisQuit(client);
-    })
+  return new Promise((resolve, reject) => {
+    let client = redisConnect();
+    client.exists(key, (err, reply) => {
+      if(err){
+        reject(err);
+      }
+      if (reply === 1) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+    redisQuit(client);
+  })
 }
 
 

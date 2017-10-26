@@ -16,7 +16,7 @@ let getRSSFeedProviders = () => {
       if(err){
         reject(err);
       }
-      db.collection("feedproviders").find({status:"active"}).toArray((err, providerList)=>{
+      db.collection("feedproviders").find({status: {$in: ['active', 'Active']}}).toArray((err, providerList)=>{
         db.close();
         if(err){reject(err);}
         resolve({list: providerList});
@@ -31,7 +31,7 @@ let getFeedItems = (provider) => {
     rp(provider.url)
     .then((res)=>{
       let $ = cheerio.load(res,{withDomLvl1: true, normalizeWhitespace: true, xmlMode: true, decodeEntities: true});
-      let lastBuildDate = $("lastBuildDate").text();
+      let lastBuildDate = Date.parse($("lastBuildDate").text());
       $("item").each(function() {
         feedList.push({
           title: $(this).find('title').text(),
@@ -39,11 +39,11 @@ let getFeedItems = (provider) => {
           description: $(this).find('description').text(),
           img: $(this).find('media\\:thumbnail').attr('url'),
           author: $(this).find('dc\\:creator').text(),
-          category: $(this).find('category').text(),
+          category: $(this).find('category').map((i, el) => {return $(el).text()}).get().join(', '),
           keywords: $(this).find('media\\:keywords').text(),
           status: "pending body",
           type: "story",
-          timestamp: Date.parse($(this).find('pubDate').text())/1000,
+          pubDate: Date.parse($(this).find('pubDate').text()),
           provider: provider.name,
           topic: provider.topic
         });
@@ -75,7 +75,7 @@ async function returnNew (val, index, arr) {
   return val;
 }
 
-let getFeedForProviders = async(providers) => {
+let getProviderFeed = async(providers) => {
   let flist = await Promise.all(providers.list.map(returnNew));
   return flist;
 }
@@ -119,13 +119,17 @@ let updateAndMoveFeedItem = (item)=>{
           {
             url: item.url,
             title: item.title,
+            description: item.description,
             type: item.type,
             keywords: item.keywords,
-            stemwords: item.stemwords,
+            img: item.img,
+            author: item.author,
             timestamp: item.timestamp,
             provider: item.provider,
             topic: item.topic,
-            status: 'unclassified'
+            category: item.category,
+            status: 'unclassified',
+            stemwords: item.stemwords
           }, (err, result) => {
           if(err){
             reject(err);
@@ -183,12 +187,13 @@ let tempUpdate = () =>{
 }
 
 module.exports = {
-  makeRequests, 
-  getFeedForProviders, 
-  getRSSFeedProviders, 
-  saveRssFeed, 
-  fetchItemsWithStatusPendingBody, 
-  fetchContents, 
-  updateAndMoveFeedItem, 
+  makeRequests,
+  getProviderFeed,
+  getFeedItems,
+  getRSSFeedProviders,
+  saveRssFeed,
+  fetchItemsWithStatusPendingBody,
+  fetchContents,
+  updateAndMoveFeedItem,
   fetchAndUpdate
 };

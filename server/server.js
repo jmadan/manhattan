@@ -7,10 +7,7 @@ const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
 
-// const initialSetup = require('./initial');
-
-// const redis = require('./utils/redis');
-// const neural = require('./modules/nlp/synaptic');
+// const initialSetup = require('../server/modules/cron/initial');
 
 const cors = corsMiddleware({
   preflightMaxAge: 5,
@@ -58,6 +55,7 @@ server.get('/api/article/:id', articleRoute.getArticleById);
 server.put('/api/article/:id', articleRoute.updateArticle);
 server.get('/api/article/stem/:id', articleRoute.stemArticleById);
 server.get('/api/article/classify/:id', articleRoute.getSynaptic);
+server.get('/api/article/brain/classify/:id', articleRoute.getBrain);
 
 // server.get('/api/nlp/synaptic', articleRoute.getSynaptic);
 
@@ -66,6 +64,8 @@ server.post('/api/category', categoryRoute.newCategory);
 
 server.get('/api/user', userRoute.fetchUser);
 server.get('/api/user/:id/feed', userRoute.fetchUserFeed);
+server.post('/api/user', userRoute.createUser);
+server.post('/api/user/:email/check', userRoute.userExists);
 
 server.on('after', restify.plugins.auditLogger({
   event: 'after',
@@ -83,12 +83,12 @@ server.on('uncaughtException', (req, res, route, err) => {
 
 server.listen(config.port, ()=>{
   log.info('%s listening at %s', server.name, server.url);
-
+  //59e5e6a2ae334706b5bd732f
   // initialSetup.distinctCategoryNumber().then((num) => {
+  //   console.log(num);
   //   initialSetup.createDictionary();
-  //   initialSetup.formattedTrainingData(num).then((ts) => {
-  //     initialSetup.createNetwork(ts);
-  //   }).catch(er =>console.log(er));
-  // }).catch(e=>console.log(e));
-
+  //   initialSetup.createCategoryMap();
+  //   initialSetup.createNetwork();
+  // })
+  //   .catch(e=>console.log(e));
 });

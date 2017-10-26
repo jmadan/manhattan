@@ -2,12 +2,26 @@
 
 const cron = require('node-cron');
 const feed = require('../feed/feedparser');
+const initialSetup = require('./initial');
+
+let createNetwork = () => {
+  cron.schedule('* * */24 * * *', () => {
+    console.log("Initializing Network creation and update", new Date().toDateString);
+    initialSetup.distinctCategoryNumber().then((num) => {
+      console.log(num);
+      initialSetup.createDictionary();
+      initialSetup.createCategoryMap();
+      initialSetup.createNetwork();
+    })
+      .catch(e=>console.log(e));
+  });
+};
 
 let fetchRSSFeed = () => {
-  cron.schedule('* * */6 * * *', () => {
+  cron.schedule('* * * * *', () => {
     console.log('initializing initial feed retrieval...', new Date().toUTCString());
     feed.getRSSFeedProviders().then((providers)=>{
-      return feed.getFeedForProviders(providers);
+      return feed.getProviderFeed(providers);
     })
       .then((flist) => {
         flist.map((f)=>{
@@ -20,8 +34,8 @@ let fetchRSSFeed = () => {
 };
 
 let fetchFeedContent = () => {
-  cron.schedule('*/10 * * * * *', () => {
-    console.log('fetching article content from feed...', new Date().toUTCString());
+  cron.schedule('*/15 * * * * *', () => {
+    console.log('fetching Feed content...', new Date().toUTCString());
     feed.fetchItemsWithStatusPendingBody().then((result)=>{
       feed.fetchContents(result).then((res)=>{
         res.map((r)=>{
@@ -35,23 +49,14 @@ let fetchFeedContent = () => {
 };
 
 let updateFeed = () => {
-  cron.schedule('*/10 * * * * *', () => {
-    console.log('updating article content from feeditems***...', new Date().toUTCString());
+  cron.schedule('*/13 * * * * *', () => {
+    console.log('updating article content for feed...', new Date().toUTCString());
     feed.fetchAndUpdate().then((docs) => {
       feed.fetchContents(docs).then((d) => {
         console.log(d.length);
       });
     });
-    // feed.fetchItemsWithStatusPendingBody().then((result)=>{
-    //   feed.fetchContents(result).then((res)=>{
-    //     res.map((r)=>{
-    //       feed.updateAndMoveFeedItem(r).then((result)=>{
-    //         console.log(result.result.n + " Documents saved.");
-    //       });
-    //     })
-    //   })
-    // })
   });
 };
 
-module.exports = { fetchRSSFeed, fetchFeedContent, updateFeed };
+module.exports = { fetchRSSFeed, createNetwork, fetchFeedContent, updateFeed };

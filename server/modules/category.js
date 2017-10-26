@@ -51,6 +51,24 @@ let getDistinctCategories = ()=>{
   });
 };
 
+let getParentDistinctCategories = ()=>{
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db)=>{
+      if (err) {
+        reject(err);
+      } else {
+        db.collection('feeditems').distinct('category',{parent:{$exists: false}}, (error, result)=>{
+          if (error) {
+            reject(error);
+          }
+          db.close();
+          resolve(result);
+        });
+      }
+    });
+  });
+};
+
 let updateCategory = (category)=>{
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
@@ -89,6 +107,7 @@ let updateCategory = (category)=>{
 
 module.exports = {
   getDistinctCategories,
+  getParentDistinctCategories,
   saveCategory,
   getCategories,
   updateCategory

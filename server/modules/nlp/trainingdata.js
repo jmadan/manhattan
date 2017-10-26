@@ -7,31 +7,33 @@ const DBURI = process.env.MONGODB_URI;
 const mimir = require('./mimir');
 const category = require('../category');
 
-let fetchDocs = async() => {
-  return await MongoDB.getDocuments("feeditems", {status:'classified'}).then((docs) => {
-    return docs;
-  }).catch(err=>console.log(err));
-}
+// let fetchDocs = async() => {
+//   return await MongoDB.getDocuments("feeditems", {status:'classified'}).then((docs) => {
+//     return docs;
+//   }).catch(err=>console.log(err));
+// }
 
 let formattedData = async(docs, dict) => {
   let tdata = [];
   await docs.map((d) => {
-    if(d.stemwords){
-      tdata.push({input: mimir.bow(d.stemwords.toString(), dict),output: d.category});
-    } else {
-      tdata.push({input: mimir.bow(d.stemmed.toString(), dict),output: d.category});
-    }
+    tdata.push({input: mimir.bow(d.stemwords.toString(), dict),output: d.category});
+    // if(d.stemwords){
+    //   tdata.push({input: mimir.bow(d.stemwords.toString(), dict),output: d.category});
+    // } else {
+    //   tdata.push({input: mimir.bow(d.stemmed.toString(), dict),output: d.category});
+    // }
   });
   return tdata;
 }
 
 let createDict = async(docs) => {
   let dict = docs.reduce((prev, curr) => {
-    if(curr.stemwords){
-      return prev.concat(curr.stemwords);
-    } else{
-      return prev.concat(curr.stemmed);
-    }
+    return prev.concat(curr.stemwords);
+    // if(curr.stemwords){
+    //   return prev.concat(curr.stemwords);
+    // } else{
+    //   return prev.concat(curr.stemmed);
+    // }
   }, []);
   return mimir.dict(dict.toString());
 }
@@ -45,12 +47,12 @@ let getCategoryMap = async() => {
   await category.getDistinctCategories().then((items) => {
     items.forEach((item, i) => {
       // console.log(item);
-      if(item){
+      // if(item){
         categoryMap[item] = i;
-      }
+      // }
     })
   });
   return categoryMap;
 }
 
-module.exports = {fetchDocs, formattedData, createDict, convertToVector, getCategoryMap }
+module.exports = {formattedData, createDict, convertToVector, getCategoryMap }

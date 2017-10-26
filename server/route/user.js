@@ -17,7 +17,25 @@ let fetchUserFeed = (req, res, next) => {
   return next();
 };
 
+let userExists = (req, res, next) => {
+  User.userExists(req.params.email).then((response) => {
+    if (response.length > 0) {
+      res.json({user: response[0]});
+    } else {
+      res.json({error: 'Not Found'});
+    }
+  });
+  return next();
+};
+
+let createUser = (req, res, next) => {
+  console.log(req.body);
+  return next();
+};
+
 module.exports = {
   fetchUser,
-  fetchUserFeed
+  fetchUserFeed,
+  createUser,
+  userExists
 };

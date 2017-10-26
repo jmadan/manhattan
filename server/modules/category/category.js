@@ -37,7 +37,7 @@ let getDistinctCategories = () => {
       if (err) {
         reject(err);
       } else {
-        db.collection('feeditems').distinct('category', (error, result)=>{
+        db.collection('categories').distinct('name', { parent: { $exists: false}}, (error, result)=>{
           if (error) {
             reject(error);
           }
