@@ -22,14 +22,16 @@ let userExists = (req, res, next) => {
     if (response.length > 0) {
       res.json({user: response[0]});
     } else {
-      res.json({error: 'Not Found'});
+      res.json({statusCode: 404, msg: 'Not Found'});
     }
   });
   return next();
 };
 
 let createUser = (req, res, next) => {
-  console.log(req.body);
+  User.newUser(req.body).then((response) => {
+    res.json({statusCode: 201, msg: 'user created', userId: response.insertedId});
+  });
   return next();
 };
 

@@ -65,7 +65,7 @@ server.post('/api/category', categoryRoute.newCategory);
 server.get('/api/user', userRoute.fetchUser);
 server.get('/api/user/:id/feed', userRoute.fetchUserFeed);
 server.post('/api/user', userRoute.createUser);
-server.post('/api/user/:email/check', userRoute.userExists);
+server.get('/api/user/:email/check', userRoute.userExists);
 
 server.on('after', restify.plugins.auditLogger({
   event: 'after',
