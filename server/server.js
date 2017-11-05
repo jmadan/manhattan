@@ -34,14 +34,13 @@ server.use(restify.plugins.fullResponse());
 server.pre(cors.preflight);
 server.use(cors.actual);
 
-
 server.get('/', (req, res, next) => {
-  res.json({message: 'this is the Manhattan home...'});
+  res.json({ message: 'this is the Manhattan home...' });
   return next();
 });
 
 server.get('/api', (req, res, next) => {
-  res.json({message: 'this is the Manhattan API home...'});
+  res.json({ message: 'this is the Manhattan API home...' });
   return next();
 });
 
@@ -54,36 +53,38 @@ server.get('/api/article/status/:status', articleRoute.getArticleByStatus);
 server.get('/api/article/:id', articleRoute.getArticleById);
 server.put('/api/article/:id', articleRoute.updateArticle);
 server.get('/api/article/stem/:id', articleRoute.stemArticleById);
-server.get('/api/article/classify/:id', articleRoute.getSynaptic);
-server.get('/api/article/brain/classify/:id', articleRoute.getBrain);
+// server.get('/api/article/classify/:id', articleRoute.getSynaptic);
+// server.get('/api/article/brain/classify/:id', articleRoute.getBrain);
 
 // server.get('/api/nlp/synaptic', articleRoute.getSynaptic);
 
 server.get('/api/category', categoryRoute.getCategories);
 server.post('/api/category', categoryRoute.newCategory);
 
-server.get('/api/user', userRoute.fetchUser);
-server.get('/api/user/:id/feed', userRoute.fetchUserFeed);
+server.get('/api/user/:email', userRoute.fetchUser);
+server.get('/api/user/:email/feed', userRoute.fetchUserFeed);
 server.post('/api/user', userRoute.createUser);
 server.get('/api/user/:email/check', userRoute.userExists);
+server.post('/api/user/update', userRoute.updateUser);
 
-server.on('after', restify.plugins.auditLogger({
-  event: 'after',
-  name: 'Manhattan',
-  log: log
-}
-));
-
+server.on(
+  'after',
+  restify.plugins.auditLogger({
+    event: 'after',
+    name: 'Manhattan',
+    log: log
+  })
+);
 
 server.on('uncaughtException', (req, res, route, err) => {
-  let auditor = restify.auditlog({log: log});
+  let auditor = restify.auditlog({ log: log });
   auditor(req, res, route, err);
   res.send(500, 'Unexpected Error Occured');
 });
 
-server.listen(config.port, ()=>{
+server.listen(config.port, () => {
   log.info('%s listening at %s', server.name, server.url);
-  //59e5e6a2ae334706b5bd732f
+  // 59e5e6a2ae334706b5bd732f
   // initialSetup.distinctCategoryNumber().then((num) => {
   //   console.log(num);
   //   initialSetup.createDictionary();

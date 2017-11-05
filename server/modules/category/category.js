@@ -5,13 +5,14 @@ const DBURI = process.env.MONGODB_URI;
 let getCategories = ()=>{
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db)=>{
-      db.collection('categories').find({}).toArray((error, docs) =>{
-        if (error) {
-          reject(error);
-        }
-        db.close();
-        resolve(docs);
-      });
+      db.collection('categories').find({})
+        .toArray((error, docs) =>{
+          if (error) {
+            reject(error);
+          }
+          db.close();
+          resolve(docs);
+        });
     });
   });
 };
