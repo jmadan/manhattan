@@ -8,11 +8,17 @@ let fetchUser = (req, res, next) => {
 };
 
 let fetchUserFeed = (req, res, next) => {
-  User.fetchUser(req.params.id).then(user => {
-    User.fetchUserFeed(user).then(response => {
+  if (req.params.email) {
+    User.fetchUser(req.params.email).then(user => {
+      User.fetchUserFeed(user).then(response => {
+        res.json({ userfeed: response });
+      });
+    });
+  } else {
+    User.fetchAnonymousFeed().then(response => {
       res.json({ userfeed: response });
     });
-  });
+  }
   return next();
 };
 

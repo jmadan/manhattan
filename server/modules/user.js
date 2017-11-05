@@ -24,7 +24,29 @@ let fetchUserFeed = user => {
         .collection('feeditems')
         .find(
           { status: 'classified', category: { $in: user.interests } },
-          { url: 1, title: 1, keywords: 1, category: 1, publisher: 1, author: 1 }
+          { url: 1, title: 1, keywords: 1, category: 1, publisher: 1, author: 1, pubDate: 1 }
+        )
+        .limit(50)
+        .toArray((error, docs) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(docs);
+        });
+    });
+  });
+};
+
+let fetchAnonymousFeed = () => {
+  let today = Math.round(new Date().getTime() / 1000);
+  let twentyFoursAgo = (today - 24 * 3600) * 1000;
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db
+        .collection('feeditems')
+        .find(
+          { status: 'classified', pubDate: { $gte: twentyFoursAgo } },
+          { url: 1, title: 1, keywords: 1, category: 1, publisher: 1, author: 1, pubDate: 1 }
         )
         .limit(50)
         .toArray((error, docs) => {
@@ -97,5 +119,6 @@ module.exports = {
   fetchUserFeed,
   userExists,
   newUser,
-  updateUser
+  updateUser,
+  fetchAnonymousFeed
 };

@@ -61,8 +61,9 @@ server.get('/api/article/stem/:id', articleRoute.stemArticleById);
 server.get('/api/category', categoryRoute.getCategories);
 server.post('/api/category', categoryRoute.newCategory);
 
-server.get('/api/user/:email', userRoute.fetchUser);
+server.get('/api/feed', userRoute.fetchUserFeed);
 server.get('/api/user/:email/feed', userRoute.fetchUserFeed);
+server.get('/api/user/:email', userRoute.fetchUser);
 server.post('/api/user', userRoute.createUser);
 server.get('/api/user/:email/check', userRoute.userExists);
 server.post('/api/user/update', userRoute.updateUser);
@@ -84,7 +85,6 @@ server.on('uncaughtException', (req, res, route, err) => {
 
 server.listen(config.port, () => {
   log.info('%s listening at %s', server.name, server.url);
-  // 59e5e6a2ae334706b5bd732f
   // initialSetup.distinctCategoryNumber().then((num) => {
   //   console.log(num);
   //   initialSetup.createDictionary();
