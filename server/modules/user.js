@@ -1,5 +1,4 @@
 'use strict';
-
 const MongoClient = require('mongodb').MongoClient;
 // let ObjectID = require('mongodb').ObjectID;
 const DBURI = process.env.MONGODB_URI;
@@ -114,11 +113,30 @@ let updateUser = user => {
   });
 };
 
+let updateUserInterests = (email, interest) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db.collection('users').updateOne({
+        email: email
+      },
+      { $addToSet: { interests: interest } },
+      { new: true },
+      (error, result) => {
+        if (error) {
+          reject(err);
+        }
+        resolve(result);
+      });
+    });
+  });
+};
+
 module.exports = {
   fetchUser,
   fetchUserFeed,
   userExists,
   newUser,
   updateUser,
-  fetchAnonymousFeed
+  fetchAnonymousFeed,
+  updateUserInterests
 };

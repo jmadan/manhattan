@@ -47,10 +47,18 @@ let updateUser = (req, res, next) => {
   return next();
 };
 
+let updateUserInterest = (req, res, next) => {
+  User.updateUserInterests(req.body.email, req.body.interest).then(result => {
+    res.json({ result });
+  });
+  return next();
+};
+
 module.exports = {
   fetchUser,
   fetchUserFeed,
   createUser,
   userExists,
-  updateUser
+  updateUser,
+  updateUserInterest
 };

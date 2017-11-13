@@ -65,6 +65,7 @@ server.get('/api/feed', userRoute.fetchUserFeed);
 server.get('/api/user/:email/feed', userRoute.fetchUserFeed);
 server.get('/api/user/:email/check', userRoute.userExists);
 server.get('/api/user/:email', userRoute.fetchUser);
+server.post('/api/user/update/interests', userRoute.updateUserInterest);
 server.post('/api/user/update', userRoute.updateUser);
 server.post('/api/user', userRoute.createUser);
 
