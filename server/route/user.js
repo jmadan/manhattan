@@ -48,7 +48,7 @@ let updateUser = (req, res, next) => {
 };
 
 let updateUserInterest = (req, res, next) => {
-  User.updateUserInterests(req.body.email, req.body.interest).then(result => {
+  User.updateUserInterest(req.body).then(result => {
     res.json({ result });
   });
   return next();

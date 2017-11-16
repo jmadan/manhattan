@@ -23,7 +23,15 @@ let fetchUserFeed = user => {
         .collection('feeditems')
         .find(
           { status: 'classified', category: { $in: user.interests } },
-          { url: 1, title: 1, keywords: 1, category: 1, publisher: 1, author: 1, pubDate: 1 }
+          {
+            url: 1,
+            title: 1,
+            keywords: 1,
+            category: 1,
+            publisher: 1,
+            author: 1,
+            pubDate: 1
+          }
         )
         .limit(50)
         .toArray((error, docs) => {
@@ -45,7 +53,15 @@ let fetchAnonymousFeed = () => {
         .collection('feeditems')
         .find(
           { status: 'classified', pubDate: { $gte: twentyFoursAgo } },
-          { url: 1, title: 1, keywords: 1, category: 1, publisher: 1, author: 1, pubDate: 1 }
+          {
+            url: 1,
+            title: 1,
+            keywords: 1,
+            category: 1,
+            publisher: 1,
+            author: 1,
+            pubDate: 1
+          }
         )
         .limit(50)
         .toArray((error, docs) => {
@@ -113,13 +129,14 @@ let updateUser = user => {
   });
 };
 
-let updateUserInterests = (email, interest) => {
+let updateUserInterest = item => {
+  let query = { [item.action === 'add' ? '$addToSet' : '$pull']: { interests: item.interest } };
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db.collection('users').updateOne({
-        email: email
+        email: item.email
       },
-      { $addToSet: { interests: interest } },
+      query,
       { new: true },
       (error, result) => {
         if (error) {
@@ -138,5 +155,5 @@ module.exports = {
   newUser,
   updateUser,
   fetchAnonymousFeed,
-  updateUserInterests
+  updateUserInterest
 };

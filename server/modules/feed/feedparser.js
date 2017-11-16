@@ -188,7 +188,6 @@ let updateAndMoveFeedItem = item => {
 
 let fetchContents = async items => {
   let itemsArray = await Promise.all(items.map(makeRequests));
-  console.log(itemsArray.length);
   return itemsArray;
 };
 
