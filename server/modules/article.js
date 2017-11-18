@@ -41,7 +41,6 @@ exports.getArticle = id => {
 };
 
 exports.updateArticle = data => {
-  console.log('data: ', data);
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db.collection('feeditems').findOneAndUpdate({ _id: ObjectID(data._id) },
@@ -50,8 +49,8 @@ exports.updateArticle = data => {
             keywords: data.keywords,
             stemwords: data.stemwords,
             category: data.category,
-            parentcat: data.parentcat,
-            subcategory: data.subcat,
+            parentcat: JSON.parse(data.parentcat),
+            subcategory: JSON.parse(data.subcat),
             status: data.status
           }
         },
@@ -136,7 +135,7 @@ exports.getArticleStemWords = item => {
         reject(error);
       });
     } catch (err) {
-      reject(error);
+      reject(err);
     }
   });
 };
