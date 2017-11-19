@@ -32,13 +32,15 @@ let fetchUserByEmail = email => {
 };
 
 let fetchUserFeed = user => {
-  let user_interests = user.interests.map(i => i.name);
+  let today = Math.round(new Date().getTime() / 1000);
+  let twentyFoursAgo = (today - 24 * 3600) * 1000;
+  let userInterests = user.interests.map(i => i.name);
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
         .collection('feeditems')
         .find(
-          { status: 'classified', category: { $in: user_interests } },
+          { status: 'classified', category: { $in: userInterests }, pubDate: { $gte: twentyFoursAgo } },
           {
             url: 1,
             title: 1,
@@ -73,11 +75,12 @@ let fetchAnonymousFeed = () => {
           {
             url: 1,
             title: 1,
+            description: 1,
             keywords: 1,
-            category: 1,
-            publisher: 1,
             author: 1,
-            pubDate: 1
+            pubDate: 1,
+            provider: 1,
+            category: 1
           }
         )
         .limit(50)
@@ -86,22 +89,6 @@ let fetchAnonymousFeed = () => {
             reject(error);
           }
           resolve(docs);
-        });
-    });
-  });
-};
-
-let userExists = email => {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db
-        .collection('users')
-        .find({ email: email })
-        .toArray((err, user) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(user);
         });
     });
   });
@@ -133,17 +120,17 @@ let updateUser = (userId, reqBody) => {
   let query = null;
   switch (attr) {
   case 'interest':
-    query = { _id: ObjectID(userId) } + ', ' + { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
+    query = { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
     break;
   case 'user':
-    query = { _id: ObjectID(userId) } + ', ' + { $set: value };
+    query = { $set: { value } };
     break;
   default:
     break;
   }
 
   return new Promise((resolve, reject) => {
-    MongoC.updateDocument('users', query)
+    MongoC.updateDocument('users', userId, query)
       .then(result => resolve(result))
       .catch(err => reject(err));
   });
@@ -164,32 +151,11 @@ let updateUser = (userId, reqBody) => {
   // });
 };
 
-let updateUserInterest = item => {
-  let query = { [item.action === 'add' ? '$addToSet' : '$pull']: { interests: item.interest } };
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db.collection('users').updateOne({
-        email: item.email
-      },
-      query,
-      { new: true },
-      (error, result) => {
-        if (error) {
-          reject(err);
-        }
-        resolve(result);
-      });
-    });
-  });
-};
-
 module.exports = {
   fetchUserById,
   fetchUserByEmail,
   fetchUserFeed,
-  userExists,
   newUser,
   updateUser,
-  fetchAnonymousFeed,
-  updateUserInterest
+  fetchAnonymousFeed
 };

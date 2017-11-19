@@ -1,4 +1,5 @@
 const User = require('../modules/user');
+let ObjectID = require('mongodb').ObjectID;
 
 let fetchUserByEmail = (req, res, next) => {
   User.fetchUserByEmail(req.params.email).then(user => {
@@ -8,7 +9,7 @@ let fetchUserByEmail = (req, res, next) => {
 };
 
 let fetchUserFeed = (req, res, next) => {
-  if (req.params.userId) {
+  if (req.params.userId && ObjectID.isValid(req.params.userId)) {
     User.fetchUserById(req.params.userId).then(user => {
       User.fetchUserFeed(user).then(response => {
         res.json({ userfeed: response });
@@ -21,17 +22,6 @@ let fetchUserFeed = (req, res, next) => {
   }
   return next();
 };
-
-// let userExists = (req, res, next) => {
-//   User.userExists(req.params.email).then(response => {
-//     if (response.length > 0) {
-//       res.json({ user: response[0] });
-//     } else {
-//       res.json({ statusCode: 404, msg: 'Not Found' });
-//     }
-//   });
-//   return next();
-// };
 
 let createUser = (req, res, next) => {
   User.newUser(req.body).then(response => {
@@ -48,9 +38,13 @@ let updateUser = (req, res, next) => {
 };
 
 let updateUserInterest = (req, res, next) => {
-  User.updateUserInterest(req.params.userId, req.body).then(result => {
-    res.json({ result });
-  });
+  if (ObjectID.isValid(req.body.userId)) {
+    User.updateUser(req.body.userId, req.body).then(result => {
+      res.json({ result });
+    });
+  } else {
+    res.json({ error: 'Invalid UserId' });
+  }
   return next();
 };
 
@@ -58,7 +52,6 @@ module.exports = {
   fetchUserByEmail,
   fetchUserFeed,
   createUser,
-  // userExists,
   updateUser,
   updateUserInterest
 };

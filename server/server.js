@@ -67,7 +67,7 @@ server.get('/api/user/feed/:userId', userRoute.fetchUserFeed);
 server.get('/api/user/email/:email', userRoute.fetchUserByEmail);
 
 server.patch('/api/user/:userId', userRoute.updateUser);
-// server.post('/api/user/interest/add', userRoute.updateUserInterest);
+server.post('/api/user/interest', userRoute.updateUserInterest);
 // server.post('/api/user/interest/remove', userRoute.updateUserInterest);
 // server.post('/api/user/update', userRoute.updateUser);
 server.post('/api/user', userRoute.createUser);

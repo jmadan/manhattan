@@ -1,6 +1,8 @@
 'use strict';
 
 const MongoClient = require('mongodb');
+const ObjectID = MongoClient.ObjectID;
+
 const DBURI = process.env.MONGODB_URI;
 
 let insertDocuments = (coll, docs) => {
@@ -20,14 +22,13 @@ let insertDocuments = (coll, docs) => {
   });
 };
 
-let updateDocument = (coll, query) => {
-  console.log(query);
+let updateDocument = (coll, userId, query) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       if (err) {
         reject(err);
       }
-      db.collection(coll).updateOne(query, { new: true }, (err, result) => {
+      db.collection(coll).updateOne({ _id: ObjectID(userId) }, query, { new: true }, (err, result) => {
         db.close();
         if (err) {
           reject(err);
