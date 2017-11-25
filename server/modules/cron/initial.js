@@ -2,11 +2,12 @@ const Category = require('../category/category');
 const Redis = require('../../utils/redis');
 const MongoDB = require('../mongodb');
 const mimir = require('../nlp/mimir');
-const synaptic = require('synaptic');
+const synaptic = require("synaptic");
+
 
 function vec_result(res, num_classes) {
   var i = 0,
-    vec = [];
+  vec = [];
   for (i; i < num_classes; i += 1) {
     vec.push(0);
   }
@@ -15,38 +16,36 @@ function vec_result(res, num_classes) {
 }
 
 function maxarg(array) {
-  return array.indexOf(Math.max.apply(Math, array));
+    return array.indexOf(Math.max.apply(Math, array));
 }
 
-let fetchDocs = async () => {
-  return await MongoDB.getDocuments('feeditems', { category: { $nin: [null, ''] } })
-    .then(docs => {
-      return docs;
-    })
-    .catch(err => console.log(err));
-};
+let fetchDocs = async() => {
+  return await MongoDB.getDocuments("feeditems", {category: {$nin: [null, '']}}).then((docs) => {
+    return docs;
+  }).catch(err=>console.log(err));
+}
 
-let formattedData = async (docs, dict) => {
+let formattedData = async(docs, dict) => {
   let tdata = [];
-  await docs.map(d => {
-    console.log('formattedData', d.url);
-    tdata.push({ input: mimir.bow(d.stemwords.toString(), dict), output: d.category });
+  await docs.map((d) => {
+    console.log('formattedData',d.url);
+    tdata.push({input: mimir.bow(d.stemwords.toString(), dict),output: d.category});
   });
   return tdata;
-};
+}
 
-let createDict = async docs => {
+let createDict = async(docs) => {
   console.log('docs length: ', docs.length);
   let dict = docs.reduce((prev, curr) => {
     console.log('createDict', curr.url);
     return prev.concat(curr.stemwords);
   }, []);
   return mimir.dict(dict.toString());
-};
+}
 
-let convertToVector = async (doc, dict) => {
+let convertToVector = async(doc, dict) => {
   return await mimir.bow(doc.stemwords.toString(), dict);
-};
+}
 
 // let getCategoryMap = async(categories) => {
 //   let categoryMap = {};
@@ -69,82 +68,81 @@ let convertToVector = async (doc, dict) => {
 module.exports = {
   distinctCategoryNumber: () => {
     return Redis.getRedis('distinctCategories')
-      .then(cats => {
-        if (cats) {
-          console.log('distinctCategoryNumber: ', cats.length);
-          return cats.length;
-        } else {
-          return Category.getDistinctCategories()
-            .then(values => {
-              Redis.setRedis('distinctCategories', JSON.stringify(values));
-              Redis.setRedis('numberOfCategories', JSON.stringify(values.length));
-              return values.length;
-            })
-            .catch(e => {
-              console.log('error fetching catgories: ', e);
-            });
-        }
-      })
-      .catch(err => {
-        console.log('Error: ', err);
-      });
+    .then((cats) => {
+      if(cats){
+        console.log('distinctCategoryNumber: ',cats.length);
+        return cats.length;
+      } else {
+        return Category.getDistinctCategories().then((values) => {
+          Redis.setRedis('distinctCategories', JSON.stringify(values));
+          Redis.setRedis('numberOfCategories', JSON.stringify(values.length));
+          return values.length;
+        })
+        .catch(e => {
+          console.log('error fetching catgories: ', e);
+        });
+      }
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+    });
   },
 
-  createNetwork: trainingSet => {
-    let errors = [];
-    let result = [];
-    const Layer = synaptic.Layer;
-    const Network = synaptic.Network;
-    const Trainer = synaptic.Trainer;
+  createNetwork: (trainingSet) => {
+      let errors = [];
+      let result=[];
+      const Layer = synaptic.Layer;
+      const Network = synaptic.Network;
+      const Trainer = synaptic.Trainer;
 
-    const inputLayer = new Layer(50);
-    const hiddenLayer = new Layer(100);
-    const outputLayer = new Layer(10);
+      const inputLayer = new Layer(50);
+      const hiddenLayer = new Layer(100);
+      const outputLayer = new Layer(10);
 
-    inputLayer.project(hiddenLayer);
-    hiddenLayer.project(outputLayer);
+      inputLayer.project(hiddenLayer);
+      hiddenLayer.project(outputLayer);
 
-    const myNetwork = new Network({
-      input: inputLayer,
-      hidden: [hiddenLayer],
-      output: outputLayer
-    });
-    // let myTrainer = new Trainer(myNetwork);
-    // myTrainer.train(trainingSet, {
-    //   rate: .2,
-    //   iterations: 20000,
-    //   error: .1,
-    //   shuffle: true,
-    //   log: 2000,
-    //   cost: Trainer.cost.CROSS_ENTROPY,
-    //   schedule: {
-    //     every: 2000,
-    //     do: function (data) {
-    //         errors.push(data.error);
-    //         console.log(data.error)
-    //         counter+=1;
-    //         result.push({nr: counter, value: data.error});
-    //     }
-    //   }
-    // });
+      const myNetwork = new Network({
+          input: inputLayer,
+          hidden: [hiddenLayer],
+          output: outputLayer
+      });
+      // let myTrainer = new Trainer(myNetwork);
+      // myTrainer.train(trainingSet, {
+      //   rate: .2,
+      //   iterations: 20000,
+      //   error: .1,
+      //   shuffle: true,
+      //   log: 2000,
+      //   cost: Trainer.cost.CROSS_ENTROPY,
+      //   schedule: {
+      //     every: 2000,
+      //     do: function (data) {
+      //         errors.push(data.error);
+      //         console.log(data.error)
+      //         counter+=1;
+      //         result.push({nr: counter, value: data.error});
+      //     }
+      //   }
+      // });
 
-    // train the network
-    // var learningRate = .3;
-    // for (var i = 0; i < 100; i++)
-    // {
-    //   trainingSet.map((ts) => {
-    //     myNetwork.activate(ts.input);
-    //     myNetwork.propagate(learningRate, ts.output);
-    //   });
-    // }
+      // train the network
+      // var learningRate = .3;
+      // for (var i = 0; i < 100; i++)
+      // {
+      //   trainingSet.map((ts) => {
+      //     myNetwork.activate(ts.input);
+      //     myNetwork.propagate(learningRate, ts.output);
+      //   });
+      // }
 
-    Redis.setRedis('NeuralNetwork', JSON.stringify(myNetwork));
-    console.log('Network Created....');
+      Redis.setRedis('NeuralNetwork', JSON.stringify(myNetwork));
+      console.log("Network Created....")
   },
 
   getNetwork: () => {
-    return Redis.getRedis('NeuralNetwork').then(myNetwork => {
-      if (myNetwork) {
+    return Redis.getRedis('NeuralNetwork').then((myNetwork) => {
+      if(myNetwork){
         return myNetwork;
       } else {
         console.log('You got no Network!!! HELP...');
@@ -156,45 +154,43 @@ module.exports = {
     let docs = await fetchDocs();
     let dictionary = await createDict(docs);
     Redis.setRedis('dictionary', JSON.stringify(dictionary));
-    console.log('dictionary saved to Redis...');
+    console.log("dictionary saved to Redis...");
   },
 
   createCategoryMap: async () => {
     Redis.getRedis('distinctCategories')
-      .then(cats => {
-        let cMap = {};
-        for (let i = 0, len = cats.length; i < len; i += 1) {
-          cMap[cats[i]] = i;
-        }
-        Redis.setRedis('categoryMap', JSON.stringify(cMap));
-      })
-      .catch(er => console.log(er));
+    .then((cats) => {
+      let cMap = {};
+      for (let i = 0, len = cats.length; i < len; i += 1) {
+        cMap[cats[i]] = i;
+      }
+      Redis.setRedis('categoryMap', JSON.stringify(cMap));
+    })
+    .catch(er => console.log(er));
   },
 
-  formattedTrainingData: async distinctCategories => {
+  formattedTrainingData: async (distinctCategories) => {
     let docs = await fetchDocs();
-    return Redis.getRedis('dictionary')
-      .then(async dict => {
-        console.log('got dict from Redis....');
-        let tData = await formattedData(docs, dict);
+    return Redis.getRedis('dictionary').then(async (dict) => {
+      console.log('got dict from Redis....');
+      let tData = await formattedData(docs, dict);
 
-        // let categoryMap = await getCategoryMap();
-        // let categoryArray = Object.keys(categoryMap);
-        // Redis.setRedis('categoryArray', JSON.stringify(categoryArray));
-        // getCategoryMap().then((cm)=>{
-        //   let categoryArray = Object.keys(cm);
-        //   Redis.setRedis('categoryArray', JSON.stringify(categoryArray));
-        // });
+      // let categoryMap = await getCategoryMap();
+      // let categoryArray = Object.keys(categoryMap);
+      // Redis.setRedis('categoryArray', JSON.stringify(categoryArray));
+      // getCategoryMap().then((cm)=>{
+      //   let categoryArray = Object.keys(cm);
+      //   Redis.setRedis('categoryArray', JSON.stringify(categoryArray));
+      // });
 
-        let trainingSet = tData.map(pair => {
+      let trainingSet = tData.map((pair) => {
           return {
             input: pair.input,
             output: vec_result(categoryMap[pair.output], distinctCategories)
           };
-        });
-        return trainingSet;
-      })
-      .catch(e => console.log(e));
+      });
+      return trainingSet;
+    }).catch(e => console.log(e));
   }
   // createLSTMNetwork: (trainingSet) => {
   //   const Architect = synaptic.Architect;
@@ -214,4 +210,5 @@ module.exports = {
   //
   //   console.log(myLSTM.toJSON());
   // }
-};
+
+}

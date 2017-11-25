@@ -6,6 +6,7 @@ const providerRoute = require('./route/provider');
 const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
+const cronRoute = require('./route/cronjob');
 
 // const initialSetup = require('../server/modules/cron/initial');
 
@@ -43,6 +44,10 @@ server.get('/api', (req, res, next) => {
   res.json({ message: 'this is the Manhattan API home...' });
   return next();
 });
+
+server.get('/api/cron/start', cronRoute.startTask);
+server.get('/api/cron/stop', cronRoute.stopTask);
+// server.get('/api/cron/status', cronRoute.taskStatusCheck);
 
 server.get('/api/provider', providerRoute.getProviders);
 // server.get('/api/provider/:status/:id', provider.getProviders);

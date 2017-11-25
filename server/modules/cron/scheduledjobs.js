@@ -1,6 +1,7 @@
 'use strict';
 
 const cron = require('node-cron');
+const CronJob = require('cron').CronJob;
 const feed = require('../feed/feedparser');
 // const initialSetup = require('./initial');
 
@@ -63,9 +64,50 @@ let updateFeed = () => {
   });
 };
 
+let fetchInitialFeeds = new CronJob({
+  cronTime: '*/3 * * * *',
+  onTick: () => {
+    feed
+      .getRSSFeedProviders()
+      .then(providers => {
+        return feed.getProviderFeed(providers);
+      })
+      .then(flist => {
+        flist.map(f => {
+          feed
+            .saveRssFeed(f.data)
+            .then(result => {
+              console.log(result.result.n + ' feeds processed.');
+            })
+            .catch(err => console.log(err, f));
+        });
+      });
+  },
+  start: false
+});
+
+let fetchFeedContents = new CronJob({
+  cronTime: '*/20 * * * * *',
+  onTick: () => {
+    console.log('fetching Feed content...', new Date().toUTCString());
+    feed.fetchItemsWithStatusPendingBody().then(result => {
+      feed.fetchContents(result).then(res => {
+        res.map(r => {
+          feed.updateAndMoveFeedItem(r).then(result => {
+            console.log(result.result.n + ' Documents saved.');
+          });
+        });
+      });
+    });
+  },
+  start: false
+});
+
 module.exports = {
   // fetchRSSFeed,
   // createNetwork,
   fetchFeedContent,
-  updateFeed
+  updateFeed,
+  fetchInitialFeeds,
+  fetchFeedContents
 };
