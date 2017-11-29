@@ -88,11 +88,13 @@ server.on('uncaughtException', (req, res, route, err) => {
 
 server.listen(config.port, () => {
   log.info('%s listening at %s', server.name, server.url);
-  initialSetup.distinctCategoryNumber().then((num) => {
-    console.log(num);
-    initialSetup.createDictionary();
-    initialSetup.createCategoryMap();
-    initialSetup.createNetwork();
-  })
-    .catch(e=>console.log(e));
+  initialSetup
+    .distinctCategoryNumber()
+    .then(num => {
+      console.log(num);
+      initialSetup.createDictionary();
+      initialSetup.createCategoryMap();
+      initialSetup.createNetwork();
+    })
+    .catch(e => console.log(e));
 });
