@@ -65,7 +65,7 @@ let updateFeed = () => {
 };
 
 let fetchInitialFeeds = new CronJob({
-  cronTime: '*/3 * * * *',
+  cronTime: '0 5 * * *',
   onTick: () => {
     feed
       .getRSSFeedProviders()
@@ -87,7 +87,7 @@ let fetchInitialFeeds = new CronJob({
 });
 
 let fetchFeedContents = new CronJob({
-  cronTime: '*/20 * * * * *',
+  cronTime: '*/1 * * * *',
   onTick: () => {
     console.log('fetching Feed content...', new Date().toUTCString());
     feed.fetchItemsWithStatusPendingBody().then(result => {
