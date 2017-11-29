@@ -8,7 +8,7 @@ const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
 const cronRoute = require('./route/cronjob');
 
-// const initialSetup = require('../server/modules/cron/initial');
+const initialSetup = require('../server/modules/cron/initial');
 
 const cors = corsMiddleware({
   preflightMaxAge: 5,
@@ -88,11 +88,11 @@ server.on('uncaughtException', (req, res, route, err) => {
 
 server.listen(config.port, () => {
   log.info('%s listening at %s', server.name, server.url);
-  // initialSetup.distinctCategoryNumber().then((num) => {
-  //   console.log(num);
-  //   initialSetup.createDictionary();
-  //   initialSetup.createCategoryMap();
-  //   initialSetup.createNetwork();
-  // })
-  //   .catch(e=>console.log(e));
+  initialSetup.distinctCategoryNumber().then((num) => {
+    console.log(num);
+    initialSetup.createDictionary();
+    initialSetup.createCategoryMap();
+    initialSetup.createNetwork();
+  })
+    .catch(e=>console.log(e));
 });
