@@ -1,13 +1,14 @@
 const config = require('../config');
 const restify = require('restify');
 const corsMiddleware = require('restify-cors-middleware');
-require('newrelic');
 const log = require('./utils/logger');
 const providerRoute = require('./route/provider');
 const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
 const cronRoute = require('./route/cronjob');
+require('babel-core/register');
+// require('babel-polyfill');
 
 const initialSetup = require('../server/modules/cron/initial');
 
