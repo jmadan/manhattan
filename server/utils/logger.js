@@ -1,4 +1,5 @@
 let Bunyan = require('bunyan');
+let restify = require('restify');
 
 let log = new Bunyan({
   name: 'Manhattan',
@@ -9,18 +10,14 @@ let log = new Bunyan({
       stream: process.stdout
     },
     {
-      level: 'error',
-      path: '/var/tmp/myapp-error.log'
+      level: 'trace',
+      path: '~/logs/manhattan.log'
     }
-  ]
+  ],
+  serializers: {
+    req: Bunyan.stdSerializers.req,
+    res: restify.bunyan.serializers.res
+  }
 });
-
-// Logger = function () { };
-
-// Logger.prototype = {
-//   getSystemLogger: function () {
-//     return log;
-//   }
-// };
 
 module.exports = log;

@@ -7,8 +7,7 @@ const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
 const cronRoute = require('./route/cronjob');
-require('babel-core/register');
-// require('babel-polyfill');
+// require('babel-core/register');
 
 const initialSetup = require('../server/modules/cron/initial');
 
@@ -18,9 +17,6 @@ const cors = corsMiddleware({
   allowHeaders: ['API-Token'],
   exposeHeaders: ['API-Token-Expiry']
 });
-
-// let log = bunyan.createLogger({name: 'Manhattan'});
-// let log = new Logger();
 
 const server = restify.createServer({
   name: config.name,
@@ -36,6 +32,11 @@ server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.fullResponse());
 server.pre(cors.preflight);
 server.use(cors.actual);
+
+server.pre((req, res, next) => {
+  req.log.info({ req: req }, 'start');
+  return next();
+});
 
 server.get('/', (req, res, next) => {
   res.json({ message: 'this is the Manhattan home...' });
@@ -73,14 +74,17 @@ server.patch('/api/user/:userId', userRoute.updateUser);
 server.post('/api/user/interest', userRoute.updateUserInterest);
 server.post('/api/user', userRoute.createUser);
 
-server.on(
-  'after',
-  restify.plugins.auditLogger({
-    event: 'after',
-    name: 'Manhattan',
-    log: log
-  })
-);
+// server.on(
+//   'after',
+//   restify.plugins.auditLogger({
+//     event: 'after',
+//     name: 'Manhattan',
+//     log: log
+//   })
+// );
+server.on('after', (req, res) => {
+  req.log.info({ req: req, res: res }, 'finished');
+});
 
 server.on('uncaughtException', (req, res, route, err) => {
   let auditor = restify.auditlog({ log: log });
