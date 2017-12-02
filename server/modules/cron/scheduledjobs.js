@@ -78,7 +78,7 @@ let fetchFeedContents = new CronJob({
 });
 
 let updateNetwork = new CronJob({
-  cronTime: '*/5 * * * *',
+  cronTime: '0 6 * * *',
   onTick: () => {
     console.log('Initiating Network update...');
     initialSetup.trainNetwork();

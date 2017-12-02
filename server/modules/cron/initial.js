@@ -29,7 +29,6 @@ let fetchDocs = async () => {
 let formattedData = async (docs, dict) => {
   let tdata = [];
   await docs.map(d => {
-    console.log('formattedData', d.url);
     tdata.push({ input: mimir.bow(d.stemwords.toString(), dict), output: d.category });
   });
   return tdata;
@@ -169,21 +168,21 @@ let trainNetwork = async () => {
   let trainingSet = await formattedTrainingData(distinctCategories);
   const Trainer = synaptic.Trainer;
   let myTrainer = new Trainer(myNetwork);
-  // myTrainer.train(trainingSet, {
-  //   rate: 0.2,
-  //   iterations: 20000,
-  //   error: 0.1,
-  //   shuffle: true,
-  //   log: 2000,
-  //   cost: Trainer.cost.MSE
-  // });
-  let learningRate = 0.3;
-  for (var i = 0; i < 100; i++) {
-    trainingSet.map(ts => {
-      myNetwork.activate(ts.input);
-      myNetwork.propagate(learningRate, ts.output);
-    });
-  }
+  myTrainer.train(trainingSet, {
+    rate: 0.2,
+    iterations: 20000,
+    error: 0.1,
+    shuffle: true,
+    log: 2000,
+    cost: Trainer.cost.MSE
+  });
+  // let learningRate = 0.3;
+  // for (var i = 0; i < 100; i++) {
+  //   trainingSet.map(ts => {
+  //     myNetwork.activate(ts.input);
+  //     myNetwork.propagate(learningRate, ts.output);
+  //   });
+  // }
 
   Redis.setRedis('NeuralNetwork', JSON.stringify(myNetwork));
   console.log('Network Trained...');
@@ -214,7 +213,9 @@ let formattedTrainingData = async distinctCategories => {
     .then(async dict => {
       console.log('got dict from Redis....');
       let tData = await formattedData(docs, dict);
+      console.log('data structured...');
       let categoryMap = await getCategoryMap();
+      console.log('got CategoryMap...');
       // let categoryArray = Object.keys(categoryMap);
       // Redis.setRedis('categoryArray', JSON.stringify(categoryArray));
       // getCategoryMap().then((cm)=>{
