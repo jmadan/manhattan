@@ -7,7 +7,7 @@ const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
 const cronRoute = require('./route/cronjob');
-// require('babel-core/register');
+require('babel-core/register');
 
 const initialSetup = require('../server/modules/cron/initial');
 

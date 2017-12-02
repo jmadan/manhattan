@@ -40,7 +40,13 @@ let fetchUserFeed = user => {
       db
         .collection('feeditems')
         .find(
-          { status: 'classified', category: { $in: userInterests }, pubDate: { $gte: twentyFoursAgo } },
+          {
+            $and: [
+              { status: 'classified' },
+              { category: { $in: userInterests } },
+              { pubDate: { $gte: twentyFoursAgo } }
+            ]
+          },
           {
             url: 1,
             title: 1,
@@ -97,20 +103,22 @@ let fetchAnonymousFeed = () => {
 let newUser = user => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection('users').insertOne({
-        nickname: user.nickname,
-        name: user.name,
-        email: user.email,
-        picture: user.picture,
-        updated_at: user.updated_at,
-        role: user.role ? user.role : 'member'
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
+      db.collection('users').insertOne(
+        {
+          nickname: user.nickname,
+          name: user.name,
+          email: user.email,
+          picture: user.picture,
+          updated_at: user.updated_at,
+          role: user.role ? user.role : 'member'
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(result);
         }
-        resolve(result);
-      });
+      );
     });
   });
 };
