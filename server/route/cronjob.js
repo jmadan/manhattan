@@ -15,6 +15,12 @@ let startTask = (req, res, next) => {
       res.json({ msg: 'initial feed content retrieval...' });
     }
     break;
+  case 'updatenetwork':
+    if (!Scheduler.updateNetwork.running) {
+      Scheduler.updateNetwork.start();
+      res.json({ msg: 'Network update in progress...' });
+    }
+    break;
   default:
     res.json({ msg: 'No job supplied...' });
     break;

@@ -1,9 +1,9 @@
 'use strict';
 
-const cron = require('node-cron');
+// const cron = require('node-cron');
 const CronJob = require('cron').CronJob;
 const feed = require('../feed/feedparser');
-// const initialSetup = require('./initial');
+const initialSetup = require('./initial');
 
 // let createNetwork = () => {
 //   cron.schedule('* * */24 * * *', () => {
@@ -37,32 +37,6 @@ const feed = require('../feed/feedparser');
 //       });
 //   });
 // };
-
-let fetchFeedContent = () => {
-  cron.schedule('*/15 * * * * *', () => {
-    console.log('fetching Feed content...', new Date().toUTCString());
-    feed.fetchItemsWithStatusPendingBody().then(result => {
-      feed.fetchContents(result).then(res => {
-        res.map(r => {
-          feed.updateAndMoveFeedItem(r).then(result => {
-            console.log(result.result.n + ' Documents saved.');
-          });
-        });
-      });
-    });
-  });
-};
-
-let updateFeed = () => {
-  cron.schedule('*/13 * * * * *', () => {
-    console.log('updating article content for feed...', new Date().toUTCString());
-    feed.fetchAndUpdate().then(docs => {
-      feed.fetchContents(docs).then(d => {
-        console.log(d.length);
-      });
-    });
-  });
-};
 
 let fetchInitialFeeds = new CronJob({
   cronTime: '0 5 * * *',
@@ -103,11 +77,18 @@ let fetchFeedContents = new CronJob({
   start: false
 });
 
+let updateNetwork = new CronJob({
+  cronTime: '*/5 * * * *',
+  onTick: () => {
+    console.log('Initiating Network update...');
+    initialSetup.trainNetwork();
+  }
+});
+
 module.exports = {
   // fetchRSSFeed,
   // createNetwork,
-  fetchFeedContent,
-  updateFeed,
   fetchInitialFeeds,
-  fetchFeedContents
+  fetchFeedContents,
+  updateNetwork
 };
