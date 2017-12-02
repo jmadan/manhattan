@@ -77,7 +77,7 @@ let fetchAnonymousFeed = () => {
       db
         .collection('feeditems')
         .find(
-          { status: 'classified', pubDate: { $gte: twentyFoursAgo } },
+          { $and: [{ status: 'classified' }, { pubDate: { $gte: twentyFoursAgo } }] },
           {
             url: 1,
             title: 1,
