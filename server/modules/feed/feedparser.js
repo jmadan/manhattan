@@ -173,8 +173,13 @@ let fetchItemsWithStatusPendingBody = () => {
 let makeRequests = item => {
   return new Promise((resolve, reject) => {
     textract.fromUrl(item.url, function(error, text) {
-      item.stemwords = lancasterStemmer.tokenizeAndStem(text);
-      item.itembody = text.replace('/s+/gm', ' ').replace('([^a-zA-Z])+', ' ');
+      if (text) {
+        item.stemwords = lancasterStemmer.tokenizeAndStem(text);
+        item.itembody = text.replace('/s+/gm', ' ').replace('([^a-zA-Z])+', ' ');
+      } else {
+        item.stemwords = '';
+        item.itembody = '';
+      }
       // item.status = "unclassified";
       resolve(item);
     });
@@ -187,34 +192,36 @@ let updateAndMoveFeedItem = item => {
       if (err) {
         reject(err);
       } else {
-        db.collection('feeditems').insertOne({
-          url: item.url,
-          title: item.title,
-          description: item.description,
-          type: item.type,
-          keywords: item.keywords,
-          img: item.img,
-          author: item.author,
-          pubDate: item.pubDate,
-          provider: item.provider,
-          topic: item.topic,
-          category: item.category,
-          status: 'unclassified',
-          stemwords: item.stemwords
-        },
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            db.collection('feed').deleteOne({ _id: ObjectId(item._id) }, (err, response) => {
-              db.close();
-              if (err) {
-                reject(err);
-              }
-              resolve(response);
-            });
+        db.collection('feeditems').insertOne(
+          {
+            url: item.url,
+            title: item.title,
+            description: item.description,
+            type: item.type,
+            keywords: item.keywords,
+            img: item.img,
+            author: item.author,
+            pubDate: item.pubDate,
+            provider: item.provider,
+            topic: item.topic,
+            category: item.category,
+            status: 'unclassified',
+            stemwords: item.stemwords
+          },
+          (err, result) => {
+            if (err) {
+              reject(err);
+            } else {
+              db.collection('feed').deleteOne({ _id: ObjectId(item._id) }, (err, response) => {
+                db.close();
+                if (err) {
+                  reject(err);
+                }
+                resolve(response);
+              });
+            }
           }
-        });
+        );
       }
     });
   });
