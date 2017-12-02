@@ -8,11 +8,11 @@ let log = new Bunyan({
     {
       level: 'info',
       stream: process.stdout
-    },
-    {
-      level: 'trace',
-      path: '~/logs/manhattan.log'
     }
+    // {
+    //   level: 'trace',
+    //   path: '../logs/manhattan.log'
+    // }
   ],
   serializers: {
     req: Bunyan.stdSerializers.req,
