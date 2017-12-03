@@ -55,7 +55,9 @@ let fetchUserFeed = user => {
             author: 1,
             pubDate: 1,
             provider: 1,
-            category: 1
+            category: 1,
+            parentcat: 1,
+            subcategory: 1
           }
         )
         .limit(50)
