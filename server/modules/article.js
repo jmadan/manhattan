@@ -15,6 +15,7 @@ exports.fetchArticles = status => {
       db
         .collection('feeditems')
         .find({ status: status })
+        .sort({ pubDate: -1 })
         .limit(10)
         .toArray((err, docs) => {
           if (err) {
@@ -43,7 +44,8 @@ exports.getArticle = id => {
 exports.updateArticle = data => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection('feeditems').findOneAndUpdate({ _id: ObjectID(data._id) },
+      db.collection('feeditems').findOneAndUpdate(
+        { _id: ObjectID(data._id) },
         {
           $set: {
             keywords: data.keywords,
@@ -60,7 +62,8 @@ exports.updateArticle = data => {
             reject(err);
           }
           resolve(doc);
-        });
+        }
+      );
     });
   });
 };
@@ -175,7 +178,8 @@ exports.getArticleBasedOnCategory = category => {
 exports.updateItem = item => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection('feeditems').findOneAndUpdate({ _id: ObjectID(item.id) },
+      db.collection('feeditems').findOneAndUpdate(
+        { _id: ObjectID(item.id) },
         {
           $set: {
             itembody: item.itembody,
@@ -190,7 +194,8 @@ exports.updateItem = item => {
             reject(err);
           }
           resolve(doc);
-        });
+        }
+      );
     });
   });
 };
