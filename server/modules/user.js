@@ -70,7 +70,16 @@ let fetchUserFeed = user => {
     });
   });
 };
-
+// {
+//   url: 1,
+//   title: 1,
+//   description: 1,
+//   keywords: 1,
+//   author: 1,
+//   pubDate: 1,
+//   provider: 1,
+//   category: 1
+// }
 let fetchAnonymousFeed = () => {
   let today = Math.round(new Date().getTime() / 1000);
   let twentyFoursAgo = (today - 24 * 3600) * 1000;
@@ -78,19 +87,10 @@ let fetchAnonymousFeed = () => {
     MongoClient.connect(DBURI, (err, db) => {
       db
         .collection('feeditems')
-        .find(
-          { $and: [{ status: 'classified' }, { pubDate: { $gte: twentyFoursAgo } }] },
-          {
-            url: 1,
-            title: 1,
-            description: 1,
-            keywords: 1,
-            author: 1,
-            pubDate: 1,
-            provider: 1,
-            category: 1
-          }
-        )
+        .aggregate([
+          { $match: { $and: [{ status: 'classified' }, { pubDate: { $gte: twentyFoursAgo } }] } },
+          { $sample: { size: 50 } }
+        ])
         .limit(50)
         .toArray((error, docs) => {
           if (error) {
