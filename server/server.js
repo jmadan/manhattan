@@ -7,7 +7,8 @@ const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
 const cronRoute = require('./route/cronjob');
-require('babel-core/register');
+// let Rollbar = require('rollbar');
+// let rollbar = new Rollbar(process.env.ROLLBAR_KEY);
 
 const initialSetup = require('../server/modules/cron/initial');
 
@@ -32,6 +33,7 @@ server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.fullResponse());
 server.pre(cors.preflight);
 server.use(cors.actual);
+// server.use(rollbar.)
 
 server.pre((req, res, next) => {
   req.log.info({ req: req }, 'start');
@@ -60,7 +62,7 @@ server.get('/api/article/:id', articleRoute.getArticleById);
 server.put('/api/article/:id', articleRoute.updateArticle);
 server.get('/api/article/stem/:id', articleRoute.stemArticleById);
 server.get('/api/article/classify/:id', articleRoute.getSynaptic);
-// server.get('/api/article/brain/classify/:id', articleRoute.getBrain);
+server.get('/api/article/brain/classify/:id', articleRoute.getBrain);
 
 // server.get('/api/nlp/synaptic', articleRoute.getSynaptic);
 

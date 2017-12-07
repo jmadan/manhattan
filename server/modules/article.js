@@ -7,6 +7,7 @@ let ObjectID = require('mongodb').ObjectID;
 const DBURI = process.env.MONGODB_URI;
 const textract = require('textract');
 const natural = require('natural');
+
 const lancasterStemmer = natural.LancasterStemmer;
 
 exports.fetchArticles = status => {

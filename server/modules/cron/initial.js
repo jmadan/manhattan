@@ -96,9 +96,9 @@ let createNetwork = trainingSet => {
   const Layer = synaptic.Layer;
   const Network = synaptic.Network;
 
-  const inputLayer = new Layer(100);
-  const hiddenLayer = new Layer(150);
-  const outputLayer = new Layer(10);
+  const inputLayer = new Layer(500);
+  const hiddenLayer = new Layer(260);
+  const outputLayer = new Layer(25);
 
   inputLayer.project(hiddenLayer);
   hiddenLayer.project(outputLayer);
@@ -163,11 +163,12 @@ let getDistinctCategories = () => {
 };
 
 let trainNetwork = async () => {
-  let myNetwork = await getNetwork();
-  let distinctCategories = await getDistinctCategories();
-  let trainingSet = await formattedTrainingData(distinctCategories);
+  let result = await Promise.all([getNetwork(), getDistinctCategories()]);
+  // let myNetwork = await getNetwork();
+  // let distinctCategories = await getDistinctCategories();
+  let trainingSet = await formattedTrainingData(result[1]);
   const Trainer = synaptic.Trainer;
-  let myTrainer = new Trainer(myNetwork);
+  let myTrainer = new Trainer(result[0]);
   myTrainer.train(trainingSet, {
     rate: 0.2,
     iterations: 20000,
