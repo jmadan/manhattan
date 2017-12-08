@@ -33,7 +33,7 @@ let fetchUserByEmail = email => {
 
 let fetchUserFeed = user => {
   let today = Math.round(new Date().getTime() / 1000);
-  let twentyFoursAgo = (today - 24 * 3600) * 1000;
+  let seventyTwoHours = today - 72 * 3600 * 1000;
   let userInterests = user.interests.map(i => i.name);
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
@@ -44,7 +44,7 @@ let fetchUserFeed = user => {
             $and: [
               { status: 'classified' },
               { category: { $in: userInterests } },
-              { pubDate: { $gte: twentyFoursAgo } }
+              { pubDate: { $gte: seventyTwoHours } }
             ]
           },
           {
@@ -60,7 +60,6 @@ let fetchUserFeed = user => {
             subcategory: 1
           }
         )
-        .limit(50)
         .toArray((error, docs) => {
           if (error) {
             reject(error);
