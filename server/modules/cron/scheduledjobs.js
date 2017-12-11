@@ -75,7 +75,7 @@ let synapticPrediction = new CronJob({
   cronTime: '* */1 * * *',
   onTick: () => {
     article
-      .fetchArticles('unclassified')
+      .fetchArticles('unclassified', 50)
       .then(docs => {
         return classifyDocs(docs);
       })
