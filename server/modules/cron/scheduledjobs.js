@@ -72,7 +72,7 @@ let saveClassifiedDocs = docs => {
 };
 
 let synapticPrediction = new CronJob({
-  cronTime: '* */1 * * *',
+  cronTime: '0 */1 * * *',
   onTick: () => {
     article
       .fetchArticles('unclassified', 50)

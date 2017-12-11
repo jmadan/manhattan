@@ -69,16 +69,16 @@ let createSynapticServer = async () => {
   return new Promise((resolve, reject) => {
     trainer.train(trainData, {
       rate: 0.3,
-      iterations: 100,
+      iterations: 10000,
       error: 0.03,
       shuffle: true,
       cost: Trainer.cost.CROSS_ENTROPY,
       schedule: {
-        every: 20, // repeat this task every 500 iterations
+        every: 1000, // repeat this task every 500 iterations
         do: function(data) {
           // custom log
           console.log('error', data.error, 'iterations', data.iterations, 'rate', data.rate);
-          if (data.iterations == 100) {
+          if (data.iterations == 10000) {
             resolve(myNetwork);
           }
         }
