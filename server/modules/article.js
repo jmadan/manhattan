@@ -10,14 +10,14 @@ const natural = require('natural');
 
 const lancasterStemmer = natural.LancasterStemmer;
 
-exports.fetchArticles = status => {
+exports.fetchArticles = (status, noofdocs = 10) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
         .collection('feeditems')
         .find({ status: status })
         .sort({ pubDate: -1 })
-        .limit(10)
+        .limit(parseInt(noofdocs, 10))
         .toArray((err, docs) => {
           if (err) {
             reject(err);
@@ -54,6 +54,29 @@ exports.updateArticle = data => {
             category: data.category,
             parentcat: JSON.parse(data.parentcat),
             subcategory: JSON.parse(data.subcat),
+            status: data.status
+          }
+        },
+        { returnOriginal: false },
+        (err, doc) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(doc);
+        }
+      );
+    });
+  });
+};
+
+exports.autoUpdateArticleByClassification = data => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db.collection('feeditems').findOneAndUpdate(
+        { _id: ObjectID(data._id) },
+        {
+          $set: {
+            category: data.category,
             status: data.status
           }
         },

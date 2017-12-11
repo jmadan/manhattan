@@ -57,7 +57,7 @@ server.get('/api/provider', providerRoute.getProviders);
 server.get('/api/provider/:name/:topic', providerRoute.getProviderByTopic);
 server.post('/api/provider', providerRoute.createProvider);
 
-server.get('/api/article/status/:status', articleRoute.getArticleByStatus);
+server.get('/api/article/status', articleRoute.getArticleByStatus);
 server.get('/api/article/:id', articleRoute.getArticleById);
 server.put('/api/article/:id', articleRoute.updateArticle);
 server.get('/api/article/stem/:id', articleRoute.stemArticleById);
@@ -102,7 +102,6 @@ server.listen(config.port, () => {
       console.log(num);
       initialSetup.createDictionary();
       initialSetup.createCategoryMap();
-      initialSetup.createNetwork();
     })
     .catch(e => console.log(e));
 });

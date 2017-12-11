@@ -4,7 +4,8 @@ const brain = require('../modules/nlp/brain');
 const snn = require('../modules/nlp/synaptic');
 
 function getArticleByStatus(req, res, next) {
-  article.fetchArticles(req.params.status).then(result => {
+  console.log(req.query);
+  article.fetchArticles(req.query.status, req.query.limit).then(result => {
     res.json({ result: result });
   });
   return next();
@@ -46,28 +47,6 @@ function updateArticle(req, res, next) {
   }
   return next();
 }
-
-// router.put('/articles/:id/status/update', (req, res)=>{
-//   article.updateArticleStatus(req.body.id, req.body.status).then((response) => {
-//     if(response.lastErrorObject.n === 1){
-//       res.json({article: response.value, status_code:200, articleUpdated: true});
-//     } else{
-//       res.json({article: response.value, status_code:200, articleUpdated: false});
-//     }
-//   })
-// })
-//
-// router.get('/articles/categories/:category', (req, res)=>{
-//   article.getArticleBasedOnCategory(req.params.category).then((result) => {
-//     res.json({result: result})
-//   })
-// })
-//
-// router.put('/articles/:id/category/update', (req, res)=>{
-//   article.updateArticleCategory(req.params.id, req.body.category).then((result) => {
-//     res.json({result: result})
-//   })
-// })
 
 function classifyArticle(req, res, next) {
   if (req.params.id) {

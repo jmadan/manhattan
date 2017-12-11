@@ -22,92 +22,24 @@ let createDictionary = async () => {
   return await trainingdata.createDict(docs);
 };
 
-let synapticBrain = async () => {
-  let distinctCategories = 67;
-  let docs = await trainingdata.fetchDocs();
-  let dictionary = await trainingdata.createDict(docs);
-  let tData = await trainingdata.formattedData(docs, dictionary);
-
-  let categoryMap = await trainingdata.getCategoryMap();
-  let categoryArray = Object.keys(categoryMap);
-  // console.log(categoryMap[tData[0].output]);
-  // vec_result(tData[0].output, distinctCategories);
-  // console.log(vec_result(tData[0].output, distinctCategories));
-
-  return tData.map(pair => {
-    return {
-      input: pair.input,
-      output: vec_result(categoryMap[pair.output], distinctCategories)
-    };
-  });
-};
-
-let synapticSun = async () => {
-  const Layer = synaptic.Layer;
+let createSynapticServer = async () => {
   const Network = synaptic.Network;
-  const Trainer = synaptic.Trainer;
-
-  const inputLayer = new Layer(100);
-  const hiddenLayer = new Layer(10);
-  const outputLayer = new Layer(3);
-
-  inputLayer.project(hiddenLayer);
-  hiddenLayer.project(outputLayer);
-
-  const myNetwork = new Network({
-    input: inputLayer,
-    hidden: [hiddenLayer],
-    output: outputLayer
-  });
-
-  const trainer = new Trainer(myNetwork);
-
-  let distinctCategories = 67;
-  let docs = await trainingdata.fetchDocs();
-  let dictionary = await trainingdata.createDict(docs);
-  let tData = await trainingdata.formattedData(docs, dictionary);
-
-  let categoryMap = await trainingdata.getCategoryMap();
-  let categoryArray = Object.keys(categoryMap);
-
-  let trainData = tData.map(pair => {
-    return {
-      input: pair.input,
-      output: vec_result(categoryMap[pair.output], distinctCategories)
-    };
-  });
-
-  trainer.train(trainData, {
-    rate: 0.2,
-    iterations: 70,
-    error: 0.1,
-    shuffle: true,
-    log: 100,
-    cost: Trainer.cost.CROSS_ENTROPY
-  });
-
-  article.fetchArticles('unclassified').then(async results => {
-    let testDoc = await trainingdata.convertToVector(results[0], dictionary);
-    console.log(myNetwork.activate(testDoc));
-    console.log(categoryArray[maxarg(myNetwork.activate(testDoc))]);
-  });
-};
-
-let synapticClassify = async doc => {
   console.log('Starting Classification Process...');
   const Trainer = synaptic.Trainer;
-  let numberOfCategories = await Redis.getRedis('numberOfCategories');
-  let classifiedDocs = await article.fetchArticles('classified');
-  let dictionary = await Redis.getRedis('dictionary');
-  // let myNetwork = synaptic.Network.fromJSON(await Redis.getRedis('NeuralNetwork'));
-  // let categoryMap = await trainingdata.getCategoryMap();
-  let categoryMap = await Redis.getRedis('categoryMap');
-  let categoryArray = Object.keys(categoryMap);
+  let result = await Promise.all([
+    Redis.getRedis('numberOfCategories'),
+    Redis.getRedis('dictionary'),
+    article.fetchArticles('classified'),
+    Redis.getRedis('categoryMap')
+  ]);
+  let numberOfCategories = result[0];
+  let classifiedDocs = result[2];
+  let dictionary = result[1];
+  let categoryMap = result[3];
 
   let tData = await trainingdata.formattedData(classifiedDocs, dictionary);
 
   const Layer = synaptic.Layer;
-  const Network = synaptic.Network;
 
   const inputLayer = new Layer(500);
   const hiddenLayer = new Layer(260);
@@ -123,7 +55,6 @@ let synapticClassify = async doc => {
   });
 
   console.log('Got all moving parts...');
-  const trainer = new Trainer(myNetwork);
 
   let trainData = tData.map(pair => {
     return {
@@ -133,31 +64,59 @@ let synapticClassify = async doc => {
   });
 
   console.log('trainingData created...');
+  let trainer = new Trainer(myNetwork);
 
-  trainer.train(trainData, {
-    rate: 0.05,
-    iterations: 20000,
-    log: 5000,
-    error: 0.1,
-    shuffle: true,
-    cost: Trainer.cost.MSE,
-    schedule: {
-      every: 5000, // repeat this task every 500 iterations
-      do: function(data) {
-        // custom log
-        console.log('error', data.error, 'iterations', data.iterations, 'rate', data.rate);
+  return new Promise((resolve, reject) => {
+    trainer.train(trainData, {
+      rate: 0.3,
+      iterations: 100,
+      error: 0.03,
+      shuffle: true,
+      cost: Trainer.cost.CROSS_ENTROPY,
+      schedule: {
+        every: 20, // repeat this task every 500 iterations
+        do: function(data) {
+          // custom log
+          console.log('error', data.error, 'iterations', data.iterations, 'rate', data.rate);
+          if (data.iterations == 100) {
+            resolve(myNetwork);
+          }
+        }
       }
+    });
+  });
+};
+
+let getSynapticBrain = async () => {
+  const Network = synaptic.Network;
+  let myNetwork = await Redis.getRedis('SynapticBrain');
+  return !myNetwork ? null : Network.fromJSON(myNetwork);
+};
+
+let synapticClassify = async doc => {
+  const Network = synaptic.Network;
+  let myNetwork = await getSynapticBrain();
+  let dictionary = await Redis.getRedis('dictionary');
+  let categoryMap = await Redis.getRedis('categoryMap');
+  let categoryArray = Object.keys(categoryMap);
+  let testDoc = trainingdata.convertToVector(doc, dictionary);
+  return new Promise((resolve, reject) => {
+    if (!myNetwork) {
+      createSynapticServer().then(NW => {
+        Redis.setRedis('SynapticBrain', JSON.stringify(NW.toJSON()));
+        console.log('I have what I need..... 4');
+        doc.category = categoryArray[maxarg(NW.activate(testDoc))];
+        resolve(doc);
+      });
+    } else {
+      doc.category = categoryArray[maxarg(myNetwork.activate(testDoc))];
+      doc.status = 'review';
+      resolve(doc);
     }
   });
-
-  console.log('training Done!!!!****');
-
-  let testDoc = trainingdata.convertToVector(doc, dictionary);
-  doc.category = categoryArray[maxarg(myNetwork.activate(testDoc))];
-  return doc;
 };
 
 module.exports = {
-  //   synapticSun,
+  createSynapticServer,
   synapticClassify
 };

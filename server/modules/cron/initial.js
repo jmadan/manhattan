@@ -37,7 +37,6 @@ let formattedData = async (docs, dict) => {
 let createDict = async docs => {
   console.log('docs length: ', docs.length);
   let dict = docs.reduce((prev, curr) => {
-    console.log('createDict', curr.url);
     return prev.concat(curr.stemwords);
   }, []);
   return mimir.dict(dict.toString());
@@ -56,16 +55,6 @@ let getCategoryMap = async () => {
     }
   });
 };
-//   Redis.
-//   // await category.getDistinctCategories().then((items) => {
-//   //   items.forEach((item, i) => {
-//   //     // console.log(item);
-//   //     if(item){
-//   //       categoryMap[item] = i;
-//   //     }
-//   //   })
-//   // });
-// }
 
 let distinctCategoryNumber = () => {
   return Redis.getRedis('distinctCategories')
@@ -90,68 +79,6 @@ let distinctCategoryNumber = () => {
     });
 };
 
-let createNetwork = trainingSet => {
-  let errors = [];
-  let result = [];
-  const Layer = synaptic.Layer;
-  const Network = synaptic.Network;
-
-  const inputLayer = new Layer(500);
-  const hiddenLayer = new Layer(260);
-  const outputLayer = new Layer(25);
-
-  inputLayer.project(hiddenLayer);
-  hiddenLayer.project(outputLayer);
-
-  const myNetwork = new Network({
-    input: inputLayer,
-    hidden: [hiddenLayer],
-    output: outputLayer
-  });
-  // let myTrainer = new Trainer(myNetwork);
-  // myTrainer.train(trainingSet, {
-  //   rate: .2,
-  //   iterations: 20000,
-  //   error: .1,
-  //   shuffle: true,
-  //   log: 2000,
-  //   cost: Trainer.cost.CROSS_ENTROPY,
-  //   schedule: {
-  //     every: 2000,
-  //     do: function (data) {
-  //         errors.push(data.error);
-  //         console.log(data.error)
-  //         counter+=1;
-  //         result.push({nr: counter, value: data.error});
-  //     }
-  //   }
-  // });
-
-  // train the network
-  // var learningRate = .3;
-  // for (var i = 0; i < 100; i++)
-  // {
-  //   trainingSet.map((ts) => {
-  //     myNetwork.activate(ts.input);
-  //     myNetwork.propagate(learningRate, ts.output);
-  //   });
-  // }
-
-  Redis.setRedis('NeuralNetwork', JSON.stringify(myNetwork));
-  console.log('Network Created....');
-};
-
-let getNetwork = () => {
-  const Network = synaptic.Network;
-  return Redis.getRedis('NeuralNetwork').then(myNetwork => {
-    if (myNetwork) {
-      return Network.fromJSON(myNetwork);
-    } else {
-      console.log('You got no Network!!! HELP...');
-    }
-  });
-};
-
 let getDistinctCategories = () => {
   return Redis.getRedis('distinctCategories').then(dCats => {
     if (dCats) {
@@ -164,8 +91,6 @@ let getDistinctCategories = () => {
 
 let trainNetwork = async () => {
   let result = await Promise.all([getNetwork(), getDistinctCategories()]);
-  // let myNetwork = await getNetwork();
-  // let distinctCategories = await getDistinctCategories();
   let trainingSet = await formattedTrainingData(result[1]);
   const Trainer = synaptic.Trainer;
   let myTrainer = new Trainer(result[0]);
@@ -177,16 +102,10 @@ let trainNetwork = async () => {
     log: 2000,
     cost: Trainer.cost.MSE
   });
-  // let learningRate = 0.3;
-  // for (var i = 0; i < 100; i++) {
-  //   trainingSet.map(ts => {
-  //     myNetwork.activate(ts.input);
-  //     myNetwork.propagate(learningRate, ts.output);
-  //   });
-  // }
 
   Redis.setRedis('NeuralNetwork', JSON.stringify(myNetwork));
   console.log('Network Trained...');
+  return myNetwork;
 };
 
 let createDictionary = async () => {
@@ -217,12 +136,6 @@ let formattedTrainingData = async distinctCategories => {
       console.log('data structured...');
       let categoryMap = await getCategoryMap();
       console.log('got CategoryMap...');
-      // let categoryArray = Object.keys(categoryMap);
-      // Redis.setRedis('categoryArray', JSON.stringify(categoryArray));
-      // getCategoryMap().then((cm)=>{
-      //   let categoryArray = Object.keys(cm);
-      //   Redis.setRedis('categoryArray', JSON.stringify(categoryArray));
-      // });
 
       let trainingSet = tData.map(pair => {
         return {
@@ -234,29 +147,9 @@ let formattedTrainingData = async distinctCategories => {
     })
     .catch(e => console.log(e));
 };
-// createLSTMNetwork: (trainingSet) => {
-//   const Architect = synaptic.Architect;
-//   const Trainer = synaptic.Trainer;
-//
-//   let myLSTM = Architect.LSTM(10, 20, 3);
-//   let myTrainer = new Trainer(myLSTM);
-//
-//   myTrainer.train(trainingSet, {
-//     rate: .2,
-//     iterations: 20000,
-//     error: .1,
-//     shuffle: true,
-//     log: 2000,
-//     cost: Trainer.cost.CROSS_ENTROPY
-//   })
-//
-//   console.log(myLSTM.toJSON());
-// }
 
 module.exports = {
   distinctCategoryNumber,
-  createNetwork,
-  getNetwork,
   trainNetwork,
   createDictionary,
   createCategoryMap,

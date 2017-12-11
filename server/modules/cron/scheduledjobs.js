@@ -1,42 +1,10 @@
 'use strict';
 
-// const cron = require('node-cron');
 const CronJob = require('cron').CronJob;
 const feed = require('../feed/feedparser');
 const initialSetup = require('./initial');
-
-// let createNetwork = () => {
-//   cron.schedule('* * */24 * * *', () => {
-//     console.log('Initializing Network creation and update', new Date().toDateString);
-//     initialSetup
-//       .distinctCategoryNumber()
-//       .then(num => {
-//         console.log(num);
-//         initialSetup.createDictionary();
-//         initialSetup.createCategoryMap();
-//         initialSetup.createNetwork();
-//       })
-//       .catch(e => console.log(e));
-//   });
-// };
-
-// let fetchRSSFeed = () => {
-//   cron.schedule('*/5 * * * *', () => {
-//     console.log('initializing initial feed retrieval...', new Date().toUTCString());
-//     feed
-//       .getRSSFeedProviders()
-//       .then(providers => {
-//         return feed.getProviderFeed(providers);
-//       })
-//       .then(flist => {
-//         flist.map(f => {
-//           feed.saveRssFeed(f.data).then(result => {
-//             console.log(result.result.n + ' Documents saved.');
-//           });
-//         });
-//       });
-//   });
-// };
+const synaptic = require('../nlp/synaptic');
+const article = require('../article');
 
 let fetchInitialFeeds = new CronJob({
   cronTime: '0 5 * * *',
@@ -82,12 +50,47 @@ let updateNetwork = new CronJob({
   onTick: () => {
     console.log('Initiating Network update...');
     initialSetup.trainNetwork();
-  }
+  },
+  start: false
+});
+
+let classifyDocs = docs => {
+  return Promise.all(
+    docs.map(d => {
+      return synaptic.synapticClassify(d);
+    })
+  );
+};
+
+let saveClassifiedDocs = docs => {
+  return Promise.all(
+    docs.map(d => {
+      console.log(d._id + ' - ' + d.category);
+      return article.autoUpdateArticleByClassification(d);
+    })
+  );
+};
+
+let synapticPrediction = new CronJob({
+  cronTime: '* */1 * * *',
+  onTick: () => {
+    article
+      .fetchArticles('unclassified')
+      .then(docs => {
+        return classifyDocs(docs);
+      })
+      .then(docsArray => {
+        saveClassifiedDocs(docsArray);
+      })
+      .catch(e => console.log(e));
+  },
+  start: false
 });
 
 module.exports = {
   // fetchRSSFeed,
   // createNetwork,
+  synapticPrediction,
   fetchInitialFeeds,
   fetchFeedContents,
   updateNetwork

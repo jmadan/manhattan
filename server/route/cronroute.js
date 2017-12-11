@@ -6,7 +6,7 @@ let startTask = (req, res, next) => {
     Cronjob.fetchRSSFeed.start();
   case 'fetchFeedContent':
     Cronjob.fetchFeedContent.start();
-  case 'updateFeed':s
+  case 'updateFeed':
     Cronjob.updateFeed.start();
   default:
     break;
