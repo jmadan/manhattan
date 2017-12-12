@@ -2,7 +2,7 @@ const Category = require('../category/category');
 const Redis = require('../../utils/redis');
 const MongoDB = require('../mongodb');
 const mimir = require('../nlp/mimir');
-const synaptic = require('synaptic');
+const synaptic = require('../nlp/synaptic');
 
 function vec_result(res, num_classes) {
   var i = 0,
@@ -90,10 +90,12 @@ let getDistinctCategories = () => {
 };
 
 let trainNetwork = async () => {
+  let Network = synaptic.Network();
   let result = await Promise.all([getNetwork(), getDistinctCategories()]);
   let trainingSet = await formattedTrainingData(result[1]);
   const Trainer = synaptic.Trainer;
-  let myTrainer = new Trainer(result[0]);
+  const myNetwork = Network.fromJSON(result[0]);
+  let myTrainer = new Trainer(myNetwork);
   myTrainer.train(trainingSet, {
     rate: 0.2,
     iterations: 20000,
@@ -103,7 +105,7 @@ let trainNetwork = async () => {
     cost: Trainer.cost.MSE
   });
 
-  Redis.setRedis('NeuralNetwork', JSON.stringify(myNetwork));
+  Redis.setRedis('SynapticBrain', JSON.stringify(myNetwork));
   console.log('Network Trained...');
   return myNetwork;
 };
@@ -148,10 +150,15 @@ let formattedTrainingData = async distinctCategories => {
     .catch(e => console.log(e));
 };
 
+let createNetwork = () => {
+  synaptic.createNetwork();
+};
+
 module.exports = {
   distinctCategoryNumber,
   trainNetwork,
   createDictionary,
   createCategoryMap,
-  formattedTrainingData
+  formattedTrainingData,
+  createNetwork
 };

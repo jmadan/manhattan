@@ -22,8 +22,10 @@ let startTask = (req, res, next) => {
     }
     break;
   case 'classify':
-    Scheduler.synapticPrediction.start();
-    res.json({ msg: 'Starting classification...' });
+    if (!Scheduler.synapticPrediction.running) {
+      Scheduler.synapticPrediction.start();
+      res.json({ msg: 'Starting classification...' });
+    }
     break;
   case 'all':
     if (!Scheduler.fetchInitialFeeds.running) {

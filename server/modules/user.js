@@ -80,15 +80,16 @@ let fetchUserFeed = user => {
 //   category: 1
 // }
 let fetchAnonymousFeed = () => {
-  let today = Math.round(new Date().getTime() / 1000);
-  let twentyFoursAgo = (today - 24 * 3600) * 1000;
+  // let today = Math.round(new Date().getTime() / 1000);
+  // let twentyFoursAgo = (today - 24 * 3600) * 1000;
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
         .collection('feeditems')
         .aggregate([
-          { $match: { $and: [{ status: 'classified' }, { pubDate: { $gte: twentyFoursAgo } }] } },
-          { $sample: { size: 50 } }
+          { $match: { $and: [{ status: 'classified' }] } },
+          { $sample: { size: 50 } },
+          { $sort: { pubDate: -1}}
         ])
         .limit(50)
         .toArray((error, docs) => {

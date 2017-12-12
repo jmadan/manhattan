@@ -102,6 +102,8 @@ server.listen(config.port, () => {
       console.log(num);
       initialSetup.createDictionary();
       initialSetup.createCategoryMap();
+      initialSetup.createNetwork();
+      console.log('Initial commands executed...');
     })
     .catch(e => console.log(e));
 });
