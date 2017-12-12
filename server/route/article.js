@@ -64,7 +64,7 @@ function classifyArticle(req, res, next) {
 
 let getSynaptic = (req, res, next) => {
   article.getArticle(req.params.id).then(doc => {
-    snn.synapticClassify(doc).then(dc => {
+    snn.classifyDocs(doc).then(dc => {
       if (dc.category) {
         res.json({ article: dc, articleUpdated: true });
       } else {
@@ -88,19 +88,6 @@ let getBrain = (req, res, next) => {
   next();
 };
 
-let getSynaptic1 = (req, res, next) => {
-  article.getArticle(req.params.id).then(doc => {
-    snn.synapticClassify1(doc).then(dc => {
-      if (dc.category) {
-        res.json({ article: dc, articleUpdated: true });
-      } else {
-        res.json({ article: dc, articleUpdated: false });
-      }
-    });
-  });
-  next();
-};
-
 module.exports = {
   getArticleByStatus,
   getArticleById,
@@ -108,6 +95,5 @@ module.exports = {
   updateArticle,
   classifyArticle,
   getSynaptic,
-  getBrain,
-  getSynaptic1
+  getBrain
 };

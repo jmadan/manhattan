@@ -22,8 +22,8 @@ let startTask = (req, res, next) => {
     }
     break;
   case 'classify':
-    if (!Scheduler.synapticPrediction.running) {
-      Scheduler.synapticPrediction.start();
+    if (!Scheduler.classifyDocs.running) {
+      Scheduler.classifyDocs.start();
       res.json({ msg: 'Starting classification...' });
     }
     break;
@@ -37,7 +37,7 @@ let startTask = (req, res, next) => {
     if (!Scheduler.updateNetwork.running) {
       Scheduler.updateNetwork.start();
     }
-    Scheduler.synapticPrediction.start();
+    Scheduler.classifyDocs.start();
     res.json({ msg: 'Starting all jobs...' });
     break;
   default:
@@ -59,14 +59,14 @@ let stopTask = (req, res, next) => {
     res.json({ msg: 'Stopping feed content retrieval...' });
     break;
   case 'classify':
-    Scheduler.synapticPrediction.stop();
+    Scheduler.classifyDocs.stop();
     res.json({ msg: 'Stopping classification...' });
     break;
   case 'all':
     Scheduler.fetchInitialFeeds.stop();
     Scheduler.fetchFeedContents.stop();
     Scheduler.updateNetwork.stop();
-    Scheduler.synapticPrediction.stop();
+    Scheduler.classifyDocs.stop();
     res.json({ msg: 'Stopping all jobs...' });
     break;
   default:

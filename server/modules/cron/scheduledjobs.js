@@ -54,51 +54,41 @@ let updateNetwork = new CronJob({
   start: false
 });
 
-// let classifyDocs = docs => {
-//   return Promise.all(
-//     docs.map(d => {
-//       return synaptic.synapticClassify(d);
-//     })
-//   );
-// };
+let saveClassifiedDocs = doc => {
+  article.autoUpdateArticleByClassification(doc).then(d => {
+    console.log(d.value._id + ' - update ' + d.lastErrorObject.updateExisting);
+  });
+};
 
-// let saveClassifiedDocs = docs => {
-//   return Promise.all(
-//     docs.map(d => {
-//       console.log(d._id + ' - ' + d.category);
-//       return article.autoUpdateArticleByClassification(d);
-//     })
-//   );
-// };
-
-// let trainNetwork = () => {
-//   let synapticNetwork = synaptic.getNetwork();
-// };
-
-let synapticPrediction = new CronJob({
+let synapticTraining = new CronJob({
   cronTime: '49 * * * *',
   onTick: () => {
-    console.log('I am ticked...');
     synaptic.trainNetwork();
-    // article
-    //   .fetchArticles('unclassified', 1)
-    //   .then(docs => {
-    //     return classifyDocs(docs);
-    //   })
-    //   .then(docsArray => {
-    //     saveClassifiedDocs(docsArray);
-    //   })
-    //   .catch(e => console.log(e));
   },
   start: true
 });
 
+let classifyDocs = new CronJob({
+  cronTime: '*/5 * * * *',
+  onTick: () => {
+    console.log('Initiating article classification ...');
+    article
+      .fetchArticles('unclassified', 1)
+      .then(doc => {
+        return synaptic.classifyDocs(doc[0]);
+      })
+      .then(item => {
+        saveClassifiedDocs(item);
+      })
+      .catch(e => console.log(e));
+  },
+  start: false
+});
+
 module.exports = {
-  // fetchRSSFeed,
-  // createNetwork,
-  synapticPrediction,
+  synapticTraining,
   fetchInitialFeeds,
   fetchFeedContents,
-  updateNetwork
-  // trainNetwork
+  updateNetwork,
+  classifyDocs
 };

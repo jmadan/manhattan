@@ -163,10 +163,7 @@ let trainNetwork = async () => {
     getNetwork()
   ]);
   let NW = result[4];
-  console.log(NW.toJSON());
-
   const Trainer = synaptic.Trainer;
-
   let numberOfCategories = result[0];
   let classifiedDocs = result[2];
   let dictionary = result[1];
@@ -215,8 +212,21 @@ let trainNetwork = async () => {
   }
 };
 
+let classifyDocs = async doc => {
+  let result = await Promise.all([Redis.getRedis('dictionary'), Redis.getRedis('categoryMap'), getNetwork()]);
+  let dictionary = result[0];
+  let categoryMap = result[1];
+  let categoryArray = Object.keys(categoryMap);
+  let testDoc = trainingdata.convertToVector(doc, dictionary);
+  let NW = result[2];
+  doc.category = categoryArray[maxarg(NW.activate(testDoc))];
+  doc.status = 'review';
+  return doc;
+};
+
 module.exports = {
   createNetwork,
   getNetwork,
-  trainNetwork
+  trainNetwork,
+  classifyDocs
 };

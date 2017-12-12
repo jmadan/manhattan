@@ -22,6 +22,7 @@ let createDict = docs => {
 };
 
 let convertToVector = (doc, dict) => {
+  console.log('doc id: ', doc._id);
   return mimir.bow(doc.stemwords.toString(), dict);
 };
 
