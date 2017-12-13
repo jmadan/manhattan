@@ -10,7 +10,7 @@
     "clean": "rm -rf build",
     "lint": "require-lint",
     "test": "npm run lint && NODE_ENV=test nyc mocha ./tests/*s",
-    "start": "node --max-old-space-size=4096 ./server/server.js"
+    "start": "node --max-old-space-size=2048 ./server/server.js"
   },
   "keywords": ["node"],
   "author": "Jasdeep Madan",
