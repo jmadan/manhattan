@@ -12,7 +12,9 @@
     "test": "npm run lint && NODE_ENV=test nyc mocha ./tests/*s",
     "start": "node --max-old-space-size=2048 ./server/server.js"
   },
-  "keywords": ["node"],
+  "keywords": [
+    "node"
+  ],
   "author": "Jasdeep Madan",
   "license": "ISC",
   "dependencies": {

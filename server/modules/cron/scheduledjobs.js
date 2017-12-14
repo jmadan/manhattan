@@ -101,7 +101,7 @@ let classifyDocs = new CronJob({
       })
       .catch(e => console.log(e));
   },
-  start: true
+  start: false
 });
 
 module.exports = {
