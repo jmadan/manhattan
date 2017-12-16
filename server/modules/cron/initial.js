@@ -90,7 +90,7 @@ let getDistinctCategories = () => {
 };
 
 let trainNetwork = async () => {
-  let Network = synaptic.Network();
+  let Network = synaptic.Network;
   let result = await Promise.all([getNetwork(), getDistinctCategories()]);
   let trainingSet = await formattedTrainingData(result[1]);
   const Trainer = synaptic.Trainer;
@@ -107,7 +107,7 @@ let trainNetwork = async () => {
 
   Redis.setRedis('SynapticBrain', JSON.stringify(myNetwork));
   console.log('Network Trained...');
-  return myNetwork;
+  // return myNetwork;
 };
 
 let createDictionary = async () => {

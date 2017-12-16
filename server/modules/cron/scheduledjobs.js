@@ -46,7 +46,7 @@ let fetchFeedContents = new CronJob({
 });
 
 let updateNetwork = new CronJob({
-  cronTime: '0 6 * * *',
+  cronTime: '30 22 * * Sunday',
   onTick: () => {
     console.log('Initiating Network update...');
     initialSetup.trainNetwork();
@@ -69,7 +69,7 @@ let synapticTraining = new CronJob({
 });
 
 let classifyDocs = new CronJob({
-  cronTime: '*/5 * * * *',
+  cronTime: '*/4 * * * *',
   onTick: () => {
     console.log('Initiating article classification ...');
     article
