@@ -6,6 +6,24 @@ const initialSetup = require('./initial');
 const synaptic = require('../nlp/synaptic');
 const article = require('../article');
 
+let initialjobs = () =>
+  new CronJob({
+    cronTime: '5 0 * 1 *',
+    onTick: () => {
+      initialSetup
+        .distinctCategoryNumber()
+        .then(num => {
+          console.log(num);
+          initialSetup.createDictionary();
+          initialSetup.createCategoryMap();
+          initialSetup.createNetwork();
+          console.log('Initial commands executed...');
+        })
+        .catch(e => console.log(e));
+    },
+    start: false
+  });
+
 let fetchInitialFeeds = new CronJob({
   cronTime: '0 5 * * *',
   onTick: () => {
@@ -56,20 +74,21 @@ let updateNetwork = new CronJob({
 
 let saveClassifiedDocs = doc => {
   article.autoUpdateArticleByClassification(doc).then(d => {
-    console.log(d.value._id + ' - update ' + d.lastErrorObject.updateExisting);
+    console.log(d.value._id + ' - update ' + JSON.stringify(d.lastErrorObject.updatedExisting));
   });
 };
 
 let synapticTraining = new CronJob({
-  cronTime: '49 * * * *',
+  cronTime: '0 0 * * *',
   onTick: () => {
+    console.log('Triaing the Network Now.....');
     synaptic.trainNetwork();
   },
-  start: true
+  start: false
 });
 
 let classifyDocs = new CronJob({
-  cronTime: '*/4 * * * *',
+  cronTime: '*/3 * * * *',
   onTick: () => {
     console.log('Initiating article classification ...');
     article
@@ -82,7 +101,7 @@ let classifyDocs = new CronJob({
       })
       .catch(e => console.log(e));
   },
-  start: false
+  start: true
 });
 
 module.exports = {
@@ -90,5 +109,6 @@ module.exports = {
   fetchInitialFeeds,
   fetchFeedContents,
   updateNetwork,
-  classifyDocs
+  classifyDocs,
+  initialjobs
 };

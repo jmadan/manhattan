@@ -10,8 +10,6 @@ const cronRoute = require('./route/cronjob');
 // let Rollbar = require('rollbar');
 // let rollbar = new Rollbar(process.env.ROLLBAR_KEY);
 
-// const initialSetup = require('../server/modules/cron/initial');
-
 const cors = corsMiddleware({
   preflightMaxAge: 5,
   origins: ['*'],
@@ -96,14 +94,4 @@ server.on('uncaughtException', (req, res, route, err) => {
 
 server.listen(config.port, () => {
   log.info('%s listening at %s', server.name, server.url);
-  // initialSetup
-  //   .distinctCategoryNumber()
-  //   .then(num => {
-  //     console.log(num);
-  //     initialSetup.createDictionary();
-  //     initialSetup.createCategoryMap();
-  //     initialSetup.createNetwork();
-  //     console.log('Initial commands executed...');
-  //   })
-  //   .catch(e => console.log(e));
 });
