@@ -158,7 +158,7 @@ let trainNetwork = async () => {
   let result = await Promise.all([
     Redis.getRedis('numberOfCategories'),
     Redis.getRedis('dictionary'),
-    article.fetchArticles('classified'),
+    article.fetchArticles('classified', 122),
     Redis.getRedis('categoryMap'),
     getNetwork()
   ]);
@@ -172,7 +172,7 @@ let trainNetwork = async () => {
   let tData = await trainingdata.formattedData(classifiedDocs, dictionary);
 
   console.log('Got all moving parts...');
-
+  console.log('training data size: ', tData.length);
   let trainData = tData.map(pair => {
     return {
       input: pair.input,
@@ -203,18 +203,16 @@ let trainNetwork = async () => {
   // });
 
   //train the network
-  var learningRate = 0.3;
-  for (var i = 0; i < 20000; i++) {
+  var learningRate = 0.2;
+  for (var i = 0; i <= 1000; i++) {
     trainData.map(t => {
       NW.activate(t.input);
       NW.propagate(learningRate, t.output);
     });
     console.log('Iterations completed: ', i);
-    if (i == '19000') {
-      Redis.setRedis('SynapticBrain', JSON.stringify(NW));
-      console.log('Network Trained...');
-    }
   }
+  Redis.setRedis('SynapticBrain', JSON.stringify(NW));
+  console.log('Network Trained...');
 };
 
 let classifyDocs = async doc => {
