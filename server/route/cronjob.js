@@ -16,8 +16,8 @@ let startTask = (req, res, next) => {
     }
     break;
   case 'updatenetwork':
-    if (!Scheduler.updateNetwork.running) {
-      Scheduler.updateNetwork.start();
+    if (!Scheduler.synapticTraining.running) {
+      Scheduler.synapticTraining.start();
       res.json({ msg: 'Network update in progress...' });
     }
     break;
@@ -34,8 +34,8 @@ let startTask = (req, res, next) => {
     if (!Scheduler.fetchFeedContents.running) {
       Scheduler.fetchFeedContents.start();
     }
-    if (!Scheduler.updateNetwork.running) {
-      Scheduler.updateNetwork.start();
+    if (!Scheduler.synapticTraining.running) {
+      Scheduler.synapticTraining.start();
     }
     Scheduler.classifyDocs.start();
     res.json({ msg: 'Starting all jobs...' });
@@ -65,7 +65,7 @@ let stopTask = (req, res, next) => {
   case 'all':
     Scheduler.fetchInitialFeeds.stop();
     Scheduler.fetchFeedContents.stop();
-    Scheduler.updateNetwork.stop();
+    Scheduler.synapticTraining.stop();
     Scheduler.classifyDocs.stop();
     res.json({ msg: 'Stopping all jobs...' });
     break;

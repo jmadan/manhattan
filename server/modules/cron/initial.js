@@ -91,7 +91,7 @@ let getDistinctCategories = () => {
 
 let trainNetwork = async () => {
   let Network = synaptic.Network;
-  let result = await Promise.all([getNetwork(), getDistinctCategories()]);
+  let result = await Promise.all([synaptic.getNetwork(), getDistinctCategories()]);
   let trainingSet = await formattedTrainingData(result[1]);
   const Trainer = synaptic.Trainer;
   const myNetwork = Network.fromJSON(result[0]);
@@ -145,6 +145,7 @@ let formattedTrainingData = async distinctCategories => {
           output: vec_result(categoryMap[pair.output], distinctCategories)
         };
       });
+      console.log('returning from formatted training data...');
       return trainingSet;
     })
     .catch(e => console.log(e));

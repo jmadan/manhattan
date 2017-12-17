@@ -181,7 +181,7 @@ let trainNetwork = async () => {
   });
 
   console.log('trainingData created...');
-  let trainer = new Trainer(NW);
+  // let trainer = new Trainer(NW);
 
   console.log('train the Networks ...');
   // trainer.train(trainData, {
@@ -209,6 +209,11 @@ let trainNetwork = async () => {
       NW.activate(t.input);
       NW.propagate(learningRate, t.output);
     });
+
+    if (i == '20000') {
+      Redis.setRedis('SynapticBrain', JSON.stringify(NW));
+      console.log('Network Trained...');
+    }
   }
 };
 
