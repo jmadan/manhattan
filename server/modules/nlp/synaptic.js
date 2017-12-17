@@ -209,8 +209,8 @@ let trainNetwork = async () => {
       NW.activate(t.input);
       NW.propagate(learningRate, t.output);
     });
-
-    if (i == '20000') {
+    console.log('Iterations completed: ', i);
+    if (i == '19000') {
       Redis.setRedis('SynapticBrain', JSON.stringify(NW));
       console.log('Network Trained...');
     }
