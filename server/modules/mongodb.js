@@ -22,6 +22,23 @@ let insertDocuments = (coll, docs) => {
   });
 };
 
+let insertDocument = (coll, doc) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      if (err) {
+        reject(err);
+      }
+      db.collection(coll).update({ name: 'synaptic_brain' }, doc, { upsert: true }, (err, result) => {
+        db.close();
+        if (err) {
+          reject(err);
+        }
+        resolve(result);
+      });
+    });
+  });
+};
+
 let updateDocument = (coll, userId, query) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
@@ -58,4 +75,4 @@ let getDocuments = (coll, query) => {
   });
 };
 
-module.exports = { insertDocuments, updateDocument, getDocuments };
+module.exports = { insertDocuments, updateDocument, getDocuments, insertDocument };
