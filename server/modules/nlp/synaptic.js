@@ -145,7 +145,7 @@ let createNetwork = () => {
 };
 
 let getNetwork = () => {
-  return Redis.getRedis('SynapticBrain').then(NW => {
+  return Redis.getRedis('SynapticBrain1').then(NW => {
     if (!NW) {
       return createNetwork();
     } else {
@@ -160,7 +160,6 @@ let trainNetwork = async () => {
     Redis.getRedis('numberOfCategories'),
     Redis.getRedis('dictionary'),
     article.fetchArticles('classified', 127),
-
     Redis.getRedis('categoryMap'),
     getNetwork()
   ]);
@@ -213,7 +212,10 @@ let trainNetwork = async () => {
     });
     console.log('Iterations completed: ', i);
   }
-  Redis.setRedis('SynapticBrain', JSON.stringify(NW));
+  Redis.setRedis('SynapticBrain1', JSON.stringify(NW));
+  Mongo.insertDocument('brain', NW.toJSON()).then(res => {
+    console.log('Network saved in Mongo...', res.ops);
+  });
   console.log('Network Trained...');
 };
 
