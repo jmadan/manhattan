@@ -28,6 +28,7 @@
     "mongodb": "^2.2.28",
     "natural": "^0.5.4",
     "nbayes": "^3.0.2",
+    "neo4j-driver": "^1.5.1",
     "node-cron": "^1.2.0",
     "parse5": "^3.0.2",
     "pg": "7.1.2",
