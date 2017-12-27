@@ -212,10 +212,7 @@ let trainNetwork = async () => {
     });
     console.log('Iterations completed: ', i);
   }
-  Redis.setRedis('SynapticBrain1', JSON.stringify(NW));
-  Mongo.insertDocument('brain', NW.toJSON()).then(res => {
-    console.log('Network saved in Mongo...', res.ops);
-  });
+  Redis.setRedis('SynapticBrain', JSON.stringify(NW));
   console.log('Network Trained...');
 };
 

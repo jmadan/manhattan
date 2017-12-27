@@ -74,7 +74,7 @@ let saveClassifiedDocs = doc => {
 };
 
 let synapticTraining = new CronJob({
-  cronTime: '01 11 * * *',
+  cronTime: '30 11 * * *',
   onTick: () => {
     console.log('Triaing the Network Now.....');
     synaptic.trainNetwork();
