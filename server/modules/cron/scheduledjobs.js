@@ -65,12 +65,16 @@ let fetchFeedContents = new CronJob({
 
 let saveClassifiedDocs = doc => {
   article.autoUpdateArticleByClassification(doc).then(d => {
-    console.log(d.value._id + ' - update ' + JSON.stringify(d.lastErrorObject.updatedExisting));
+    console.log(
+      d.value._id +
+        ' - update ' +
+        JSON.stringify(d.lastErrorObject.updatedExisting)
+    );
   });
 };
 
 let synapticTraining = new CronJob({
-  cronTime: '01 11 * * *',
+  cronTime: '30 11 * * *',
   onTick: () => {
     console.log('Triaing the Network Now.....');
     synaptic.trainNetwork();

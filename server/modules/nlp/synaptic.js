@@ -160,6 +160,7 @@ let trainNetwork = async () => {
     Redis.getRedis('numberOfCategories'),
     Redis.getRedis('dictionary'),
     article.fetchArticles('classified', 127),
+
     Redis.getRedis('categoryMap'),
     getNetwork()
   ]);
@@ -212,15 +213,16 @@ let trainNetwork = async () => {
     });
     console.log('Iterations completed: ', i);
   }
-  Redis.setRedis('SynapticBrain1', JSON.stringify(NW));
-  Mongo.insertDocument('brain', NW.toJSON()).then(res => {
-    console.log('Network saved in Mongo...', res.ops);
-  });
+  Redis.setRedis('SynapticBrain', JSON.stringify(NW));
   console.log('Network Trained...');
 };
 
 let classifyDocs = async doc => {
-  let result = await Promise.all([Redis.getRedis('dictionary'), Redis.getRedis('categoryMap'), getNetwork()]);
+  let result = await Promise.all([
+    Redis.getRedis('dictionary'),
+    Redis.getRedis('categoryMap'),
+    getNetwork()
+  ]);
   let dictionary = result[0];
   let categoryMap = result[1];
   let categoryArray = Object.keys(categoryMap);
