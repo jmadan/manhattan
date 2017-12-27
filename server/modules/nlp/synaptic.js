@@ -145,7 +145,7 @@ let createNetwork = () => {
 };
 
 let getNetwork = () => {
-  return Redis.getRedis('SynapticBrain1').then(NW => {
+  return Redis.getRedis('SynapticBrain').then(NW => {
     if (!NW) {
       return createNetwork();
     } else {
