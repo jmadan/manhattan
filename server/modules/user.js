@@ -34,7 +34,7 @@ let fetchUserByEmail = email => {
 let fetchUserFeed = user => {
   let today = Math.round(new Date().getTime() / 1000);
   let seventyTwoHours = today - 72 * 3600 * 1000;
-  let userInterests = user.interests.map(i => i.name);
+
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
@@ -43,7 +43,7 @@ let fetchUserFeed = user => {
           {
             $and: [
               { status: 'classified' },
-              { category: { $in: userInterests } },
+              { category: { $in: user.interests ? user.interests.map(i => i.name) : [] } },
               { pubDate: { $gte: seventyTwoHours } }
             ]
           },
@@ -60,6 +60,7 @@ let fetchUserFeed = user => {
             subcategory: 1
           }
         )
+        .sort({ pubDate: -1 })
         .toArray((error, docs) => {
           if (error) {
             reject(error);
@@ -69,19 +70,10 @@ let fetchUserFeed = user => {
     });
   });
 };
-// {
-//   url: 1,
-//   title: 1,
-//   description: 1,
-//   keywords: 1,
-//   author: 1,
-//   pubDate: 1,
-//   provider: 1,
-//   category: 1
-// }
+
 let fetchAnonymousFeed = () => {
-  // let today = Math.round(new Date().getTime() / 1000);
-  // let twentyFoursAgo = (today - 24 * 3600) * 1000;
+  let today = Math.round(new Date().getTime() / 1000);
+  let seventyTwoHours = today - 72 * 3600 * 1000;
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
@@ -89,9 +81,22 @@ let fetchAnonymousFeed = () => {
         .aggregate([
           { $match: { $and: [{ status: 'classified' }] } },
           { $sample: { size: 50 } },
-          { $sort: { pubDate: -1}}
+          {
+            $project: {
+              url: 1,
+              title: 1,
+              description: 1,
+              keywords: 1,
+              author: 1,
+              pubDate: 1,
+              provider: 1,
+              category: 1,
+              parentcat: 1,
+              subcategory: 1
+            }
+          }
         ])
-        .limit(50)
+        .sort({ pubDate: -1 })
         .toArray((error, docs) => {
           if (error) {
             reject(error);

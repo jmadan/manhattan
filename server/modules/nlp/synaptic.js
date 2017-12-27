@@ -2,6 +2,7 @@ const synaptic = require('synaptic');
 const trainingdata = require('./trainingdata');
 const article = require('../article');
 const Redis = require('../../utils/redis');
+const Mongo = require('../mongodb');
 
 function vec_result(res, num_classes) {
   var i = 0,
@@ -128,8 +129,8 @@ let createNetwork = () => {
   let Network = synaptic.Network;
   const Layer = synaptic.Layer;
 
-  const inputLayer = new Layer(500);
-  const hiddenLayer = new Layer(260);
+  const inputLayer = new Layer(700);
+  const hiddenLayer = new Layer(350);
   const outputLayer = new Layer(25);
 
   inputLayer.project(hiddenLayer);
@@ -158,7 +159,7 @@ let trainNetwork = async () => {
   let result = await Promise.all([
     Redis.getRedis('numberOfCategories'),
     Redis.getRedis('dictionary'),
-    article.fetchArticles('classified'),
+    article.fetchArticles('classified', 127),
     Redis.getRedis('categoryMap'),
     getNetwork()
   ]);
@@ -172,7 +173,7 @@ let trainNetwork = async () => {
   let tData = await trainingdata.formattedData(classifiedDocs, dictionary);
 
   console.log('Got all moving parts...');
-
+  console.log('training data size: ', tData.length);
   let trainData = tData.map(pair => {
     return {
       input: pair.input,
@@ -203,18 +204,19 @@ let trainNetwork = async () => {
   // });
 
   //train the network
-  var learningRate = 0.3;
-  for (var i = 0; i < 20000; i++) {
+  var learningRate = 0.001;
+  for (var i = 0; i <= 5000; i++) {
     trainData.map(t => {
       NW.activate(t.input);
       NW.propagate(learningRate, t.output);
     });
     console.log('Iterations completed: ', i);
-    if (i == '19000') {
-      Redis.setRedis('SynapticBrain', JSON.stringify(NW));
-      console.log('Network Trained...');
-    }
   }
+  Redis.setRedis('SynapticBrain1', JSON.stringify(NW));
+  Mongo.insertDocument('brain', NW.toJSON()).then(res => {
+    console.log('Network saved in Mongo...', res.ops);
+  });
+  console.log('Network Trained...');
 };
 
 let classifyDocs = async doc => {

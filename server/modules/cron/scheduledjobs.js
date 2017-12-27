@@ -63,15 +63,6 @@ let fetchFeedContents = new CronJob({
   start: false
 });
 
-let updateNetwork = new CronJob({
-  cronTime: '30 22 * * sun',
-  onTick: () => {
-    console.log('Initiating Network update...');
-    initialSetup.trainNetwork();
-  },
-  start: false
-});
-
 let saveClassifiedDocs = doc => {
   article.autoUpdateArticleByClassification(doc).then(d => {
     console.log(d.value._id + ' - update ' + JSON.stringify(d.lastErrorObject.updatedExisting));
@@ -79,12 +70,12 @@ let saveClassifiedDocs = doc => {
 };
 
 let synapticTraining = new CronJob({
-  cronTime: '30 06 * * sun',
+  cronTime: '01 11 * * *',
   onTick: () => {
     console.log('Triaing the Network Now.....');
     synaptic.trainNetwork();
   },
-  start: false
+  start: true
 });
 
 let classifyDocs = new CronJob({
@@ -101,14 +92,13 @@ let classifyDocs = new CronJob({
       })
       .catch(e => console.log(e));
   },
-  start: true
+  start: false
 });
 
 module.exports = {
   synapticTraining,
   fetchInitialFeeds,
   fetchFeedContents,
-  updateNetwork,
   classifyDocs,
   initialjobs
 };

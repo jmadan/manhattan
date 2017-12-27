@@ -70,6 +70,7 @@ server.post('/api/category', categoryRoute.newCategory);
 server.get('/api/user/feed/:userId', userRoute.fetchUserFeed);
 server.get('/api/user/email/:email', userRoute.fetchUserByEmail);
 
+server.post('/api/user/action', userRoute.userAction);
 server.patch('/api/user/:userId', userRoute.updateUser);
 server.post('/api/user/interest', userRoute.updateUserInterest);
 server.post('/api/user', userRoute.createUser);
