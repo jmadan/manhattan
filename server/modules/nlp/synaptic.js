@@ -159,7 +159,7 @@ let trainNetwork = async () => {
   let result = await Promise.all([
     Redis.getRedis('numberOfCategories'),
     Redis.getRedis('dictionary'),
-    article.fetchArticles('classified', 127),
+    article.fetchClassifiedArticles(),
     Redis.getRedis('categoryMap'),
     getNetwork()
   ]);
