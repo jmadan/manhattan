@@ -160,21 +160,6 @@ let updateUser = (userId, reqBody) => {
       .then(result => resolve(result))
       .catch(err => reject(err));
   });
-  // return new Promise((resolve, reject) => {
-  //   MongoClient.connect(DBURI, (err, db) => {
-  //     db.collection('users').updateOne({
-  //       email: user.email
-  //     },
-  //     { $set: user },
-  //     { new: true },
-  //     (error, result) => {
-  //       if (error) {
-  //         reject(err);
-  //       }
-  //       resolve(result);
-  //     });
-  //   });
-  // });
 };
 
 let performAction = (user, action, item) => {
