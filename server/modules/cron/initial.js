@@ -19,7 +19,7 @@ function maxarg(array) {
 }
 
 let fetchDocs = async () => {
-  return await MongoDB.getDocuments('feeditems', { category: { $nin: [null, ''] } })
+  return await MongoDB.getDocuments('feeditems', { status: 'classified' })
     .then(docs => {
       return docs;
     })
@@ -29,7 +29,10 @@ let fetchDocs = async () => {
 let formattedData = async (docs, dict) => {
   let tdata = [];
   await docs.map(d => {
-    tdata.push({ input: mimir.bow(d.stemwords.toString(), dict), output: d.category });
+    tdata.push({
+      input: mimir.bow(d.stemwords.toString(), dict),
+      output: d.category
+    });
   });
   return tdata;
 };
@@ -91,7 +94,10 @@ let getDistinctCategories = () => {
 
 let trainNetwork = async () => {
   let Network = synaptic.Network;
-  let result = await Promise.all([synaptic.getNetwork(), getDistinctCategories()]);
+  let result = await Promise.all([
+    synaptic.getNetwork(),
+    getDistinctCategories()
+  ]);
   let trainingSet = await formattedTrainingData(result[1]);
   const Trainer = synaptic.Trainer;
   const myNetwork = Network.fromJSON(result[0]);
