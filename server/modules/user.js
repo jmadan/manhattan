@@ -173,17 +173,6 @@ let performAction = (user, action, item) => {
   // });
 };
 
-let performAction = (user, action, item) => {
-  // return new Promise(async (resolve, reject) => {
-  NeoClient.findUser(user)
-    .then(result => {
-      console.log(result, item.title);
-    })
-    .catch(err => console.log(err));
-  // resolve(u);
-  // });
-};
-
 module.exports = {
   fetchUserById,
   fetchUserByEmail,
