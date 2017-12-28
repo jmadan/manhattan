@@ -65,7 +65,11 @@ let fetchFeedContents = new CronJob({
 
 let saveClassifiedDocs = doc => {
   article.autoUpdateArticleByClassification(doc).then(d => {
-    console.log(d.value._id + ' - update ' + JSON.stringify(d.lastErrorObject.updatedExisting));
+    console.log(
+      d.value._id +
+        ' - update ' +
+        JSON.stringify(d.lastErrorObject.updatedExisting)
+    );
   });
 };
 

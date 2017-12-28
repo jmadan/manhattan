@@ -159,7 +159,7 @@ let trainNetwork = async () => {
   let result = await Promise.all([
     Redis.getRedis('numberOfCategories'),
     Redis.getRedis('dictionary'),
-    article.fetchArticles('classified', 127),
+    article.fetchClassifiedArticles(),
     Redis.getRedis('categoryMap'),
     getNetwork()
   ]);
@@ -220,7 +220,11 @@ let trainNetwork = async () => {
 };
 
 let classifyDocs = async doc => {
-  let result = await Promise.all([Redis.getRedis('dictionary'), Redis.getRedis('categoryMap'), getNetwork()]);
+  let result = await Promise.all([
+    Redis.getRedis('dictionary'),
+    Redis.getRedis('categoryMap'),
+    getNetwork()
+  ]);
   let dictionary = result[0];
   let categoryMap = result[1];
   let categoryArray = Object.keys(categoryMap);

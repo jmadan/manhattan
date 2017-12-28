@@ -2,18 +2,21 @@
 const MongoClient = require('mongodb').MongoClient;
 let ObjectID = require('mongodb').ObjectID;
 const DBURI = process.env.MONGODB_URI;
+const NeoClient = require('../utils/neo4j');
 
 const MongoC = require('./mongodb');
 
 let fetchUserById = userId => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection('users').findOne({ _id: ObjectID(userId) }, (error, item) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(item);
-      });
+      db
+        .collection('users')
+        .findOne({ _id: ObjectID(userId) }, (error, item) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(item);
+        });
     });
   });
 };
@@ -32,35 +35,38 @@ let fetchUserByEmail = email => {
 };
 
 let fetchUserFeed = user => {
-  let today = Math.round(new Date().getTime() / 1000);
-  let seventyTwoHours = today - 72 * 3600 * 1000;
+  // let today = Math.round(new Date().getTime() / 1000);
+  // let seventyTwoHours = today - 72 * 3600 * 1000;
 
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
         .collection('feeditems')
-        .find(
+        .aggregate([
           {
-            $and: [
-              { status: 'classified' },
-              { category: { $in: user.interests ? user.interests.map(i => i.name) : [] } },
-              { pubDate: { $gte: seventyTwoHours } }
-            ]
+            $match: {
+              $and: [
+                { status: 'classified' },
+                { category: { $in: user.interests } }
+              ]
+            }
           },
+          { $sample: { size: 50 } },
           {
-            url: 1,
-            title: 1,
-            description: 1,
-            keywords: 1,
-            author: 1,
-            pubDate: 1,
-            provider: 1,
-            category: 1,
-            parentcat: 1,
-            subcategory: 1
+            $project: {
+              url: 1,
+              title: 1,
+              description: 1,
+              keywords: 1,
+              author: 1,
+              pubDate: 1,
+              provider: 1,
+              category: 1,
+              parentcat: 1,
+              subcategory: 1
+            }
           }
-        )
-        .sort({ pubDate: -1 })
+        ])
         .toArray((error, docs) => {
           if (error) {
             reject(error);
@@ -71,9 +77,11 @@ let fetchUserFeed = user => {
   });
 };
 
+// { category: { $in: user.interests ? user.interests.map(i => i.name) : [] } }
+
 let fetchAnonymousFeed = () => {
-  let today = Math.round(new Date().getTime() / 1000);
-  let seventyTwoHours = today - 72 * 3600 * 1000;
+  // let today = Math.round(new Date().getTime() / 1000);
+  // let seventyTwoHours = today - 72 * 3600 * 1000;
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
@@ -123,6 +131,9 @@ let newUser = user => {
           if (error) {
             reject(error);
           }
+          NeoClient.createUser(user).then(response => {
+            console.log(response);
+          });
           resolve(result);
         }
       );
@@ -134,14 +145,14 @@ let updateUser = (userId, reqBody) => {
   let { op, attr, value } = reqBody;
   let query = null;
   switch (attr) {
-  case 'interest':
-    query = { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
-    break;
-  case 'user':
-    query = { $set: { value } };
-    break;
-  default:
-    break;
+    case 'interest':
+      query = { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
+      break;
+    case 'user':
+      query = { $set: { value } };
+      break;
+    default:
+      break;
   }
 
   return new Promise((resolve, reject) => {
@@ -149,20 +160,16 @@ let updateUser = (userId, reqBody) => {
       .then(result => resolve(result))
       .catch(err => reject(err));
   });
-  // return new Promise((resolve, reject) => {
-  //   MongoClient.connect(DBURI, (err, db) => {
-  //     db.collection('users').updateOne({
-  //       email: user.email
-  //     },
-  //     { $set: user },
-  //     { new: true },
-  //     (error, result) => {
-  //       if (error) {
-  //         reject(err);
-  //       }
-  //       resolve(result);
-  //     });
-  //   });
+};
+
+let performAction = (user, action, item) => {
+  // return new Promise(async (resolve, reject) => {
+  NeoClient.findUser(user)
+    .then(result => {
+      console.log(result, item.title);
+    })
+    .catch(err => console.log(err));
+  // resolve(u);
   // });
 };
 
@@ -172,5 +179,6 @@ module.exports = {
   fetchUserFeed,
   newUser,
   updateUser,
-  fetchAnonymousFeed
+  fetchAnonymousFeed,
+  performAction
 };

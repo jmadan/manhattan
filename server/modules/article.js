@@ -28,6 +28,23 @@ exports.fetchArticles = (status, noofdocs = 10) => {
   });
 };
 
+exports.fetchClassifiedArticles = () => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db
+        .collection('feeditems')
+        .find({ status: 'classified' })
+        .sort({ pubDate: -1 })
+        .toArray((err, docs) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(docs);
+        });
+    });
+  });
+};
+
 exports.getArticle = id => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
@@ -97,12 +114,16 @@ exports.updateArticleCategory = (id, category) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
         .collection('feeditems')
-        .findOneAndUpdate({ _id: ObjectID(id) }, { $set: { category: category, status: 'classified' } }, (err, doc) => {
-          if (err) {
-            reject(err);
+        .findOneAndUpdate(
+          { _id: ObjectID(id) },
+          { $set: { category: category, status: 'classified' } },
+          (err, doc) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(doc);
           }
-          resolve(doc);
-        });
+        );
     });
   });
 };
@@ -145,7 +166,7 @@ exports.getItemDetails = item => {
 };
 
 exports.getArticleText = item => {
-  textract.fromUrl(item.url, function (error, text) {
+  textract.fromUrl(item.url, function(error, text) {
     return text;
   });
 };
@@ -153,7 +174,7 @@ exports.getArticleText = item => {
 exports.getArticleStemWords = item => {
   return new Promise((resolve, reject) => {
     try {
-      textract.fromUrl(item.url, function (error, text) {
+      textract.fromUrl(item.url, function(error, text) {
         if (text) {
           item.itembody = text;
           item.stemwords = lancasterStemmer.tokenizeAndStem(text);
