@@ -6,7 +6,6 @@ const providerRoute = require('./route/provider');
 const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
-const cronRoute = require('./route/cronjob');
 // let Rollbar = require('rollbar');
 // let rollbar = new Rollbar(process.env.ROLLBAR_KEY);
 
@@ -47,9 +46,6 @@ server.get('/api', (req, res, next) => {
   res.json({ message: 'this is the Manhattan API home...' });
   return next();
 });
-
-server.get('/api/cron/start', cronRoute.startTask);
-server.get('/api/cron/stop', cronRoute.stopTask);
 
 server.get('/api/provider', providerRoute.getProviders);
 server.get('/api/provider/:name/:topic', providerRoute.getProviderByTopic);
