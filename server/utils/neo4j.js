@@ -37,6 +37,40 @@ let createUser = user => {
   });
 };
 
+let createArticle = article => {
+  return new Promise((resolve, reject) => {
+    session
+      .run(
+        'CREATE (a:ARTICLE {title: {title}, provider: {provider}, author: {author}, pubdate: {pubdate}, url: {url}, keywords: {keywords}}) RETURN u',
+        {
+          title: article.title,
+          provider: article.provider,
+          author: article.author,
+          pubdate: article.pubdate,
+          url: article.url,
+          keywords: article.keywords
+        }
+      )
+      .then(result => {
+        resolve({ msg: result });
+      })
+      .catch(err => reject(err));
+  });
+};
+
+let articleCategoryRelationship = article => {
+  return new Promise((resolve, reject) => {
+    session
+      .run(
+        'MATCH (a:ARTICLE) (c:CATEGORY) WHERE a.parentCategory.name = c.name CREATE (a)-[r:BELONGS_TO]->(c) RETURN r'
+      )
+      .then(result => {
+        resolve({ msg: result });
+      })
+      .catch(err => reject(err));
+  });
+};
+
 let createCategory = category => {
   return new Promise((resolve, reject) => {
     if (!category.parent) {
@@ -66,7 +100,7 @@ let createCategory = category => {
   });
 };
 
-let createRelationship = item => {
+let createParentChildRelationship = item => {
   console.log(item);
   return new Promise((resolve, reject) => {
     if (item.parent) {
