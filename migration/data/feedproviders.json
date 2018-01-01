@@ -1,0 +1,23 @@
+{"_id":{"$oid":"5982fda4734d1d04a1b3fdeb"},"name":"techcrunch","url":"http://feeds.feedburner.com/TechCrunch/","topic":"All","status":"Active"}
+{"_id":{"$oid":"598301e4734d1d04a1b3ff3f"},"name":"venturebeat","url":"http://feeds.feedburner.com/venturebeat/SZYF","topic":"all","status":"Inactive"}
+{"_id":{"$oid":"59858281734d1d78684620b5"},"name":"wired","url":"https://www.wired.com/feed/category/business/latest/rss","topic":"Business","status":"Active"}
+{"_id":{"$oid":"598582c4734d1d78684620c0"},"name":"wired","url":"https://www.wired.com/feed/category/culture/latest/rss","topic":"Culture","status":"Active"}
+{"_id":{"$oid":"59858793734d1d78684621c2"},"name":"medium","url":"https://medium.com/feed/the-story","topic":"All","status":"Inactive"}
+{"_id":{"$oid":"59aaa6862d54da001c38e0bc"},"name":"MIT Technology Review","url":"https://www.technologyreview.com/c/business/rss/","topic":"Business","status":"Active"}
+{"_id":{"$oid":"59ab44725b0fa9001c9c961c"},"name":"SlashGear","url":"https://www.slashgear.com/feed/","topic":"Tech And Cars","status":"Inactive"}
+{"_id":{"$oid":"59e43b2e17f1982f605d2629"},"name":"The Verge","url":"https://www.theverge.com/rss/index.xml","topic":"Technology","status":"Active"}
+{"_id":{"$oid":"59e43b9617f1982f605d262a"},"name":"Engadget","url":"https://www.engadget.com/rss.xml","topic":"Technology","status":"Active"}
+{"_id":{"$oid":"59e43bf217f1982f605d262b"},"name":"Slashdot","url":"http://rss.slashdot.org/Slashdot/slashdotMain","topic":"Technology","status":"Inactive"}
+{"_id":{"$oid":"59e43c0917f1982f605d262c"},"name":"ARS Technica","url":"http://feeds.arstechnica.com/arstechnica/technology-lab","topic":"Technology","status":"Active"}
+{"_id":{"$oid":"59e43c2417f1982f605d262d"},"name":"ARS Technica","url":"http://feeds.arstechnica.com/arstechnica/business","topic":"Business","status":"Active"}
+{"_id":{"$oid":"59e43c4617f1982f605d262e"},"name":"ARS Technica","url":"http://feeds.arstechnica.com/arstechnica/security","topic":"Security","status":"Active"}
+{"_id":{"$oid":"59e43c6017f1982f605d262f"},"name":"ARS Technica","url":"http://feeds.arstechnica.com/arstechnica/tech-policy","topic":"Policy","status":"Active"}
+{"_id":{"$oid":"59e43c7a17f1982f605d2630"},"name":"ARS Technica","url":"http://feeds.arstechnica.com/arstechnica/cars","topic":"Automotive","status":"Active"}
+{"_id":{"$oid":"59e43c9617f1982f605d2631"},"name":"ARS Technica","url":"http://feeds.arstechnica.com/arstechnica/gaming","topic":"Gaming","status":"Active"}
+{"_id":{"$oid":"5a14fb9f4bfb5f465085e776"},"name":"The Guardian","url":"https://www.theguardian.com/world/rss","topic":"News","status":"Active"}
+{"_id":{"$oid":"5a14fc5a4bfb5f465085e777"},"name":"Huffington Post","url":"https://www.huffingtonpost.com/section/technology/feed","topic":"Technology","status":"Active"}
+{"_id":{"$oid":"5a14fca04bfb5f465085e778"},"name":"Huffington Post","url":"https://www.huffingtonpost.com/section/religion/feed","topic":"Religion \u0026 Spirituality","status":"Active"}
+{"_id":{"$oid":"5a14fd114bfb5f465085e779"},"name":"Reuters","url":"http://feeds.reuters.com/Reuters/worldNews","topic":"News","status":"Active"}
+{"_id":{"$oid":"5a155852cb970a49d33aa006"},"name":"Brain Pickinds","url":"http://feeds.feedburner.com/brainpickings/rss","topic":"Culture","status":"Active"}
+{"_id":{"$oid":"5a15592ccb970a49d33aa007"},"name":"AutoBlog","url":"https://www.autoblog.com/category/autoline-on-autoblog/rss.xml","topic":"Automotive","status":"Active"}
+{"_id":{"$oid":"5a155a32cb970a49d33aa008"},"name":"Quartz","url":"https://qz.com/feed/","topic":"News","status":"Active"}

@@ -2,7 +2,7 @@ const synaptic = require('synaptic');
 const trainingdata = require('./trainingdata');
 const article = require('../article');
 const Redis = require('../../utils/redis');
-const Mongo = require('../mongodb');
+const Mongo = require('../../utils/mongodb');
 
 function vec_result(res, num_classes) {
   var i = 0,

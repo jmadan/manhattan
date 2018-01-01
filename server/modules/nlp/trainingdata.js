@@ -1,6 +1,6 @@
 'use strict';
 
-const MongoDB = require('../mongodb');
+const MongoDB = require('../../utils/mongodb');
 const MongoClient = require('mongodb');
 const DBURI = process.env.MONGODB_URI;
 const mimir = require('./mimir');

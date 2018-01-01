@@ -7,6 +7,7 @@ let ObjectID = require('mongodb').ObjectID;
 const DBURI = process.env.MONGODB_URI;
 const textract = require('textract');
 const natural = require('natural');
+const MongoDB = require('../utils/mongodb');
 
 const lancasterStemmer = natural.LancasterStemmer;
 
@@ -61,28 +62,44 @@ exports.getArticle = id => {
 
 exports.updateArticle = data => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db.collection('feeditems').findOneAndUpdate(
-        { _id: ObjectID(data._id) },
-        {
-          $set: {
-            keywords: data.keywords,
-            stemwords: data.stemwords,
-            category: data.category,
-            parentcat: JSON.parse(data.parentcat),
-            subcategory: JSON.parse(data.subcat),
-            status: data.status
-          }
-        },
-        { returnOriginal: false },
-        (err, doc) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(doc);
-        }
-      );
-    });
+    MongoDB.updateDocument('feeditems', {_id: ObjectID(data._id)}, {
+      $set: {
+        keywords: data.keywords,
+        stemwords: data.stemwords,
+        category: data.category,
+        parentcat: JSON.parse(data.parentcat),
+        subcategory: JSON.parse(data.subcat),
+        status: data.status
+      }
+    }).then(result => {
+      console.log('result post article update: ', result);
+      resolve(result);
+    })
+      .catch(err => {
+        reject(err);
+      });
+    // MongoClient.connect(DBURI, (err, db) => {
+    //   db.collection('feeditems').findOneAndUpdate(
+    //     { _id: ObjectID(data._id) },
+    //     {
+    //       $set: {
+    //         keywords: data.keywords,
+    //         stemwords: data.stemwords,
+    //         category: data.category,
+    //         parentcat: JSON.parse(data.parentcat),
+    //         subcategory: JSON.parse(data.subcat),
+    //         status: data.status
+    //       }
+    //     },
+    //     { returnOriginal: false },
+    //     (err, doc) => {
+    //       if (err) {
+    //         reject(err);
+    //       }
+    //       resolve(doc);
+    //     }
+    //   );
+    // });
   });
 };
 
@@ -166,7 +183,7 @@ exports.getItemDetails = item => {
 };
 
 exports.getArticleText = item => {
-  textract.fromUrl(item.url, function(error, text) {
+  textract.fromUrl(item.url, function (error, text) {
     return text;
   });
 };
@@ -174,7 +191,7 @@ exports.getArticleText = item => {
 exports.getArticleStemWords = item => {
   return new Promise((resolve, reject) => {
     try {
-      textract.fromUrl(item.url, function(error, text) {
+      textract.fromUrl(item.url, function (error, text) {
         if (text) {
           item.itembody = text;
           item.stemwords = lancasterStemmer.tokenizeAndStem(text);

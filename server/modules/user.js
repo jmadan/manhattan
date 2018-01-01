@@ -4,7 +4,7 @@ let ObjectID = require('mongodb').ObjectID;
 const DBURI = process.env.MONGODB_URI;
 const NeoClient = require('../utils/neo4j');
 
-const MongoC = require('./mongodb');
+const MongoDB = require('../utils/mongodb');
 
 let fetchUserById = userId => {
   return new Promise((resolve, reject) => {
@@ -117,26 +117,26 @@ let fetchAnonymousFeed = () => {
 
 let newUser = user => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db.collection('users').insertOne(
-        {
-          nickname: user.nickname,
-          name: user.name,
-          email: user.email,
-          picture: user.picture,
-          updated_at: user.updated_at,
-          role: user.role ? user.role : 'member'
-        },
-        (error, result) => {
-          if (error) {
-            reject(error);
+    MongoDB.insertDocument('users', {
+      nickname: user.nickname,
+      name: user.name,
+      email: user.email,
+      picture: user.picture,
+      updated_at: user.updated_at,
+      role: user.role ? user.role : 'member'
+    }).then(result => {
+      if (result.insertedCount === 1) {
+        user.id = result.insertedId;
+        NeoClient.createUser(user).then(response => {
+          if (response.records.length > 0) {
+            resolve(result);
+          } else {
+            reject(new Error('Failed to create user graph node.'));
           }
-          NeoClient.createUser(user).then(response => {
-            console.log(response);
-          });
-          resolve(result);
-        }
-      );
+        });
+      } else {
+        reject(result);
+      }
     });
   });
 };
@@ -145,18 +145,18 @@ let updateUser = (userId, reqBody) => {
   let { op, attr, value } = reqBody;
   let query = null;
   switch (attr) {
-    case 'interest':
-      query = { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
-      break;
-    case 'user':
-      query = { $set: { value } };
-      break;
-    default:
-      break;
+  case 'interest':
+    query = { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
+    break;
+  case 'user':
+    query = { $set: { value } };
+    break;
+  default:
+    break;
   }
 
   return new Promise((resolve, reject) => {
-    MongoC.updateDocument('users', userId, query)
+    MongoDB.updateDocument('users', userId, query)
       .then(result => resolve(result))
       .catch(err => reject(err));
   });
