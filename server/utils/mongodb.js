@@ -73,18 +73,13 @@ let updateDocument = (coll, findQuery, updateQuery) => {
       db
         .db('manhattan')
         .collection(coll)
-        .findOneAndUpdate(
-          findQuery,
-          updateQuery,
-          { returnNewDocument: true },
-          (err, result) => {
-            db.close();
-            if (err) {
-              reject(err);
-            }
-            resolve(result);
+        .findOneAndUpdate(findQuery, updateQuery, { returnNewDocument: true }, (err, result) => {
+          db.close();
+          if (err) {
+            reject(err);
           }
-        );
+          resolve(result);
+        });
     });
   });
 };
