@@ -42,7 +42,7 @@ let createUser = user => {
 // 'CREATE (a:ARTICLE {id: {id}, title: {title}, provider: {provider}, author: {author}, pubdate: {pubdate}, url: {url}, keywords: {keywords}}) RETURN u'
 
 let createArticle = article => {
-  console.log('In Neo4j :- ', article.parent);
+  console.log('In Neo4j :- ', article.parentcat);
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
@@ -52,7 +52,7 @@ let createArticle = article => {
         MERGE (a)-[r:HAS_CATEGORY]->(c)',
         {
           id: article._id,
-          parentcat: article.parent._id,
+          parentcat: article.parentcat._id,
           title: article.title,
           provider: article.provider,
           author: article.author,

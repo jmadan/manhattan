@@ -73,7 +73,7 @@ let updateDocument = (coll, findQuery, updateQuery) => {
       db
         .db('manhattan')
         .collection(coll)
-        .findOneAndUpdate(findQuery, updateQuery, { returnNewDocument: true }, (err, result) => {
+        .findOneAndUpdate(findQuery, updateQuery, { returnOriginal: false }, (err, result) => {
           db.close();
           if (err) {
             reject(err);
@@ -94,6 +94,7 @@ let getDocuments = (coll, query) => {
         .db('manhattan')
         .collection(coll)
         .find(query)
+        .sort({ pubDate: -1 })
         .toArray((err, docs) => {
           if (err) {
             reject(err);
