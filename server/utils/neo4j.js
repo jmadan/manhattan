@@ -40,52 +40,52 @@ let createUser = user => {
 };
 
 // 'CREATE (a:ARTICLE {id: {id}, title: {title}, provider: {provider}, author: {author}, pubdate: {pubdate}, url: {url}, keywords: {keywords}}) RETURN u'
+//MERGE (a:ARTICLE {id: {id}}) MERGE (c:CATEGORY {id: {parentcat}}) \
+// ON CREATE SET a.title={title}, a.provider={provider}, a.author={author}, a.pubDate={pubDate}, a.url={url}, a.keywords={keywords} \
+// MERGE (a)-[r:HAS_CATEGORY]->(c)
 
 let createArticle = article => {
-  console.log('In Neo4j :- ', article.parentcat);
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MERGE (a:ARTICLE {id: {id}}), MERGE (c:CATEGORY {id: {parentcat}}) \
-        ON CREATE SET a.title={title}, a.provider={provider}, a.author={author}, a.pubDate={pubDate}, a.url={url}, a.keywords={keywords} \
-        MERGE (a)-[r:HAS_CATEGORY]->(c)',
+        'MERGE (a:ARTICLE {articleid:{id}, title: {title}, provider: {provider}, author: {author}, pubDate:{pubDate}, url: {url}, keywords: {keywords}}) \
+        RETURN a',
         {
-          id: article._id,
-          parentcat: article.parentcat._id,
-          title: article.title,
-          provider: article.provider,
-          author: article.author,
-          pubDate: article.pubDate,
-          url: article.url,
-          keywords: article.keywords
+          id: JSON.stringify(article._id),
+          title: JSON.stringify(article.title),
+          provider: JSON.stringify(article.provider),
+          author: JSON.stringify(article.author),
+          pubDate: JSON.stringify(article.pubDate),
+          url: JSON.stringify(article.url),
+          keywords: JSON.stringify(article.keywords)
         }
       )
       .then(result => {
         session.close();
-        resolve({ msg: result });
+        resolve({ msg: result.records[0] });
       })
       .catch(err => reject(err));
   });
 };
 
 let articleCategoryRelationship = article => {
+  console.log('**************',article);
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MATCH (a:ARTICLE {id: {id}}) (c:CATEGORY {name: {name}}) \
-        WHERE a.parentCategory.name = c.name \
-        CREATE (a)-[r:BELONGS_TO]->(c) \
-        RETURN r',
+        'MATCH (a:ARTICLE {articleid: {id}}), (c:CATEGORY {id: {parentid}}) \
+        MERGE (a)-[r:HAS_CATEGORY]->(c) \
+        RETURN a,c',
         {
-          id: article._id,
-          name: article.parentCategory.name
+          id: JSON.stringify(article._id),
+          parentid: JSON.stringify(article.parentcat._id)
         }
       )
       .then(result => {
         session.close();
-        resolve({ msg: result });
+        resolve({ msg: result.records[0] });
       })
       .catch(err => reject(err));
   });
