@@ -39,19 +39,20 @@ let createUser = user => {
   });
 };
 
-//'CREATE (a:ARTICLE {id: {id}, title: {title}, provider: {provider}, author: {author}, pubdate: {pubdate}, url: {url}, keywords: {keywords}}) RETURN u'
+// 'CREATE (a:ARTICLE {id: {id}, title: {title}, provider: {provider}, author: {author}, pubdate: {pubdate}, url: {url}, keywords: {keywords}}) RETURN u'
 
 let createArticle = article => {
+  console.log('In Neo4j :- ', article.parentcat);
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MERGE (story:ARTICLE {id: {id}}), (category:CATEGORY {id: {parentcat}}) \
-        ON CREATE SET story.title={title}, story.provider={provider}, story.author={author}, story.pubDate={pubDate}, story.url={url}, story.keywords={keywords} \
-        MERGE (story)-[r:HAS_CATEGORY]->(category)',
+        'MERGE (a:ARTICLE {id: {id}}), MERGE (c:CATEGORY {id: {parentcat}}) \
+        ON CREATE SET a.title={title}, a.provider={provider}, a.author={author}, a.pubDate={pubDate}, a.url={url}, a.keywords={keywords} \
+        MERGE (a)-[r:HAS_CATEGORY]->(c)',
         {
           id: article._id,
-          parentcat: article.parent._id,
+          parentcat: article.parentcat._id,
           title: article.title,
           provider: article.provider,
           author: article.author,
@@ -95,14 +96,11 @@ let createCategory = category => {
   return new Promise((resolve, reject) => {
     if (!category.parent) {
       session
-        .run(
-          'CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}}) RETURN c',
-          {
-            name: category.name,
-            id: category._id.toString(),
-            slug: category.slug
-          }
-        )
+        .run('CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}}) RETURN c', {
+          name: category.name,
+          id: category._id.toString(),
+          slug: category.slug
+        })
         .then(result => {
           session.close();
           resolve({ msg: result.records });
@@ -110,16 +108,13 @@ let createCategory = category => {
         .catch(err => reject(err));
     } else {
       session
-        .run(
-          'CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}, parent: {parent}}) \
-          RETURN c',
-          {
+        .run('CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}, parent: {parent}}) \
+          RETURN c', {
             name: category.name,
             id: category._id.toString(),
             slug: category.slug,
             parent: category.parent.toString()
-          }
-        )
+          })
         .then(result => {
           session.close();
           resolve({ msg: result.records });

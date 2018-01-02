@@ -38,19 +38,14 @@ function updateArticle(req, res, next) {
   if (req.params.id === req.body._id) {
     article.updateArticle(req.body).then(response => {
       if (response.lastErrorObject.n === 1) {
-        Neo4j.createArticle().then(response => {
-          console.log(response);
-          res.json({ article: response.value, articleUpdated: true });
-        });
+        Neo4j.createArticle(response.value).then(result => console.log(result));
+        res.json({ article: response.value, articleUpdated: true });
       } else {
         res.json({ article: response.value, articleUpdated: false });
       }
     });
   } else {
-    res.json({
-      message: 'Mismatch of document and url parameters',
-      error: true
-    });
+    res.json({ message: 'Mismatch of document and url parameters', error: true });
   }
   return next();
 }
