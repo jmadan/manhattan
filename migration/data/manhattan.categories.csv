@@ -1,29 +1,4 @@
 _id,code,name,parent._id,parent.code,parent.name,parent.slug,slug
-5a42ed6e527d3d240b8140d4,IAB3,Business,,,,,business
-5a42ed6e527d3d240b8140d5,IAB2,Automotive,,,,,automotive
-5a42ed6e527d3d240b8140d6,IAB1,Arts & Entertainment,,,,,arts_entertainment
-5a42ed6e527d3d240b8140d7,IAB4,Careers,,,,,careers
-5a42ed6e527d3d240b8140d8,IAB5,Education,,,,,education
-5a42ed6e527d3d240b8140d9,IAB6,Family & Parenting,,,,,family_parenting
-5a42ed6e527d3d240b8140da,IAB7,Health & Fitness,,,,,health_fitness
-5a42ed6e527d3d240b8140db,IAB8,Food & Drink,,,,,food_drink
-5a42ed6e527d3d240b8140dc,IAB9,Hobbies & Interests,,,,,hobbies_interests
-5a42ed6e527d3d240b8140dd,IAB10,Home & Garden,,,,,home_garden
-5a42ed6e527d3d240b8140de,IAB11,"Law, Govt & Politics",,,,,law_govt_policies
-5a42ed6e527d3d240b8140df,IAB14,Society,,,,,society
-5a42ed6e527d3d240b8140e0,IAB15,Science,,,,,science
-5a42ed6e527d3d240b8140e1,IAB16,Pets,,,,,pets
-5a42ed6e527d3d240b8140e2,IAB17,Sports,,,,,sports
-5a42ed6e527d3d240b8140e3,IAB18,Style & Fashion,,,,,style_fashion
-5a42ed6e527d3d240b8140e4,IAB19,Technology,,,,,technology
-5a42ed6e527d3d240b8140e5,IAB20,Travel,,,,,travel
-5a42ed6e527d3d240b8140e6,IAB13,Personal Finance,,,,,personal_finance
-5a42ed6e527d3d240b8140e7,IAB21,Real Estate,,,,,real_estate
-5a42ed6e527d3d240b8140e8,IAB22,Shopping,,,,,shopping
-5a42ed6e527d3d240b8140e9,IAB23,Religion & Spirituality,,,,,religion_spirituality
-5a42ed6e527d3d240b8140ea,IAB12,News,,,,,news
-5a42ed6e527d3d240b8140eb,IAB25,Non-Standard Content,,,,,non_standard_content
-5a42ed6e527d3d240b8140ec,IAB26,Illegal Content,,,,,illegal_content
 5a4468486f7af13a5a457c17,IAB3-2,Agriculture,5a42ed6e527d3d240b8140d4,IAB3,Business,business,agriculture
 5a4468486f7af13a5a457c18,IAB3-3,Biotech/Biomedical,5a42ed6e527d3d240b8140d4,IAB3,Business,business,biotech_biomedical
 5a4468486f7af13a5a457c19,IAB3-5,Construction,5a42ed6e527d3d240b8140d4,IAB3,Business,business,construction
