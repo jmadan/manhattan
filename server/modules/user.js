@@ -2,7 +2,7 @@
 const MongoClient = require('mongodb').MongoClient;
 let ObjectID = require('mongodb').ObjectID;
 const DBURI = process.env.MONGODB_URI;
-const NeoClient = require('../utils/neo4j');
+let neo4j = require('../utils/neo4j');
 
 const MongoDB = require('../utils/mongodb');
 
@@ -37,6 +37,7 @@ let fetchUserByEmail = email => {
 let fetchUserFeed = user => {
   // let today = Math.round(new Date().getTime() / 1000);
   // let seventyTwoHours = today - 72 * 3600 * 1000;
+  let intArray = user.interests.map(i => i.name);
 
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
@@ -47,7 +48,7 @@ let fetchUserFeed = user => {
             $match: {
               $and: [
                 { status: 'classified' },
-                { category: { $in: user.interests } }
+                { 'parentcat.name': { $in: intArray } }
               ]
             }
           },
@@ -156,21 +157,27 @@ let updateUser = (userId, reqBody) => {
   }
 
   return new Promise((resolve, reject) => {
-    MongoDB.updateDocument('users', userId, query)
+    MongoDB.updateDocument('users', {_id: ObjectID(userId)}, query)
       .then(result => resolve(result))
       .catch(err => reject(err));
   });
 };
 
 let performAction = (user, action, item) => {
-  // return new Promise(async (resolve, reject) => {
-  NeoClient.findUser(user)
-    .then(result => {
-      console.log(result, item.title);
-    })
-    .catch(err => console.log(err));
-  // resolve(u);
-  // });
+  return new Promise(async (resolve, reject) => {
+    if(action === 'save') {
+      MongoDB.insertDocument('uservault', {userId: user._id, itemId: item._id})
+      .then(result => {
+        resolve(result);
+      }).catch(err => {reject(err)});
+    } else {
+      neo4j.userAction(user, action, item).then(result => {
+        resolve(result);
+      }).catch(err=>{
+        reject(err);
+      });
+    }
+  });
 };
 
 module.exports = {

@@ -39,11 +39,6 @@ let createUser = user => {
   });
 };
 
-// 'CREATE (a:ARTICLE {id: {id}, title: {title}, provider: {provider}, author: {author}, pubdate: {pubdate}, url: {url}, keywords: {keywords}}) RETURN u'
-// MERGE (a:ARTICLE {id: {id}}) MERGE (c:CATEGORY {id: {parentcat}}) \
-// ON CREATE SET a.title={title}, a.provider={provider}, a.author={author}, a.pubDate={pubDate}, a.url={url}, a.keywords={keywords} \
-// MERGE (a)-[r:HAS_CATEGORY]->(c)
-
 let createArticle = article => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
@@ -143,11 +138,34 @@ let createParentChildRelationship = item => {
   });
 };
 
+let userAction = (user, action, item) => {
+  const session = driver.session();
+  return new Promise((resolve, reject) => {
+    if (action === 'like') {
+      session
+        .run(
+          'MATCH (u:USER {email: $useremail}), (a:ARTICLE {articleid: $articleid}) MERGE (u)-[r:LIKES]->(a) RETURN r',
+          {
+            useremail: user.email,
+            articleid: item._id.toString()
+          }
+        )
+        .then(result => {
+          session.close();
+          resolve({ msg: result });
+        })
+        .catch(err => reject(err));
+    }
+  });
+};
+
+
 module.exports = {
   findUser,
   createUser,
   createParentChildRelationship,
   createCategory,
   createArticle,
-  articleCategoryRelationship
+  articleCategoryRelationship,
+  userAction
 };

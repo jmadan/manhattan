@@ -51,11 +51,9 @@ let updateUserInterest = (req, res, next) => {
 let userAction = (req, res, next) => {
   let { user, action, item } = req.body;
   if (user && action && item) {
-    User.performAction(user, action, item);
-    res.json({ msg: 'something' });
-    // .then(result => {
-    //   res.json({ result });
-    // });
+    User.performAction(user, action, item).then(result => {
+      res.json({ msg: result });
+    });
   } else {
     res.json({ error: 'Information missing to perform the action' });
   }
