@@ -40,7 +40,7 @@ let createUser = user => {
 };
 
 // 'CREATE (a:ARTICLE {id: {id}, title: {title}, provider: {provider}, author: {author}, pubdate: {pubdate}, url: {url}, keywords: {keywords}}) RETURN u'
-//MERGE (a:ARTICLE {id: {id}}) MERGE (c:CATEGORY {id: {parentcat}}) \
+// MERGE (a:ARTICLE {id: {id}}) MERGE (c:CATEGORY {id: {parentcat}}) \
 // ON CREATE SET a.title={title}, a.provider={provider}, a.author={author}, a.pubDate={pubDate}, a.url={url}, a.keywords={keywords} \
 // MERGE (a)-[r:HAS_CATEGORY]->(c)
 
@@ -49,16 +49,15 @@ let createArticle = article => {
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MERGE (a:ARTICLE {articleid:{id}, title: {title}, provider: {provider}, author: {author}, pubDate:{pubDate}, url: {url}, keywords: {keywords}}) \
-        RETURN a',
+        'MERGE (a:ARTICLE {articleid: $id, title: $title, provider: $provider, author: $author, pubDate: $pubDate, url: $url, keywords: $keywords}) RETURN a',
         {
-          id: JSON.stringify(article._id),
-          title: JSON.stringify(article.title),
-          provider: JSON.stringify(article.provider),
-          author: JSON.stringify(article.author),
-          pubDate: JSON.stringify(article.pubDate),
-          url: JSON.stringify(article.url),
-          keywords: JSON.stringify(article.keywords)
+          id: article._id.toString(),
+          title: article.title,
+          provider: article.provider,
+          author: article.author,
+          pubDate: article.pubDate.toString(),
+          url: article.url,
+          keywords: article.keywords.toString()
         }
       )
       .then(result => {
@@ -70,17 +69,14 @@ let createArticle = article => {
 };
 
 let articleCategoryRelationship = article => {
-  console.log('**************',article);
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MATCH (a:ARTICLE {articleid: {id}}), (c:CATEGORY {id: {parentid}}) \
-        MERGE (a)-[r:HAS_CATEGORY]->(c) \
-        RETURN a,c',
+        'MATCH (a:ARTICLE {articleid: $id}), (c:CATEGORY {id: $parentid}) MERGE (a)-[r:HAS_CATEGORY]->(c) RETURN a',
         {
-          id: JSON.stringify(article._id),
-          parentid: JSON.stringify(article.parentcat._id)
+          id: article._id.toString(),
+          parentid: article.parentcat._id.toString()
         }
       )
       .then(result => {
