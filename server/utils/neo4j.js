@@ -142,6 +142,20 @@ let userAction = (user, action, item) => {
           resolve({ msg: result });
         })
         .catch(err => reject(err));
+    } else if (action === 'dislike') {
+      session
+        .run(
+          'MATCH (u:USER {email: $useremail}), (a:ARTICLE {articleid: $articleid}) MERGE (u)-[r:DISLIKES]->(a) RETURN r',
+          {
+            useremail: user.email,
+            articleid: item._id.toString()
+          }
+        )
+        .then(result => {
+          session.close();
+          resolve({ msg: result });
+        })
+        .catch(err => reject(err));
     }
   });
 };
