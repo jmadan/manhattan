@@ -48,10 +48,23 @@ let updateUserInterest = (req, res, next) => {
   return next();
 };
 
+let userAction = (req, res, next) => {
+  let { user, action, item } = req.body;
+  if (user && action && item) {
+    User.performAction(user, action, item).then(result => {
+      res.json({ msg: result });
+    });
+  } else {
+    res.json({ error: 'Information missing to perform the action' });
+  }
+  return next();
+};
+
 module.exports = {
   fetchUserByEmail,
   fetchUserFeed,
   createUser,
   updateUser,
-  updateUserInterest
+  updateUserInterest,
+  userAction
 };

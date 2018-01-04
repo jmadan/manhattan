@@ -7,17 +7,41 @@ let ObjectID = require('mongodb').ObjectID;
 const DBURI = process.env.MONGODB_URI;
 const textract = require('textract');
 const natural = require('natural');
+const MongoDB = require('../utils/mongodb');
 
 const lancasterStemmer = natural.LancasterStemmer;
 
 exports.fetchArticles = (status, noofdocs = 10) => {
   return new Promise((resolve, reject) => {
+    // MongoDB.getDocuments('feeditems', { status: status })
     MongoClient.connect(DBURI, (err, db) => {
+      if (err) {
+        throw err;
+      }
       db
+        .db('manhattan')
         .collection('feeditems')
         .find({ status: status })
         .sort({ pubDate: -1 })
         .limit(parseInt(noofdocs, 10))
+        .toArray((err, docs) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(docs);
+        });
+    });
+  });
+};
+
+exports.fetchClassifiedArticles = () => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(DBURI, (err, db) => {
+      db
+        .db('manhattan')
+        .collection('feeditems')
+        .find({ status: 'classified' })
+        .sort({ pubDate: -1 })
         .toArray((err, docs) => {
           if (err) {
             reject(err);
@@ -44,50 +68,73 @@ exports.getArticle = id => {
 
 exports.updateArticle = data => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db.collection('feeditems').findOneAndUpdate(
-        { _id: ObjectID(data._id) },
-        {
-          $set: {
-            keywords: data.keywords,
-            stemwords: data.stemwords,
-            category: data.category,
-            parentcat: JSON.parse(data.parentcat),
-            subcategory: JSON.parse(data.subcat),
-            status: data.status
-          }
-        },
-        { returnOriginal: false },
-        (err, doc) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(doc);
+    MongoDB.updateDocument(
+      'feeditems',
+      { _id: ObjectID(data._id) },
+      {
+        $set: {
+          keywords: data.keywords,
+          stemwords: data.stemwords,
+          category: data.category,
+          parentcat: JSON.parse(data.parentcat),
+          subcategory: JSON.parse(data.subcat),
+          status: data.status
         }
-      );
-    });
+      }
+    )
+      .then(result => {
+        resolve(result);
+      })
+      .catch(err => {
+        reject(err);
+      });
+    // MongoClient.connect(DBURI, (err, db) => {
+    //   db.collection('feeditems').findOneAndUpdate(
+    //     { _id: ObjectID(data._id) },
+    //     {
+    //       $set: {
+    //         keywords: data.keywords,
+    //         stemwords: data.stemwords,
+    //         category: data.category,
+    //         parentcat: JSON.parse(data.parentcat),
+    //         subcategory: JSON.parse(data.subcat),
+    //         status: data.status
+    //       }
+    //     },
+    //     { returnOriginal: false },
+    //     (err, doc) => {
+    //       if (err) {
+    //         reject(err);
+    //       }
+    //       resolve(doc);
+    //     }
+    //   );
+    // });
   });
 };
 
 exports.autoUpdateArticleByClassification = data => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection('feeditems').findOneAndUpdate(
-        { _id: ObjectID(data._id) },
-        {
-          $set: {
-            category: data.category,
-            status: data.status
+      db
+        .db('manhattan')
+        .collection('feeditems')
+        .findOneAndUpdate(
+          { _id: ObjectID(data._id) },
+          {
+            $set: {
+              category: data.category,
+              status: data.status
+            }
+          },
+          { returnOriginal: false },
+          (err, doc) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(doc);
           }
-        },
-        { returnOriginal: false },
-        (err, doc) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(doc);
-        }
-      );
+        );
     });
   });
 };
@@ -96,6 +143,7 @@ exports.updateArticleCategory = (id, category) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
+        .db('manhattan')
         .collection('feeditems')
         .findOneAndUpdate({ _id: ObjectID(id) }, { $set: { category: category, status: 'classified' } }, (err, doc) => {
           if (err) {
@@ -111,6 +159,7 @@ exports.updateArticleStatus = (id, status) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
+        .db('manhattan')
         .collection('feeditems')
         .findOneAndUpdate(
           { _id: ObjectID(id) },
@@ -170,14 +219,17 @@ exports.getArticleStemWords = item => {
 exports.saveItem = item => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection('articles').insertOne(item, (err, savedItem) => {
-        if (err) {
-          reject(err);
-        } else {
-          db.close();
-          resolve(savedItem);
-        }
-      });
+      db
+        .db('manhattan')
+        .collection('articles')
+        .insertOne(item, (err, savedItem) => {
+          if (err) {
+            reject(err);
+          } else {
+            db.close();
+            resolve(savedItem);
+          }
+        });
     });
   });
 };
@@ -186,6 +238,7 @@ exports.getArticleBasedOnCategory = category => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
+        .db('manhattan')
         .collection('feeditems')
         .find({ category: category.toLowerCase() })
         .toArray((err, item) => {
@@ -202,24 +255,27 @@ exports.getArticleBasedOnCategory = category => {
 exports.updateItem = item => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection('feeditems').findOneAndUpdate(
-        { _id: ObjectID(item.id) },
-        {
-          $set: {
-            itembody: item.itembody,
-            keywords: item.keywords,
-            stemwords: item.stemwords,
-            category: item.category
+      db
+        .db('manhattan')
+        .collection('feeditems')
+        .findOneAndUpdate(
+          { _id: ObjectID(item.id) },
+          {
+            $set: {
+              itembody: item.itembody,
+              keywords: item.keywords,
+              stemwords: item.stemwords,
+              category: item.category
+            }
+          },
+          { returnOriginal: false },
+          (err, doc) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(doc);
           }
-        },
-        { returnOriginal: false },
-        (err, doc) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(doc);
-        }
-      );
+        );
     });
   });
 };

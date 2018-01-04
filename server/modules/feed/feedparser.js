@@ -143,8 +143,32 @@ let returnNew = async (val, index, arr) => {
   return val;
 };
 
+let updateProvidersTime = provider => {
+  return new Promise(function(resolve, reject) {
+    MongoClient.connect(DBURI, (err, db) => {
+      if (err) {
+        reject(err);
+      }
+      db
+        .collection('feedproviders')
+        .updateOne(
+          { _id: ObjectId(provider._id) },
+          { $set: { lastPulled: new Date().toISOString() } },
+          (err, response) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(response);
+            db.close();
+          }
+        );
+    });
+  });
+};
+
 let getProviderFeed = async providers => {
   let flist = await Promise.all(providers.list.map(returnNew));
+  await Promise.all(providers.list.forEach(updateProvidersTime));
   return flist;
 };
 
@@ -175,7 +199,9 @@ let makeRequests = item => {
     textract.fromUrl(item.url, function(error, text) {
       if (text) {
         item.stemwords = lancasterStemmer.tokenizeAndStem(text);
-        item.itembody = text.replace('/s+/gm', ' ').replace('([^a-zA-Z])+', ' ');
+        item.itembody = text
+          .replace('/s+/gm', ' ')
+          .replace('([^a-zA-Z])+', ' ');
       } else {
         item.stemwords = '';
         item.itembody = '';
@@ -212,13 +238,15 @@ let updateAndMoveFeedItem = item => {
             if (err) {
               reject(err);
             } else {
-              db.collection('feed').deleteOne({ _id: ObjectId(item._id) }, (err, response) => {
-                db.close();
-                if (err) {
-                  reject(err);
-                }
-                resolve(response);
-              });
+              db
+                .collection('feed')
+                .deleteOne({ _id: ObjectId(item._id) }, (err, response) => {
+                  db.close();
+                  if (err) {
+                    reject(err);
+                  }
+                  resolve(response);
+                });
             }
           }
         );
@@ -260,13 +288,17 @@ let tempUpdate = () => {
     } else {
       db
         .collection('feeditems')
-        .updateMany({ status: 'classified' }, { $set: { status: 'unclassified' } }, (err, r) => {
-          db.close();
-          if (err) {
-            console.log(err);
+        .updateMany(
+          { status: 'classified' },
+          { $set: { status: 'unclassified' } },
+          (err, r) => {
+            db.close();
+            if (err) {
+              console.log(err);
+            }
+            console.log(r);
           }
-          console.log(r);
-        });
+        );
     }
   });
 };

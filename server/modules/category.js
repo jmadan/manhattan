@@ -1,13 +1,15 @@
-
 const MongoClient = require('mongodb').MongoClient;
 // let BSON = require('mongodb').BSONPure;
 const DBURI = process.env.MONGODB_URI;
+const neo4j = require('../utils/neo4j');
 
-let getCategories = ()=>{
+let getCategories = () => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db)=>{
-      db.collection('categories').find({})
-        .toArray((error, docs) =>{
+    MongoClient.connect(DBURI, (err, db) => {
+      db
+        .collection('categories')
+        .find({})
+        .toArray((error, docs) => {
           if (error) {
             reject(error);
           }
@@ -18,28 +20,34 @@ let getCategories = ()=>{
   });
 };
 
-let saveCategory = (item) => {
+let saveCategory = item => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db)=>{
+    MongoClient.connect(DBURI, (err, db) => {
       db.collection('categories').insertOne(item, (error, response) => {
         if (error) {
           reject(error);
         } else {
           db.close();
-          resolve({doc: response.ops, insertedCount: response.insertedCount});
+          neo4j.createCategory(item).then(result => {
+            console.log('response post subcategory created: - ', result);
+            neo4j.createParentChildRelationship(item).then(res => {
+              console.log('response post subcategory relationship: - ', res);
+              resolve({ doc: response.ops, insertedCount: response.insertedCount });
+            });
+          });
         }
       });
     });
   });
 };
 
-let getDistinctCategories = ()=>{
+let getDistinctCategories = () => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db)=>{
+    MongoClient.connect(DBURI, (err, db) => {
       if (err) {
         reject(err);
       } else {
-        db.collection('feeditems').distinct('category', (error, result)=>{
+        db.collection('feeditems').distinct('category', (error, result) => {
           if (error) {
             reject(error);
           }
@@ -51,13 +59,13 @@ let getDistinctCategories = ()=>{
   });
 };
 
-let getParentDistinctCategories = ()=>{
+let getParentDistinctCategories = () => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db)=>{
+    MongoClient.connect(DBURI, (err, db) => {
       if (err) {
         reject(err);
       } else {
-        db.collection('feeditems').distinct('category',{parent:{$exists: false}}, (error, result)=>{
+        db.collection('feeditems').distinct('category', { parent: { $exists: false } }, (error, result) => {
           if (error) {
             reject(error);
           }
@@ -69,13 +77,13 @@ let getParentDistinctCategories = ()=>{
   });
 };
 
-let updateCategory = (category)=>{
+let updateCategory = category => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db)=>{
+    MongoClient.connect(DBURI, (err, db) => {
       if (err) {
         reject(err);
       } else {
-        db.collection('categories').updateOne({name: category.name}, (error, result)=>{
+        db.collection('categories').updateOne({ name: category.name }, (error, result) => {
           if (error) {
             reject(error);
           }

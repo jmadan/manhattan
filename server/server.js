@@ -6,7 +6,6 @@ const providerRoute = require('./route/provider');
 const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
-const cronRoute = require('./route/cronjob');
 // let Rollbar = require('rollbar');
 // let rollbar = new Rollbar(process.env.ROLLBAR_KEY);
 
@@ -48,9 +47,6 @@ server.get('/api', (req, res, next) => {
   return next();
 });
 
-server.get('/api/cron/start', cronRoute.startTask);
-server.get('/api/cron/stop', cronRoute.stopTask);
-
 server.get('/api/provider', providerRoute.getProviders);
 server.get('/api/provider/:name/:topic', providerRoute.getProviderByTopic);
 server.post('/api/provider', providerRoute.createProvider);
@@ -70,6 +66,7 @@ server.post('/api/category', categoryRoute.newCategory);
 server.get('/api/user/feed/:userId', userRoute.fetchUserFeed);
 server.get('/api/user/email/:email', userRoute.fetchUserByEmail);
 
+server.post('/api/user/action', userRoute.userAction);
 server.patch('/api/user/:userId', userRoute.updateUser);
 server.post('/api/user/interest', userRoute.updateUserInterest);
 server.post('/api/user', userRoute.createUser);
