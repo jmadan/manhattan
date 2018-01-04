@@ -85,33 +85,17 @@ let articleCategoryRelationship = article => {
 let createCategory = category => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
-    if (!category.parent) {
-      session
-        .run('CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}}) RETURN c', {
-          name: category.name,
-          id: category._id.toString(),
-          slug: category.slug
-        })
-        .then(result => {
-          session.close();
-          resolve({ msg: result.records });
-        })
-        .catch(err => reject(err));
-    } else {
-      session
-        .run('CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}, parent: {parent}}) \
-          RETURN c', {
-            name: category.name,
-            id: category._id.toString(),
-            slug: category.slug,
-            parent: category.parent.toString()
-          })
-        .then(result => {
-          session.close();
-          resolve({ msg: result.records });
-        })
-        .catch(err => reject(err));
-    }
+    session
+      .run('CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}}) RETURN c', {
+        name: category.name,
+        id: category._id.toString(),
+        slug: category.slug
+      })
+      .then(result => {
+        session.close();
+        resolve({ msg: result.records });
+      })
+      .catch(err => reject(err));
   });
 };
 
@@ -125,8 +109,8 @@ let createParentChildRelationship = item => {
           'MATCH (a:CATEGORY {id: {parentId}}), (b:CATEGORY {id: {childId}}) \
           MERGE (a)-[:HAS_SUBCATEGORY]->(b)',
           {
-            nameparentId: item.parent._id,
-            childId: item._id
+            parentId: item.parent._id.toString(),
+            childId: item._id.toString()
           }
         )
         .then(result => {
@@ -158,7 +142,6 @@ let userAction = (user, action, item) => {
     }
   });
 };
-
 
 module.exports = {
   findUser,
