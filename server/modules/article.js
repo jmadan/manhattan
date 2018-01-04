@@ -145,12 +145,16 @@ exports.updateArticleCategory = (id, category) => {
       db
         .db('manhattan')
         .collection('feeditems')
-        .findOneAndUpdate({ _id: ObjectID(id) }, { $set: { category: category, status: 'classified' } }, (err, doc) => {
-          if (err) {
-            reject(err);
+        .findOneAndUpdate(
+          { _id: ObjectID(id) },
+          { $set: { category: category, status: 'classified' } },
+          (err, doc) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(doc);
           }
-          resolve(doc);
-        });
+        );
     });
   });
 };
@@ -194,7 +198,7 @@ exports.getItemDetails = item => {
 };
 
 exports.getArticleText = item => {
-  textract.fromUrl(item.url, function (error, text) {
+  textract.fromUrl(item.url, function(error, text) {
     return text;
   });
 };
@@ -202,7 +206,7 @@ exports.getArticleText = item => {
 exports.getArticleStemWords = item => {
   return new Promise((resolve, reject) => {
     try {
-      textract.fromUrl(item.url, function (error, text) {
+      textract.fromUrl(item.url, function(error, text) {
         if (text) {
           item.itembody = text;
           item.stemwords = lancasterStemmer.tokenizeAndStem(text);

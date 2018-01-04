@@ -86,11 +86,14 @@ let createCategory = category => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
-      .run('CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}}) RETURN c', {
-        name: category.name,
-        id: category._id.toString(),
-        slug: category.slug
-      })
+      .run(
+        'CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}}) RETURN c',
+        {
+          name: category.name,
+          id: category._id.toString(),
+          slug: category.slug
+        }
+      )
       .then(result => {
         session.close();
         resolve({ msg: result.records });

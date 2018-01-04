@@ -24,8 +24,12 @@ let fetchUserFeed = (req, res, next) => {
 };
 
 let createUser = (req, res, next) => {
-  User.newUser(req.body).then(response => {
-    res.json({ statusCode: 201, msg: 'user created', userId: response.insertedId });
+  User.neswUser(req.body).then(response => {
+    res.json({
+      statusCode: 201,
+      msg: 'user created',
+      userId: response.insertedId
+    });
   });
   return next();
 };

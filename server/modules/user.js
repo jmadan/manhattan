@@ -146,18 +146,18 @@ let updateUser = (userId, reqBody) => {
   let { op, attr, value } = reqBody;
   let query = null;
   switch (attr) {
-  case 'interest':
-    query = { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
-    break;
-  case 'user':
-    query = { $set: { value } };
-    break;
-  default:
-    break;
+    case 'interest':
+      query = { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
+      break;
+    case 'user':
+      query = { $set: { value } };
+      break;
+    default:
+      break;
   }
 
   return new Promise((resolve, reject) => {
-    MongoDB.updateDocument('users', {_id: ObjectID(userId)}, query)
+    MongoDB.updateDocument('users', { _id: ObjectID(userId) }, query)
       .then(result => resolve(result))
       .catch(err => reject(err));
   });
@@ -165,17 +165,26 @@ let updateUser = (userId, reqBody) => {
 
 let performAction = (user, action, item) => {
   return new Promise(async (resolve, reject) => {
-    if(action === 'save') {
-      MongoDB.insertDocument('uservault', {userId: user._id, itemId: item._id})
-      .then(result => {
-        resolve(result);
-      }).catch(err => {reject(err)});
+    if (action === 'save') {
+      MongoDB.insertDocument('uservault', {
+        userId: user._id,
+        itemId: item._id
+      })
+        .then(result => {
+          resolve(result);
+        })
+        .catch(err => {
+          reject(err);
+        });
     } else {
-      neo4j.userAction(user, action, item).then(result => {
-        resolve(result);
-      }).catch(err=>{
-        reject(err);
-      });
+      neo4j
+        .userAction(user, action, item)
+        .then(result => {
+          resolve(result);
+        })
+        .catch(err => {
+          reject(err);
+        });
     }
   });
 };
