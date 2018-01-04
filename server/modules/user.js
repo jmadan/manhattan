@@ -158,7 +158,10 @@ let updateUser = (userId, reqBody) => {
 
   return new Promise((resolve, reject) => {
     MongoDB.updateDocument('users', { _id: ObjectID(userId) }, query)
-      .then(result => resolve(result))
+      .then(result => {
+        neo4j.userInterestIn(userId, value._id);
+        resolve(result);
+      })
       .catch(err => reject(err));
   });
 };

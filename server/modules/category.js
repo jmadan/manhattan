@@ -30,10 +30,15 @@ let saveCategory = item => {
           db.close();
           neo4j.createCategory(item).then(result => {
             console.log('response post subcategory created: - ', result);
-            neo4j.createParentChildRelationship(item).then(res => {
-              console.log('response post subcategory relationship: - ', res);
+            if(item.parent)
+            {
+              neo4j.createParentChildRelationship(item).then(res => {
+                console.log('response post subcategory relationship: - ', res);
+                resolve({ doc: response.ops, insertedCount: response.insertedCount });
+              });
+            } else {
               resolve({ doc: response.ops, insertedCount: response.insertedCount });
-            });
+            }
           });
         }
       });

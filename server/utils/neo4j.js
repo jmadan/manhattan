@@ -44,7 +44,13 @@ let createArticle = article => {
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MERGE (a:ARTICLE {articleid: $id, title: $title, provider: $provider, author: $author, pubDate: $pubDate, url: $url, keywords: $keywords}) RETURN a',
+        'MERGE (a:ARTICLE {id: $id, title: $title, url: $url, keywords: $keywords}) \
+        MERGE (author:AUTHOR {name: $author}) \
+        MERGE (a)-[r:PUBLISHED_BY]->(author) \
+        ON CREATE SET r.published_on=$pubDate \
+        MERGE (provider:PROVIDER {name: $provider}) \
+        MERGE (a)-[:PUBLISHED_ON]->(provider) \
+        RETURN a',
         {
           id: article._id.toString(),
           title: article.title,
@@ -65,40 +71,51 @@ let createArticle = article => {
 
 let articleCategoryRelationship = article => {
   const session = driver.session();
-  return new Promise((resolve, reject) => {
-    session
-      .run(
-        'MATCH (a:ARTICLE {articleid: $id}), (c:CATEGORY {id: $parentid}) MERGE (a)-[r:HAS_CATEGORY]->(c) RETURN a',
-        {
-          id: article._id.toString(),
-          parentid: article.parentcat._id.toString()
-        }
-      )
-      .then(result => {
-        session.close();
-        resolve({ msg: result.records[0] });
-      })
-      .catch(err => reject(err));
-  });
+  session
+    .run(
+      'MATCH (a:ARTICLE {id: $id}), (c:CATEGORY {id: $subCatId}) MERGE (a)-[r:HAS_CATEGORY]->(c) RETURN a',
+      {
+        id: article._id.toString(),
+        subCatId: article.subcategory._id.toString()
+      }
+    )
+    .then(result => {
+      session.close();
+      console.log(result.records[0]);
+    })
+    .catch(err => console.log(err));
 };
 
 let createCategory = category => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
-    session
-      .run(
-        'CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}}) RETURN c',
-        {
+    if (!category.parent) {
+      session
+        .run('CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}}) RETURN c', {
           name: category.name,
           id: category._id.toString(),
           slug: category.slug
-        }
-      )
-      .then(result => {
-        session.close();
-        resolve({ msg: result.records });
-      })
-      .catch(err => reject(err));
+        })
+        .then(result => {
+          session.close();
+          resolve({ msg: result.records });
+        })
+        .catch(err => reject(err));
+    } else {
+      session
+        .run('CREATE (c:CATEGORY {name: {name}, id: {id}, slug: {slug}, parent: {parent}}) \
+          RETURN c', {
+            name: category.name,
+            id: category._id.toString(),
+            slug: category.slug,
+            parent: category.parent.toString()
+          })
+        .then(result => {
+          session.close();
+          resolve({ msg: result.records });
+        })
+        .catch(err => reject(err));
+    }
   });
 };
 
@@ -110,7 +127,7 @@ let createParentChildRelationship = item => {
       session
         .run(
           'MATCH (a:CATEGORY {id: {parentId}}), (b:CATEGORY {id: {childId}}) \
-          MERGE (a)-[:HAS_SUBCATEGORY]->(b)',
+          MERGE (b)-[:IS_SUBCATEGORY_OF]->(a)',
           {
             parentId: item.parent._id.toString(),
             childId: item._id.toString()
@@ -131,7 +148,7 @@ let userAction = (user, action, item) => {
     if (action === 'like') {
       session
         .run(
-          'MATCH (u:USER {email: $useremail}), (a:ARTICLE {articleid: $articleid}) MERGE (u)-[r:LIKES]->(a) RETURN r',
+          'MATCH (u:USER {email: $useremail}), (a:ARTICLE {id: $articleid}) MERGE (u)-[r:LIKES]->(a) RETURN r',
           {
             useremail: user.email,
             articleid: item._id.toString()
@@ -145,7 +162,7 @@ let userAction = (user, action, item) => {
     } else if (action === 'dislike') {
       session
         .run(
-          'MATCH (u:USER {email: $useremail}), (a:ARTICLE {articleid: $articleid}) MERGE (u)-[r:DISLIKES]->(a) RETURN r',
+          'MATCH (u:USER {email: $useremail}), (a:ARTICLE {id: $articleid}) MERGE (u)-[r:DISLIKES]->(a) RETURN r',
           {
             useremail: user.email,
             articleid: item._id.toString()
@@ -160,6 +177,24 @@ let userAction = (user, action, item) => {
   });
 };
 
+let userInterestIn = (userId, interestId) => {
+  const session = driver.session();
+  session
+    .run(
+      'MATCH (u:USER {id: $userId}), (c:CATEGORY {id: $categoryId}) MERGE (u)-[r:INTERESTED_IN]->(c) RETURN r',
+      {
+        userId: userId.toString(),
+        categoryId: interestId.toString()
+      }
+    )
+    .then(result => {
+      session.close();
+      console.log(result);
+    })
+    .catch(err => console.log(err));
+};
+
+
 module.exports = {
   findUser,
   createUser,
@@ -167,5 +202,6 @@ module.exports = {
   createCategory,
   createArticle,
   articleCategoryRelationship,
-  userAction
+  userAction,
+  userInterestIn
 };
