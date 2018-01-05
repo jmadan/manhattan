@@ -1,4 +1,4 @@
-"_id",code,desc,name,parent._id,parent.code,parent.name,parent.slug,slug
+"id",code,desc,name,parentid,parentcode,parentname,parentslug,slug
 5a42ed6e527d3d240b8140d4,IAB3,,Business,,,,,business
 5a42ed6e527d3d240b8140d5,IAB2,,Automotive,,,,,automotive
 5a42ed6e527d3d240b8140d6,IAB1,,Arts & Entertainment,,,,,arts_entertainment
