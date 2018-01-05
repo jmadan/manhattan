@@ -1,4 +1,4 @@
-_id,code,name,parentid,parentcode,parent.name
+id,code,name,parentid,parentcode,parent.name
 5a4468486f7af13a5a457c17,IAB3-2,Agriculture,5a42ed6e527d3d240b8140d4,IAB3,Business
 5a4468486f7af13a5a457c18,IAB3-3,Biotech/Biomedical,5a42ed6e527d3d240b8140d4,IAB3,Business
 5a4468486f7af13a5a457c19,IAB3-5,Construction,5a42ed6e527d3d240b8140d4,IAB3,Business
