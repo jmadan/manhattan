@@ -41,7 +41,10 @@ function updateArticle(req, res, next) {
         Neo4j.createArticle(response.value).then(result => {
           console.log('Article created...', result.msg);
           Neo4j.articleCategoryRelationship(response.value).then(result => {
-            console.log('Article node and Relationship created.', response.value._id);
+            console.log(
+              'Article node and Relationship created.',
+              response.value._id
+            );
             res.json({ article: response.value, articleUpdated: true });
           });
         });

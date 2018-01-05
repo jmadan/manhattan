@@ -1,0 +1,1601 @@
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+    "code" : "IAB3", 
+    "name" : "Business", 
+    "slug" : "business"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140d5"), 
+    "code" : "IAB2", 
+    "name" : "Automotive", 
+    "slug" : "automotive"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140d6"), 
+    "code" : "IAB1", 
+    "name" : "Arts & Entertainment", 
+    "slug" : "arts_entertainment"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140d7"), 
+    "code" : "IAB4", 
+    "name" : "Careers", 
+    "slug" : "careers"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140d8"), 
+    "code" : "IAB5", 
+    "name" : "Education", 
+    "slug" : "education"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140d9"), 
+    "code" : "IAB6", 
+    "name" : "Family & Parenting", 
+    "slug" : "family_parenting"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140da"), 
+    "code" : "IAB7", 
+    "name" : "Health & Fitness", 
+    "slug" : "health_fitness"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140db"), 
+    "code" : "IAB8", 
+    "name" : "Food & Drink", 
+    "slug" : "food_drink"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140dc"), 
+    "code" : "IAB9", 
+    "name" : "Hobbies & Interests", 
+    "slug" : "hobbies_interests"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140dd"), 
+    "code" : "IAB10", 
+    "name" : "Home & Garden", 
+    "slug" : "home_garden"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140de"), 
+    "code" : "IAB11", 
+    "name" : "Law, Govt & Politics", 
+    "slug" : "law_govt_policies"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+    "code" : "IAB14", 
+    "name" : "Society", 
+    "slug" : "society"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e0"), 
+    "code" : "IAB15", 
+    "name" : "Science", 
+    "slug" : "science"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e1"), 
+    "code" : "IAB16", 
+    "name" : "Pets", 
+    "slug" : "pets"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e2"), 
+    "code" : "IAB17", 
+    "name" : "Sports", 
+    "slug" : "sports"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e3"), 
+    "code" : "IAB18", 
+    "name" : "Style & Fashion", 
+    "slug" : "style_fashion"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+    "code" : "IAB19", 
+    "name" : "Technology", 
+    "slug" : "technology"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e5"), 
+    "code" : "IAB20", 
+    "name" : "Travel", 
+    "slug" : "travel"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e6"), 
+    "code" : "IAB13", 
+    "name" : "Personal Finance", 
+    "slug" : "personal_finance"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e7"), 
+    "code" : "IAB21", 
+    "name" : "Real Estate", 
+    "slug" : "real_estate"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e8"), 
+    "code" : "IAB22", 
+    "name" : "Shopping", 
+    "slug" : "shopping"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+    "code" : "IAB23", 
+    "name" : "Religion & Spirituality", 
+    "slug" : "religion_spirituality"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+    "code" : "IAB12", 
+    "name" : "News", 
+    "slug" : "news"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140eb"), 
+    "code" : "IAB25", 
+    "name" : "Non-Standard Content", 
+    "slug" : "non_standard_content"
+}
+{ 
+    "_id" : ObjectId("5a42ed6e527d3d240b8140ec"), 
+    "code" : "IAB26", 
+    "name" : "Illegal Content", 
+    "slug" : "illegal_content"
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c17"), 
+    "code" : "IAB3-2", 
+    "name" : "Agriculture", 
+    "slug" : "agriculture", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c18"), 
+    "code" : "IAB3-3", 
+    "name" : "Biotech/Biomedical", 
+    "slug" : "biotech_biomedical", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c19"), 
+    "code" : "IAB3-5", 
+    "name" : "Construction", 
+    "slug" : "construction", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c1a"), 
+    "code" : "IAB3-6", 
+    "name" : "Forestry", 
+    "slug" : "forestry", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c1b"), 
+    "code" : "IAB3-7", 
+    "name" : "Government", 
+    "slug" : "government", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c1c"), 
+    "code" : "IAB3-9", 
+    "name" : "Human Resources", 
+    "slug" : "human_resources", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c1d"), 
+    "code" : "IAB3-8", 
+    "name" : "Green Solutions", 
+    "slug" : "grren_solutions", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c1e"), 
+    "code" : "IAB3-10", 
+    "name" : "Logistics", 
+    "slug" : "logistics", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c1f"), 
+    "code" : "IAB3-11", 
+    "name" : "Marketing", 
+    "slug" : "marketing", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c20"), 
+    "code" : "IAB3-12", 
+    "name" : "Metals", 
+    "slug" : "metals", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c21"), 
+    "code" : "IAB3-1", 
+    "name" : "Advertising", 
+    "slug" : "advertising", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c22"), 
+    "code" : "IAB14-1", 
+    "name" : "Dating", 
+    "slug" : "Dating", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c23"), 
+    "code" : "IAB14-2", 
+    "name" : "Divorce Support", 
+    "slug" : "Divorce_Support", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c24"), 
+    "code" : "IAB14-3", 
+    "name" : "Gay Life", 
+    "slug" : "Gay_Life", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c25"), 
+    "code" : "IAB14-4", 
+    "name" : "Marriage", 
+    "slug" : "Marriage", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c26"), 
+    "code" : "IAB14-5", 
+    "name" : "Senior Living", 
+    "slug" : "Senior_Living", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c27"), 
+    "code" : "IAB14-7", 
+    "name" : "Weddings", 
+    "slug" : "Weddings", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c28"), 
+    "code" : "IAB14-6", 
+    "name" : "Teens", 
+    "slug" : "Teens", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c29"), 
+    "code" : "IAB14-8", 
+    "name" : "Ethnic Specific", 
+    "slug" : "Ethnic_Specific", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c2a"), 
+    "code" : "IAB19-4", 
+    "name" : "C/C++", 
+    "slug" : "C_C++", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c2b"), 
+    "code" : "IAB19-2", 
+    "name" : "Animation", 
+    "slug" : "Animation", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c2c"), 
+    "code" : "IAB19-8", 
+    "name" : "Network", 
+    "slug" : "network", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c2d"), 
+    "code" : "IAB19-11", 
+    "name" : "Data Centers", 
+    "slug" : "Data_Centers", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c2e"), 
+    "code" : "IAB19-12", 
+    "name" : "Databases", 
+    "slug" : "Databases", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c2f"), 
+    "code" : "IAB19-18", 
+    "name" : "Internet Technology", 
+    "slug" : "Internet_Technology", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c30"), 
+    "code" : "IAB19-19", 
+    "name" : "Java", 
+    "slug" : "Java", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c31"), 
+    "code" : "IAB19-31", 
+    "name" : "Unix", 
+    "slug" : "Unix", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c32"), 
+    "code" : "IAB19-30", 
+    "name" : "Shareware/Freeware", 
+    "slug" : "Shareware_Freeware", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c33"), 
+    "code" : "IAB19-34", 
+    "name" : "Web Design/HTML", 
+    "slug" : "Web_Design_HTML", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c34"), 
+    "code" : "IAB19-32", 
+    "name" : "Visual Basic", 
+    "slug" : "visual_basic", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c35"), 
+    "code" : "IAB19-36", 
+    "name" : "Windows", 
+    "slug" : "windows", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c36"), 
+    "code" : "IAB19-38", 
+    "name" : "Perl", 
+    "slug" : "perl", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c37"), 
+    "code" : "IAB19-37", 
+    "name" : "PHP", 
+    "slug" : "php", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c38"), 
+    "code" : "IAB19-35", 
+    "name" : "Search Engine", 
+    "slug" : "search_engine", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c39"), 
+    "code" : "IAB19-20", 
+    "name" : "JavaScript", 
+    "slug" : "javascript", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c3a"), 
+    "code" : "IAB19-39", 
+    "name" : "PL/SQL", 
+    "slug" : "pl_sql", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c3b"), 
+    "code" : "IAB19-40", 
+    "name" : "Graph Database", 
+    "slug" : "graph_database", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c3c"), 
+    "code" : "IAB19-43", 
+    "name" : "R", 
+    "slug" : "R", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c3d"), 
+    "code" : "IAB19-42", 
+    "name" : "Assembly languages", 
+    "slug" : "Assembly_languages", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c3e"), 
+    "code" : "IAB19-41", 
+    "name" : "MongoDB", 
+    "slug" : "mongodb", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c3f"), 
+    "code" : "IAB19-44", 
+    "name" : "AngularJS", 
+    "slug" : "angularjs", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c40"), 
+    "code" : "IAB19-47", 
+    "name" : "C#", 
+    "slug" : "C#", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c41"), 
+    "code" : "IAB19-45", 
+    "name" : "ReactJS", 
+    "slug" : "reactjs", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c42"), 
+    "code" : "IAB19-48", 
+    "name" : "F#", 
+    "slug" : "F#", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c43"), 
+    "code" : "IAB19-49", 
+    "name" : "Swift", 
+    "slug" : "swift", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c44"), 
+    "code" : "IAB19-50", 
+    "name" : "Android", 
+    "slug" : "android", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c45"), 
+    "code" : "IAB19-52", 
+    "name" : "C/C++", 
+    "slug" : "C/C++", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c46"), 
+    "code" : "IAB19-51", 
+    "name" : "Linux", 
+    "slug" : "linux", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c47"), 
+    "code" : "IAB19-53", 
+    "name" : "Functional Programming", 
+    "slug" : "functional_programming", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c48"), 
+    "code" : "IAB19-54", 
+    "name" : "Haskell", 
+    "slug" : "haskell", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c49"), 
+    "code" : "IAB19-55", 
+    "name" : "Clojure", 
+    "slug" : "clojure", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c4a"), 
+    "code" : "IAB19-56", 
+    "name" : "Python", 
+    "slug" : "python", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c4b"), 
+    "code" : "IAB19-57", 
+    "name" : "Ruby", 
+    "slug" : "ruby", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c4c"), 
+    "code" : "IAB19-58", 
+    "name" : "Programming", 
+    "slug" : "programming", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c4d"), 
+    "code" : "IAB19-59", 
+    "name" : "Web Developer", 
+    "slug" : "web_developer", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c4e"), 
+    "code" : "IAB19-61", 
+    "name" : "NodeJS", 
+    "slug" : "nodejs", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c4f"), 
+    "code" : "IAB19-60", 
+    "name" : "FullStack", 
+    "slug" : "fullstack", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c50"), 
+    "code" : "IAB19-62", 
+    "name" : "Golang", 
+    "slug" : "golang", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c51"), 
+    "code" : "IAB19-46", 
+    "name" : ".Net", 
+    "slug" : ".net", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c52"), 
+    "code" : "IAB23-1", 
+    "name" : "Alternative Religions", 
+    "slug" : "Alternative_Religions", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c53"), 
+    "code" : "IAB23-2", 
+    "name" : "Atheism/Agnosticism", 
+    "slug" : "Atheism_Agnosticism", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c54"), 
+    "code" : "IAB23-3", 
+    "name" : "Buddhism", 
+    "slug" : "Buddhism", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c55"), 
+    "code" : "IAB23-4", 
+    "name" : "Catholicism", 
+    "slug" : "Catholicism", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c56"), 
+    "code" : "IAB23-5", 
+    "name" : "Christianity", 
+    "slug" : "Christianity", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c57"), 
+    "code" : "IAB23-6", 
+    "name" : "Hinduism", 
+    "slug" : "Hinduism", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c58"), 
+    "code" : "IAB23-7", 
+    "name" : "Islam", 
+    "slug" : "Islam", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c59"), 
+    "code" : "IAB23-9", 
+    "name" : "Latter-Day Saints", 
+    "slug" : "Latter_Day_Saints", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c5a"), 
+    "code" : "IAB23-10", 
+    "name" : "Pagan/Wiccan", 
+    "slug" : "Pagan_Wiccan", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c5b"), 
+    "code" : "IAB23-8", 
+    "name" : "Judaism", 
+    "slug" : "Judaism", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e9"), 
+        "code" : "IAB23", 
+        "name" : "Religion & Spirituality", 
+        "slug" : "religion_spirituality"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c5c"), 
+    "code" : "IAB19-64", 
+    "name" : "Security", 
+    "slug" : "security", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c5d"), 
+    "code" : "IAB14-9", 
+    "name" : "Culture", 
+    "slug" : "Culture", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c5e"), 
+    "code" : "IAB19-65", 
+    "name" : "Startup", 
+    "slug" : "startup", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c5f"), 
+    "code" : "IAB19-66", 
+    "name" : "Audio Video", 
+    "slug" : "audio_video", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c60"), 
+    "code" : "IAB19-67", 
+    "name" : "Mobile", 
+    "slug" : "mobile", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c61"), 
+    "code" : "IAB3-13", 
+    "name" : "Technology", 
+    "slug" : "technology", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c62"), 
+    "code" : "IAB3-14", 
+    "name" : "Acquisition", 
+    "slug" : "acquisition", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c63"), 
+    "code" : "IAB3-15", 
+    "name" : "Automobiles", 
+    "slug" : "automobiles", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c64"), 
+    "code" : "IAB3-16", 
+    "name" : "Chemicals", 
+    "slug" : "chemicals", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c65"), 
+    "code" : "IAB3-17", 
+    "name" : "Pharmaceuticals", 
+    "slug" : "pharmaceuticals", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c66"), 
+    "code" : "IAB3-18", 
+    "name" : "Real Estate", 
+    "slug" : "real_estate", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d4"), 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c67"), 
+    "code" : "IAB19-68", 
+    "name" : "Gaming", 
+    "slug" : "gaming", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c68"), 
+    "code" : "IAB19-69", 
+    "name" : "MOOC", 
+    "slug" : "mooc", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c69"), 
+    "code" : "IAB19-70", 
+    "name" : "Streaming", 
+    "slug" : "streaming", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c6a"), 
+    "code" : "IAB19-71", 
+    "name" : "Machine Learning", 
+    "slug" : "machine_learning", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c6b"), 
+    "code" : "IAB19-72", 
+    "name" : "Artificial Intelligence", 
+    "slug" : "artificial_intelligence", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c6c"), 
+    "code" : "IAB19-73", 
+    "name" : "Google", 
+    "slug" : "google", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c6d"), 
+    "code" : "IAB19-74", 
+    "name" : "Apple", 
+    "slug" : "apple", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c6e"), 
+    "code" : "IAB19-75", 
+    "name" : "Facebook", 
+    "slug" : "facebook", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c6f"), 
+    "code" : "IAB19-76", 
+    "name" : "Open Source", 
+    "slug" : "open_source", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c70"), 
+    "code" : "IAB19-77", 
+    "name" : "Amazon", 
+    "slug" : "amazon", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c71"), 
+    "code" : "IAB19-78", 
+    "name" : "Microsoft", 
+    "slug" : "microsoft", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c72"), 
+    "code" : "IAB19-79", 
+    "name" : "Uber", 
+    "slug" : "uber", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c73"), 
+    "code" : "IAB19-80", 
+    "name" : "Alibaba", 
+    "slug" : "alibaba", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c74"), 
+    "code" : "IAB19-81", 
+    "name" : "DevOps", 
+    "slug" : "devops", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4468486f7af13a5a457c75"), 
+    "code" : "IAB19-82", 
+    "name" : "iOS", 
+    "slug" : "ios", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a446c8c3139fa3abfb1ac81"), 
+    "code" : "IAB19-83", 
+    "name" : "Crypto Currencies", 
+    "slug" : "crypto_currencies", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4470ab527d3d3ad9df9553"), 
+    "code" : "IAB19-84", 
+    "name" : "Gadgets", 
+    "slug" : "gadgets", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4479943139fa3abfb1ac82"), 
+    "code" : "IAB22-1", 
+    "name" : "Home", 
+    "slug" : "home", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e8"), 
+        "code" : "IAB22", 
+        "name" : "Shopping", 
+        "slug" : "shopping"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4489153139fa3abfb1ac83"), 
+    "code" : "IAB15-1", 
+    "name" : "Climate", 
+    "slug" : "climate", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e0"), 
+        "code" : "IAB15", 
+        "name" : "Science", 
+        "slug" : "science"
+    }
+}
+{ 
+    "_id" : ObjectId("5a448a0a3139fa3abfb1ac84"), 
+    "code" : "IAB15-2", 
+    "name" : "Space", 
+    "slug" : "space", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e0"), 
+        "code" : "IAB15", 
+        "name" : "Science", 
+        "slug" : "science"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44ab45527d3d3ad9df957a"), 
+    "code" : "IAB22-2", 
+    "name" : "Gadgets", 
+    "slug" : "gadgets", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e8"), 
+        "code" : "IAB22", 
+        "name" : "Shopping", 
+        "slug" : "shopping"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44ab69527d3d3ad9df957b"), 
+    "code" : "IAB22-3", 
+    "name" : "Computing", 
+    "slug" : "computing", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e8"), 
+        "code" : "IAB22", 
+        "name" : "Shopping", 
+        "slug" : "shopping"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44c0f9527d3d3ad9df9589"), 
+    "code" : "IAB19-85", 
+    "name" : "Robotics", 
+    "slug" : "robotics", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44ca02527d3d3ad9df958c"), 
+    "code" : "IAB2-1", 
+    "name" : "Autonomous Cars", 
+    "slug" : "autonomous_cars", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140d5"), 
+        "code" : "IAB2", 
+        "name" : "Automotive", 
+        "slug" : "automotive"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44ce8b527d3d3ad9df9591"), 
+    "code" : "IAB7-1", 
+    "name" : "Addiction", 
+    "slug" : "addiction", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140da"), 
+        "code" : "IAB7", 
+        "name" : "Health & Fitness", 
+        "slug" : "health_fitness"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d18b527d3d3ad9df9595"), 
+    "code" : "IAB7-2", 
+    "name" : "Sex Robots", 
+    "slug" : "sex_robots", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140da"), 
+        "code" : "IAB7", 
+        "name" : "Health & Fitness", 
+        "slug" : "health_fitness"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d2a0527d3d3ad9df959c"), 
+    "code" : "IAB14-10", 
+    "name" : "Sex", 
+    "slug" : "sex", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140df"), 
+        "code" : "IAB14", 
+        "name" : "Society", 
+        "slug" : "society"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d8d7527d3d3ad9df95b9"), 
+    "code" : "IAB12-1", 
+    "name" : "Politics", 
+    "slug" : "politics", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d8eb527d3d3ad9df95ba"), 
+    "code" : "IAB12-2", 
+    "name" : "US News", 
+    "slug" : "us_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d906527d3d3ad9df95bb"), 
+    "code" : "IAB12-3", 
+    "name" : "UK News", 
+    "slug" : "uk_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d910527d3d3ad9df95bc"), 
+    "code" : "IAB12-4", 
+    "name" : "India News", 
+    "slug" : "india_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d923527d3d3ad9df95bd"), 
+    "code" : "IAB12-5", 
+    "name" : "Australia News", 
+    "slug" : "australia_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d947527d3d3ad9df95be"), 
+    "code" : "IAB12-6", 
+    "name" : "Russia News", 
+    "slug" : "russia_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d952527d3d3ad9df95bf"), 
+    "code" : "IAB12-7", 
+    "name" : "China News", 
+    "slug" : "china_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a44d956527d3d3ad9df95c0"), 
+    "code" : "IAB12-8", 
+    "name" : "Asia News", 
+    "slug" : "asia_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4b39850978e16b1b883b97"), 
+    "code" : "IAB12-9", 
+    "name" : "International News", 
+    "slug" : "international_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4b39e40978e16b1b883b98"), 
+    "code" : "IAB12-10", 
+    "name" : "Technology News", 
+    "slug" : "technology_news", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140ea"), 
+        "code" : "IAB12", 
+        "name" : "News", 
+        "slug" : "news"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4b51510978e16b1b883bb4"), 
+    "code" : "IAB19-86", 
+    "name" : "AeroSpace", 
+    "slug" : "aerospace", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : ObjectId("5a42ed6e527d3d240b8140e4"), 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4db5ab9081ed0ff24b08d1"), 
+    "code" : "IAB3-19", 
+    "name" : "Startup", 
+    "slug" : "startup", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : "5a42ed6e527d3d240b8140d4", 
+        "code" : "IAB3", 
+        "name" : "Business", 
+        "slug" : "business"
+    }
+}
+{ 
+    "_id" : ObjectId("5a4e2b9c8744ee7d5b5b6fa3"), 
+    "code" : "IAB19-87", 
+    "name" : "Transportation", 
+    "slug" : "transportation", 
+    "desc" : "", 
+    "parent" : {
+        "_id" : "5a42ed6e527d3d240b8140e4", 
+        "code" : "IAB19", 
+        "name" : "Technology", 
+        "slug" : "technology"
+    }
+}
