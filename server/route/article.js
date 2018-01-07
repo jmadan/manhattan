@@ -40,13 +40,8 @@ function updateArticle(req, res, next) {
       if (response.lastErrorObject.n === 1) {
         Neo4j.createArticle(response.value).then(result => {
           console.log('Article created...', result.msg);
-          Neo4j.articleCategoryRelationship(response.value).then(result => {
-            console.log(
-              'Article node and Relationship created.',
-              response.value._id
-            );
-            res.json({ article: response.value, articleUpdated: true });
-          });
+          Neo4j.articleCategoryRelationship(response.value);
+          res.json({ article: response.value, articleUpdated: true });
         });
       } else {
         res.json({ article: response.value, articleUpdated: false });

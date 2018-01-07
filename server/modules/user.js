@@ -9,14 +9,12 @@ const MongoDB = require('../utils/mongodb');
 let fetchUserById = userId => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db
-        .collection('users')
-        .findOne({ _id: ObjectID(userId) }, (error, item) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(item);
-        });
+      db.collection('users').findOne({ _id: ObjectID(userId) }, (error, item) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(item);
+      });
     });
   });
 };
@@ -38,43 +36,51 @@ let fetchUserFeed = user => {
   // let today = Math.round(new Date().getTime() / 1000);
   // let seventyTwoHours = today - 72 * 3600 * 1000;
   let intArray = user.interests.map(i => i.name);
+  let interestsIdArray = user.interests.map(i => i._id);
 
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db
-        .collection('feeditems')
-        .aggregate([
-          {
-            $match: {
-              $and: [
-                { status: 'classified' },
-                { 'parentcat.name': { $in: intArray } }
-              ]
-            }
-          },
-          { $sample: { size: 50 } },
-          {
-            $project: {
-              url: 1,
-              title: 1,
-              description: 1,
-              keywords: 1,
-              author: 1,
-              pubDate: 1,
-              provider: 1,
-              category: 1,
-              parentcat: 1,
-              subcategory: 1
-            }
-          }
-        ])
-        .toArray((error, docs) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(docs);
-        });
-    });
+    neo4j
+      .userRecommendation(interestsIdArray)
+      .then(result => {
+        console.log(result);
+        resolve(result);
+      })
+      .catch(err => reject(err));
+    // MongoClient.connect(DBURI, (err, db) => {
+    //   db
+    //     .collection('feeditems')
+    //     .aggregate([
+    //       {
+    //         $match: {
+    //           $and: [
+    //             { status: 'classified' },
+    //             { 'parentcat.name': { $in: intArray } }
+    //           ]
+    //         }
+    //       },
+    //       { $sample: { size: 50 } },
+    //       {
+    //         $project: {
+    //           url: 1,
+    //           title: 1,
+    //           description: 1,
+    //           keywords: 1,
+    //           author: 1,
+    //           pubDate: 1,
+    //           provider: 1,
+    //           category: 1,
+    //           parentcat: 1,
+    //           subcategory: 1
+    //         }
+    //       }
+    //     ])
+    //     .toArray((error, docs) => {
+    //       if (error) {
+    //         reject(error);
+    //       }
+    //       resolve(docs);
+    //     });
+    // });
   });
 };
 
@@ -128,13 +134,15 @@ let newUser = user => {
     }).then(result => {
       if (result.insertedCount === 1) {
         user.id = result.insertedId;
-        NeoClient.createUser(user).then(response => {
+        console.log(user);
+        neo4j.createUser(user).then(response => {
           if (response.records.length > 0) {
-            resolve(result);
+            resolve(user);
           } else {
             reject(new Error('Failed to create user graph node.'));
           }
         });
+        // resolve(user);
       } else {
         reject(result);
       }
@@ -157,8 +165,12 @@ let updateUser = (userId, reqBody) => {
   }
 
   return new Promise((resolve, reject) => {
+    console.log(userId, '-------', query);
     MongoDB.updateDocument('users', { _id: ObjectID(userId) }, query)
-      .then(result => resolve(result))
+      .then(result => {
+        neo4j.userInterestIn(userId, value._id);
+        resolve(result);
+      })
       .catch(err => reject(err));
   });
 };
@@ -166,7 +178,7 @@ let updateUser = (userId, reqBody) => {
 let performAction = (user, action, item) => {
   return new Promise(async (resolve, reject) => {
     if (action === 'save') {
-      MongoDB.insertDocument('uservault', {
+      MongoDB.insertDocument('savelater', {
         userId: user._id,
         itemId: item._id
       })
