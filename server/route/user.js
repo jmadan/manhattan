@@ -12,7 +12,7 @@ let fetchUserFeed = (req, res, next) => {
   if (req.params.userId && ObjectID.isValid(req.params.userId)) {
     User.fetchUserById(req.params.userId).then(user => {
       User.fetchUserFeed(user).then(response => {
-        res.json({ userfeed: response });
+        res.json({ userfeed: response.records });
       });
     });
   } else {

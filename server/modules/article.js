@@ -67,21 +67,27 @@ exports.getArticle = id => {
 };
 
 exports.updateArticle = data => {
-  return new Promise((resolve, reject) => {
-    MongoDB.updateDocument(
-      'feeditems',
-      { _id: ObjectID(data._id) },
-      {
-        $set: {
-          keywords: data.keywords,
-          stemwords: data.stemwords,
-          category: data.category,
-          parentcat: JSON.parse(data.parentcat),
-          subcategory: JSON.parse(data.subcat),
-          status: data.status
-        }
+  let query = null;
+  if (data.status === 'deleted') {
+    query = {
+      $set: {
+        status: data.status
       }
-    )
+    };
+  } else {
+    query = {
+      $set: {
+        keywords: data.keywords,
+        stemwords: data.stemwords,
+        category: data.category,
+        parentcat: JSON.parse(data.parentcat),
+        subcategory: JSON.parse(data.subcat),
+        status: data.status
+      }
+    };
+  }
+  return new Promise((resolve, reject) => {
+    MongoDB.updateDocument('feeditems', { _id: ObjectID(data._id) }, query)
       .then(result => {
         resolve(result);
       })
