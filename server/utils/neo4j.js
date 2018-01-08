@@ -172,7 +172,10 @@ let userRecommendation = interests => {
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MATCH (a:ARTICLE)-[:HAS_CATEGORY]-(sc:CATEGORY)-[:IS_SUBCATEGORY_OF]-(c:CATEGORY) WHERE c.id IN $InterestList RETURN a',
+        'MATCH (a:ARTICLE)-[:HAS_CATEGORY]-()-[:IS_SUBCATEGORY_OF]-(c:CATEGORY) WHERE c.id in $InterestList WITH a \
+        MATCH (a)-[pub:PUBLISHED_BY]-(p:PROVIDER) \
+        MATCH (a)-[:AUTHORED_BY]-(au:AUTHOR) \
+        RETURN a,p.name,au.name, pub.published_on ORDER BY pub.published_on',
         {
           InterestList: interests
         }
