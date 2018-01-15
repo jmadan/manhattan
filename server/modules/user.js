@@ -42,7 +42,6 @@ let fetchUserFeed = user => {
     neo4j
       .userRecommendation(interestsIdArray)
       .then(result => {
-        console.log(result);
         resolve(result);
       })
       .catch(err => reject(err));

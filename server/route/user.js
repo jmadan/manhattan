@@ -1,5 +1,6 @@
 const User = require('../modules/user');
 let ObjectID = require('mongodb').ObjectID;
+const Article = require('../modules/article');
 
 let fetchUserByEmail = (req, res, next) => {
   User.fetchUserByEmail(req.params.email).then(user => {
@@ -12,7 +13,9 @@ let fetchUserFeed = (req, res, next) => {
   if (req.params.userId && ObjectID.isValid(req.params.userId)) {
     User.fetchUserById(req.params.userId).then(user => {
       User.fetchUserFeed(user).then(response => {
-        res.json({ userfeed: response.records });
+        Article.formatFeedResponse(response.records).then(val => {
+          res.json({ userfeed: val });
+        });
       });
     });
   } else {
