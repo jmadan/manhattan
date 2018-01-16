@@ -26,6 +26,21 @@ let fetchUserFeed = (req, res, next) => {
   return next();
 };
 
+let fetchUserSavedFeed = (req, res, next) => {
+  if (req.params.userId && ObjectID.isValid(req.params.userId)) {
+    User.fetchUserById(req.params.userId).then(user => {
+      User.savedFeed(user).then(response => {
+        Article.formatFeedResponse(response.records).then(val => {
+          res.json({ userfeed: val });
+        });
+      });
+    });
+  } else {
+    res.json({ error: 'user id is not valid' });
+  }
+  return next();
+};
+
 let createUser = (req, res, next) => {
   User.newUser(req.body).then(response => {
     res.json({
@@ -70,6 +85,7 @@ let userAction = (req, res, next) => {
 module.exports = {
   fetchUserByEmail,
   fetchUserFeed,
+  fetchUserSavedFeed,
   createUser,
   updateUser,
   updateUserInterest,

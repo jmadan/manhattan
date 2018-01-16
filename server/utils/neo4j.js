@@ -149,6 +149,17 @@ let userAction = (user, action, item) => {
           resolve({ msg: result });
         })
         .catch(err => reject(err));
+    } else if (action === 'save') {
+      session
+        .run('MATCH (u:USER {email: $useremail}), (a:ARTICLE {id: $id}) CREATE (u)-[r:LATER]->(a) RETURN r', {
+          useremail: user.email,
+          id: item._id.toString()
+        })
+        .then(result => {
+          session.close();
+          resolve({ msg: result });
+        })
+        .catch(err => reject(err));
     }
   });
 };
@@ -188,6 +199,25 @@ let userRecommendation = interests => {
   });
 };
 
+let userSavedList = user => {
+  const session = driver.session();
+  return new Promise((resolve, reject) => {
+    session
+      .run(
+        'MATCH (a:ARTICLE)<-[:LATER]-(user:USER) WHERE user.email = $UserEmail \
+        RETURN a.id AS id, a.title AS title, a.url AS url',
+        {
+          UserEmail: user.email
+        }
+      )
+      .then(result => {
+        session.close();
+        resolve(result);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 module.exports = {
   findUser,
   createUser,
@@ -197,5 +227,6 @@ module.exports = {
   articleCategoryRelationship,
   userAction,
   userInterestIn,
-  userRecommendation
+  userRecommendation,
+  userSavedList
 };

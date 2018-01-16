@@ -83,6 +83,17 @@ let fetchUserFeed = user => {
   });
 };
 
+let savedFeed = user => {
+  return new Promise((resolve, reject) => {
+    neo4j
+      .userSavedList(user)
+      .then(result => {
+        resolve(result);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 // { category: { $in: user.interests ? user.interests.map(i => i.name) : [] } }
 
 let fetchAnonymousFeed = () => {
@@ -176,27 +187,27 @@ let updateUser = (userId, reqBody) => {
 
 let performAction = (user, action, item) => {
   return new Promise(async (resolve, reject) => {
-    if (action === 'save') {
-      MongoDB.insertDocument('savelater', {
-        userId: user._id,
-        itemId: item._id
+    // if (action === 'save') {
+    //   MongoDB.insertDocument('savelater', {
+    //     userId: user._id,
+    //     itemId: item._id
+    //   })
+    //     .then(result => {
+    //       resolve(result);
+    //     })
+    //     .catch(err => {
+    //       reject(err);
+    //     });
+    // } else {
+    neo4j
+      .userAction(user, action, item)
+      .then(result => {
+        resolve(result);
       })
-        .then(result => {
-          resolve(result);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    } else {
-      neo4j
-        .userAction(user, action, item)
-        .then(result => {
-          resolve(result);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    }
+      .catch(err => {
+        reject(err);
+      });
+    // }
   });
 };
 
@@ -204,6 +215,7 @@ module.exports = {
   fetchUserById,
   fetchUserByEmail,
   fetchUserFeed,
+  savedFeed,
   newUser,
   updateUser,
   fetchAnonymousFeed,
