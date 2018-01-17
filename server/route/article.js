@@ -38,7 +38,7 @@ function updateArticle(req, res, next) {
   if (req.params.id === req.body._id) {
     article.updateArticle(req.body).then(response => {
       if (response.lastErrorObject.n === 1) {
-        if (!response.value.status === 'deleted') {
+        if (response.value.status !== 'deleted') {
           Neo4j.createArticle(response.value).then(result => {
             console.log('Article created...', result.msg);
             Neo4j.articleCategoryRelationship(response.value);
