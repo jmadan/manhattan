@@ -30,15 +30,13 @@ let saveCategory = item => {
           db.close();
           neo4j.createCategory(item).then(result => {
             console.log('response post subcategory created: - ', result);
-            if(item.parent)
-            {
-              neo4j.createParentChildRelationship(item).then(res => {
-                console.log('response post subcategory relationship: - ', res);
-                resolve({ doc: response.ops, insertedCount: response.insertedCount });
+            neo4j.createParentChildRelationship(item).then(res => {
+              console.log('response post subcategory relationship: - ', res);
+              resolve({
+                doc: response.ops,
+                insertedCount: response.insertedCount
               });
-            } else {
-              resolve({ doc: response.ops, insertedCount: response.insertedCount });
-            }
+            });
           });
         }
       });
@@ -70,13 +68,19 @@ let getParentDistinctCategories = () => {
       if (err) {
         reject(err);
       } else {
-        db.collection('feeditems').distinct('category', { parent: { $exists: false } }, (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          db.close();
-          resolve(result);
-        });
+        db
+          .collection('feeditems')
+          .distinct(
+            'category',
+            { parent: { $exists: false } },
+            (error, result) => {
+              if (error) {
+                reject(error);
+              }
+              db.close();
+              resolve(result);
+            }
+          );
       }
     });
   });
@@ -88,13 +92,15 @@ let updateCategory = category => {
       if (err) {
         reject(err);
       } else {
-        db.collection('categories').updateOne({ name: category.name }, (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          db.close();
-          resolve(result);
-        });
+        db
+          .collection('categories')
+          .updateOne({ name: category.name }, (error, result) => {
+            if (error) {
+              reject(error);
+            }
+            db.close();
+            resolve(result);
+          });
       }
     });
   });

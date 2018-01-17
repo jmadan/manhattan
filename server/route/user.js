@@ -1,5 +1,6 @@
 const User = require('../modules/user');
 let ObjectID = require('mongodb').ObjectID;
+const Article = require('../modules/article');
 
 let fetchUserByEmail = (req, res, next) => {
   User.fetchUserByEmail(req.params.email).then(user => {
@@ -12,7 +13,9 @@ let fetchUserFeed = (req, res, next) => {
   if (req.params.userId && ObjectID.isValid(req.params.userId)) {
     User.fetchUserById(req.params.userId).then(user => {
       User.fetchUserFeed(user).then(response => {
-        res.json({ userfeed: response });
+        Article.formatFeedResponse(response.records).then(val => {
+          res.json({ userfeed: val });
+        });
       });
     });
   } else {
@@ -23,8 +26,23 @@ let fetchUserFeed = (req, res, next) => {
   return next();
 };
 
+let fetchUserSavedFeed = (req, res, next) => {
+  if (req.params.userId && ObjectID.isValid(req.params.userId)) {
+    User.fetchUserById(req.params.userId).then(user => {
+      User.savedFeed(user).then(response => {
+        Article.formatFeedResponse(response.records).then(val => {
+          res.json({ userfeed: val });
+        });
+      });
+    });
+  } else {
+    res.json({ error: 'user id is not valid' });
+  }
+  return next();
+};
+
 let createUser = (req, res, next) => {
-  User.neswUser(req.body).then(response => {
+  User.newUser(req.body).then(response => {
     res.json({
       statusCode: 201,
       msg: 'user created',
@@ -67,6 +85,7 @@ let userAction = (req, res, next) => {
 module.exports = {
   fetchUserByEmail,
   fetchUserFeed,
+  fetchUserSavedFeed,
   createUser,
   updateUser,
   updateUserInterest,

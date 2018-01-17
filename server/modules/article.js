@@ -67,21 +67,27 @@ exports.getArticle = id => {
 };
 
 exports.updateArticle = data => {
-  return new Promise((resolve, reject) => {
-    MongoDB.updateDocument(
-      'feeditems',
-      { _id: ObjectID(data._id) },
-      {
-        $set: {
-          keywords: data.keywords,
-          stemwords: data.stemwords,
-          category: data.category,
-          parentcat: JSON.parse(data.parentcat),
-          subcategory: JSON.parse(data.subcat),
-          status: data.status
-        }
+  let query = null;
+  if (data.status === 'deleted') {
+    query = {
+      $set: {
+        status: data.status
       }
-    )
+    };
+  } else {
+    query = {
+      $set: {
+        keywords: data.keywords,
+        stemwords: data.stemwords,
+        category: data.category,
+        parentcat: JSON.parse(data.parentcat),
+        subcategory: JSON.parse(data.subcat),
+        status: data.status
+      }
+    };
+  }
+  return new Promise((resolve, reject) => {
+    MongoDB.updateDocument('feeditems', { _id: ObjectID(data._id) }, query)
       .then(result => {
         resolve(result);
       })
@@ -145,16 +151,12 @@ exports.updateArticleCategory = (id, category) => {
       db
         .db('manhattan')
         .collection('feeditems')
-        .findOneAndUpdate(
-          { _id: ObjectID(id) },
-          { $set: { category: category, status: 'classified' } },
-          (err, doc) => {
-            if (err) {
-              reject(err);
-            }
-            resolve(doc);
+        .findOneAndUpdate({ _id: ObjectID(id) }, { $set: { category: category, status: 'classified' } }, (err, doc) => {
+          if (err) {
+            reject(err);
           }
-        );
+          resolve(doc);
+        });
     });
   });
 };
@@ -198,7 +200,7 @@ exports.getItemDetails = item => {
 };
 
 exports.getArticleText = item => {
-  textract.fromUrl(item.url, function(error, text) {
+  textract.fromUrl(item.url, function (error, text) {
     return text;
   });
 };
@@ -206,7 +208,7 @@ exports.getArticleText = item => {
 exports.getArticleStemWords = item => {
   return new Promise((resolve, reject) => {
     try {
-      textract.fromUrl(item.url, function(error, text) {
+      textract.fromUrl(item.url, function (error, text) {
         if (text) {
           item.itembody = text;
           item.stemwords = lancasterStemmer.tokenizeAndStem(text);
@@ -280,6 +282,18 @@ exports.updateItem = item => {
             resolve(doc);
           }
         );
+    });
+  });
+};
+
+// to get the description of the articles and format the response
+exports.formatFeedResponse = items => {
+  const promises = items.map(item => {
+    return MongoDB.getDocuments('feeditems', { _id: ObjectID(item._fields[0]) });
+  });
+  return Promise.all(promises).then(result => {
+    return result.map(r => {
+      return r[0];
     });
   });
 };

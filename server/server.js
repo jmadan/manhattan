@@ -63,6 +63,7 @@ server.get('/api/article/brain/classify/:id', articleRoute.getBrain);
 server.get('/api/category', categoryRoute.getCategories);
 server.post('/api/category', categoryRoute.newCategory);
 
+server.get('/api/user/feed/saved/:userId', userRoute.fetchUserSavedFeed);
 server.get('/api/user/feed/:userId', userRoute.fetchUserFeed);
 server.get('/api/user/email/:email', userRoute.fetchUserByEmail);
 
