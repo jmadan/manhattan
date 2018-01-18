@@ -33,9 +33,6 @@ let fetchUserByEmail = email => {
 };
 
 let fetchUserFeed = user => {
-  // let today = Math.round(new Date().getTime() / 1000);
-  // let seventyTwoHours = today - 72 * 3600 * 1000;
-  let intArray = user.interests.map(i => i.name);
   let interestsIdArray = user.interests.map(i => i._id);
 
   return new Promise((resolve, reject) => {
@@ -45,41 +42,6 @@ let fetchUserFeed = user => {
         resolve(result);
       })
       .catch(err => reject(err));
-    // MongoClient.connect(DBURI, (err, db) => {
-    //   db
-    //     .collection('feeditems')
-    //     .aggregate([
-    //       {
-    //         $match: {
-    //           $and: [
-    //             { status: 'classified' },
-    //             { 'parentcat.name': { $in: intArray } }
-    //           ]
-    //         }
-    //       },
-    //       { $sample: { size: 50 } },
-    //       {
-    //         $project: {
-    //           url: 1,
-    //           title: 1,
-    //           description: 1,
-    //           keywords: 1,
-    //           author: 1,
-    //           pubDate: 1,
-    //           provider: 1,
-    //           category: 1,
-    //           parentcat: 1,
-    //           subcategory: 1
-    //         }
-    //       }
-    //     ])
-    //     .toArray((error, docs) => {
-    //       if (error) {
-    //         reject(error);
-    //       }
-    //       resolve(docs);
-    //     });
-    // });
   });
 };
 
