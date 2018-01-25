@@ -288,12 +288,12 @@ exports.updateItem = item => {
 
 // to get the description of the articles and format the response
 exports.formatFeedResponse = items => {
-  const promises = items.map(item => {
-    return MongoDB.getDocuments('feeditems', { _id: ObjectID(item._fields[0]) });
-  });
-  return Promise.all(promises).then(result => {
-    return result.map(r => {
-      return r[0];
-    });
+  let idArray = items.map(i => ObjectID(i._fields[0]));
+  return new Promise((resolve, reject) => {
+    MongoDB.getDocuments('feeditems', { _id: { $in: idArray } })
+      .then(docs => {
+        resolve(docs);
+      })
+      .catch(err => reject(err));
   });
 };
