@@ -86,7 +86,6 @@ let updateDocument = (coll, findQuery, updateQuery) => {
 
 let getDocuments = (coll, query) => {
   return new Promise((resolve, reject) => {
-    console.log(DBURI);
     MongoClient.connect(DBURI, (err, datab) => {
       if (err) {
         reject(err);
