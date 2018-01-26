@@ -127,7 +127,8 @@ let createParentChildRelationship = item => {
 let userAction = (user, action, item) => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
-    if (action === 'like') {
+    switch (action) {
+    case 'like':
       session
         .run('MATCH (u:USER {email: $useremail}), (a:ARTICLE {id: $id}) CREATE (u)-[r:LIKES]->(a) RETURN r', {
           useremail: user.email,
@@ -138,7 +139,20 @@ let userAction = (user, action, item) => {
           resolve({ msg: result });
         })
         .catch(err => reject(err));
-    } else if (action === 'dislike') {
+      break;
+    case 'unlike':
+      session
+        .run('MATCH (u:USER {email: $useremail})-[r:LIKES]-(a:ARTICLE {id: $id}) DELETE r RETURN a', {
+          useremail: user.email,
+          id: item._id.toString()
+        })
+        .then(result => {
+          session.close();
+          resolve({ msg: result });
+        })
+        .catch(err => reject(err));
+      break;
+    case 'dislike':
       session
         .run('MATCH (u:USER {email: $useremail}), (a:ARTICLE {id: $id}) CREATE (u)-[r:DISLIKES]->(a) RETURN r', {
           useremail: user.email,
@@ -149,7 +163,20 @@ let userAction = (user, action, item) => {
           resolve({ msg: result });
         })
         .catch(err => reject(err));
-    } else if (action === 'save') {
+      break;
+    case 'undislike':
+      session
+        .run('MATCH (u:USER {email: $useremail})-[r:DISLIKES]-(a:ARTICLE {id: $id}) DELETE r RETURN a', {
+          useremail: user.email,
+          id: item._id.toString()
+        })
+        .then(result => {
+          session.close();
+          resolve({ msg: result });
+        })
+        .catch(err => reject(err));
+      break;
+    case 'save':
       session
         .run('MATCH (u:USER {email: $useremail}), (a:ARTICLE {id: $id}) CREATE (u)-[r:LATER]->(a) RETURN r', {
           useremail: user.email,
@@ -160,6 +187,21 @@ let userAction = (user, action, item) => {
           resolve({ msg: result });
         })
         .catch(err => reject(err));
+      break;
+    case 'unsave':
+      session
+        .run('MATCH (u:USER {email: $useremail})-[r:LATER]-(a:ARTICLE {id: $id}) DELETE r RETURN a', {
+          useremail: user.email,
+          id: item._id.toString()
+        })
+        .then(result => {
+          session.close();
+          resolve({ msg: result });
+        })
+        .catch(err => reject(err));
+      break;
+    default:
+      break;
     }
   });
 };
