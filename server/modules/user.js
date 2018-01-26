@@ -149,18 +149,6 @@ let updateUser = (userId, reqBody) => {
 
 let performAction = (user, action, item) => {
   return new Promise(async (resolve, reject) => {
-    // if (action === 'save') {
-    //   MongoDB.insertDocument('savelater', {
-    //     userId: user._id,
-    //     itemId: item._id
-    //   })
-    //     .then(result => {
-    //       resolve(result);
-    //     })
-    //     .catch(err => {
-    //       reject(err);
-    //     });
-    // } else {
     neo4j
       .userAction(user, action, item)
       .then(result => {
