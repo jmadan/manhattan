@@ -290,7 +290,11 @@ exports.updateItem = item => {
 exports.formatFeedResponse = items => {
   let idArray = items.map(i => ObjectID(i._fields[0]));
   return new Promise((resolve, reject) => {
-    MongoDB.getDocuments('feeditems', { _id: { $in: idArray } })
+    MongoDB.getDocuments(
+      'feeditems',
+      { _id: { $in: idArray } },
+      { _id: 1, title: 1, url: 1, description: 1, author: 1, pubDate: 1, provider: 1, keywords: 1 }
+    )
       .then(docs => {
         resolve(docs);
       })

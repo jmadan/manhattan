@@ -84,7 +84,7 @@ let updateDocument = (coll, findQuery, updateQuery) => {
   });
 };
 
-let getDocuments = (coll, query) => {
+let getDocuments = (coll, query, options) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, datab) => {
       if (err) {
@@ -93,7 +93,7 @@ let getDocuments = (coll, query) => {
       datab
         .db('manhattan')
         .collection(coll)
-        .find(query)
+        .find(query, options)
         .sort({ pubDate: -1 })
         .toArray((err, docs) => {
           if (err) {
