@@ -56,11 +56,7 @@ let savedFeed = user => {
   });
 };
 
-// { category: { $in: user.interests ? user.interests.map(i => i.name) : [] } }
-
 let fetchAnonymousFeed = () => {
-  // let today = Math.round(new Date().getTime() / 1000);
-  // let seventyTwoHours = today - 72 * 3600 * 1000;
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
@@ -114,7 +110,6 @@ let newUser = user => {
             reject(new Error('Failed to create user graph node.'));
           }
         });
-        // resolve(user);
       } else {
         reject(result);
       }
@@ -137,10 +132,9 @@ let updateUser = (userId, reqBody) => {
   }
 
   return new Promise((resolve, reject) => {
-    console.log(userId, '-------', query);
     MongoDB.updateDocument('users', { _id: ObjectID(userId) }, query)
       .then(result => {
-        neo4j.userInterestIn(userId, value._id);
+        neo4j.userInterestIn(userId, value._id, op);
         resolve(result);
       })
       .catch(err => reject(err));
