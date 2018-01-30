@@ -206,10 +206,17 @@ let userAction = (user, action, item) => {
   });
 };
 
-let userInterestIn = (userId, interestId) => {
+let userInterestIn = (userId, interestId, op) => {
+  let query = null;
+  if (op === 'add') {
+    query = 'MATCH (u:USER {id: $userId}), (c:CATEGORY {id: $categoryId}) CREATE (u)-[r:INTERESTED_IN]->(c) RETURN r';
+  } else {
+    query = 'MATCH (u:USER {id: $userId})-[r:INTERESTED_IN]->(c:CATEGORY {id: $categoryId}) DELETE r';
+  }
+  // let query = 'MERGE (u:USER {id: $userId})-[r:INTERESTED_IN]->(c:CATEGORY {id: $categoryId}) return type(r)';
   const session = driver.session();
   session
-    .run('MATCH (u:USER {id: $userId}), (c:CATEGORY {id: $categoryId}) CREATE (u)-[r:INTERESTED_IN]->(c) RETURN r', {
+    .run(query, {
       userId: userId.toString(),
       categoryId: interestId.toString()
     })
