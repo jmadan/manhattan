@@ -24,6 +24,8 @@ const server = restify.createServer({
 });
 
 server.pre(restify.pre.sanitizePath());
+server.use(restify.gzipResponse());
+server.use(restify.dateParser());
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
