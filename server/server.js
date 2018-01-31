@@ -24,6 +24,7 @@ const server = restify.createServer({
 });
 
 server.pre(restify.pre.sanitizePath());
+server.use(restify.plugins.dateParser());
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
@@ -35,6 +36,12 @@ server.use(cors.actual);
 server.pre((req, res, next) => {
   req.log.info({ req: req }, 'start');
   return next();
+});
+
+server.use((req, res, next) => {
+  res.setHeader('content-type', 'application-json');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  next();
 });
 
 server.get('/', (req, res, next) => {
