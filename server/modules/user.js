@@ -102,7 +102,6 @@ let newUser = user => {
     }).then(result => {
       if (result.insertedCount === 1) {
         user.id = result.insertedId;
-        console.log(user);
         neo4j.createUser(user).then(response => {
           if (response.records.length > 0) {
             resolve(user);

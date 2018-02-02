@@ -46,7 +46,7 @@ let createUser = (req, res, next) => {
     res.json({
       statusCode: 201,
       msg: 'user created',
-      userId: response.insertedId
+      userId: response.id
     });
   });
   return next();
