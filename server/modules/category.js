@@ -70,17 +70,13 @@ let getParentDistinctCategories = () => {
       } else {
         db
           .collection('feeditems')
-          .distinct(
-            'category',
-            { parent: { $exists: false } },
-            (error, result) => {
-              if (error) {
-                reject(error);
-              }
-              db.close();
-              resolve(result);
+          .distinct('category', { $and: [{ parent: { $exists: false } }, { status: 'active' }] }, (error, result) => {
+            if (error) {
+              reject(error);
             }
-          );
+            db.close();
+            resolve(result);
+          });
       }
     });
   });
@@ -92,15 +88,13 @@ let updateCategory = category => {
       if (err) {
         reject(err);
       } else {
-        db
-          .collection('categories')
-          .updateOne({ name: category.name }, (error, result) => {
-            if (error) {
-              reject(error);
-            }
-            db.close();
-            resolve(result);
-          });
+        db.collection('categories').updateOne({ name: category.name }, (error, result) => {
+          if (error) {
+            reject(error);
+          }
+          db.close();
+          resolve(result);
+        });
       }
     });
   });
