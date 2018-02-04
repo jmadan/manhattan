@@ -142,7 +142,7 @@ let userAction = (user, action, item) => {
       break;
     case 'unlike':
       session
-        .run('MATCH (u:USER {email: $useremail})-[r:LIKES]-(a:ARTICLE {id: $id}) DELETE r RETURN a', {
+        .run('MATCH (u:USER {email: $useremail})-[r:LIKES]->(a:ARTICLE {id: $id}) DELETE r RETURN a', {
           useremail: user.email,
           id: item._id.toString()
         })
@@ -166,7 +166,7 @@ let userAction = (user, action, item) => {
       break;
     case 'undislike':
       session
-        .run('MATCH (u:USER {email: $useremail})-[r:DISLIKES]-(a:ARTICLE {id: $id}) DELETE r RETURN a', {
+        .run('MATCH (u:USER {email: $useremail})-[r:DISLIKES]->(a:ARTICLE {id: $id}) DELETE r RETURN a', {
           useremail: user.email,
           id: item._id.toString()
         })
@@ -190,10 +190,44 @@ let userAction = (user, action, item) => {
       break;
     case 'unsave':
       session
-        .run('MATCH (u:USER {email: $useremail})-[r:LATER]-(a:ARTICLE {id: $id}) DELETE r RETURN a', {
+        .run('MATCH (u:USER {email: $useremail})-[r:LATER]->(a:ARTICLE {id: $id}) DELETE r RETURN a', {
           useremail: user.email,
           id: item._id.toString()
         })
+        .then(result => {
+          session.close();
+          resolve({ msg: result });
+        })
+        .catch(err => reject(err));
+      break;
+    case 'like-tag':
+      session
+        .run(
+          'MERGE (t:TAG {name: $tag}) WITH t \
+        MATCH (u:USER {email: $useremail}) \
+        CREATE (u)-[r:LIKES]->(t) RETURN r',
+          {
+            useremail: user.email,
+            tag: item
+          }
+        )
+        .then(result => {
+          session.close();
+          resolve({ msg: result });
+        })
+        .catch(err => reject(err));
+      break;
+    case 'unlike-tag':
+      session
+        .run(
+          'MATCH (t:TAG {name: $tag}) \
+        MATCH (u:USER {email: $useremail}) \
+        MATCH (u)-[r:LIKES]->(t) DELETE r',
+          {
+            useremail: user.email,
+            tag: item
+          }
+        )
         .then(result => {
           session.close();
           resolve({ msg: result });
@@ -206,9 +240,9 @@ let userAction = (user, action, item) => {
   });
 };
 
-let userInterestIn = (userId, interestId, op) => {
+let userInterestIn = (userId, interestId, action) => {
   let query = null;
-  if (op === 'add') {
+  if (action === 'add') {
     query = 'MATCH (u:USER {id: $userId}), (c:CATEGORY {id: $categoryId}) CREATE (u)-[r:INTERESTED_IN]->(c) RETURN r';
   } else {
     query = 'MATCH (u:USER {id: $userId})-[r:INTERESTED_IN]->(c:CATEGORY {id: $categoryId}) DELETE r';
@@ -227,16 +261,21 @@ let userInterestIn = (userId, interestId, op) => {
     .catch(err => console.log(err));
 };
 
-let userRecommendation = interests => {
+let userRecommendation = (userid, interests) => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MATCH (a:ARTICLE)-[:HAS_CATEGORY]-(c:CATEGORY) WHERE c.id in $InterestList WITH a \
-        MATCH (a)-[pub:PUBLISHED_BY]-(p:PROVIDER) \
-        MATCH (a)-[:AUTHORED_BY]-(au:AUTHOR) \
-        RETURN DISTINCT a.id AS id, a.title AS title, a.url AS url, a.keywords AS keywords, p.name AS provider,au.name AS author, pub.pubDate AS pubDate ORDER BY pub.pubDate DESC LIMIT 100',
+        'MATCH (a:ARTICLE)-[:HAS_CATEGORY]->(c:CATEGORY), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
+        WHERE c.id in $InterestList \
+        RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100 \
+        UNION \
+        match (u:USER {id: $userid})-[:LIKES]->(t:TAG) WITH t, collect(t.name) as tags \
+        unwind tags as tag with tag \
+        match (a:ARTICLE), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) where a.keywords contains tag \
+        return DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100',
         {
+          userid: userid,
           InterestList: interests
         }
       )
