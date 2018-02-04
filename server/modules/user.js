@@ -33,7 +33,7 @@ let fetchUserByEmail = email => {
 };
 
 let fetchUserFeed = user => {
-  let interestsIdArray = user.interests.map(i => i._id);
+  let interestsIdArray = user.interests.length > 0 ? user.interests.map(i => i._id) : [];
 
   return new Promise((resolve, reject) => {
     neo4j
@@ -117,11 +117,11 @@ let newUser = user => {
 };
 
 let updateUser = (userId, reqBody) => {
-  let { op, attr, value } = reqBody;
+  let { action, attr, value } = reqBody;
   let query = null;
   switch (attr) {
     case 'interest':
-      query = { [op === 'add' ? '$addToSet' : '$pull']: { interests: value } };
+      query = { [action === 'add' ? '$addToSet' : '$pull']: { interests: value } };
       break;
     case 'user':
       query = { $set: { value } };
@@ -133,7 +133,7 @@ let updateUser = (userId, reqBody) => {
   return new Promise((resolve, reject) => {
     MongoDB.updateDocument('users', { _id: ObjectID(userId) }, query)
       .then(result => {
-        neo4j.userInterestIn(userId, value._id, op);
+        neo4j.userInterestIn(userId, value._id, action);
         resolve(result);
       })
       .catch(err => reject(err));
