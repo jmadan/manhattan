@@ -267,15 +267,15 @@ let userRecommendation = (userid, interests) => {
     session
       .run(
         'MATCH (a:ARTICLE)-[:HAS_CATEGORY]->(c:CATEGORY), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
-        WHERE c.id in $InterestList \
-        RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100 \
-        UNION \
-        match (u:USER {id: $userid})-[:LIKES]->(t:TAG) WITH t, collect(t.name) as tags \
-        unwind tags as tag with tag \
-        match (a:ARTICLE), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) where a.keywords contains tag \
-        return DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100',
+      WHERE c.id in $InterestList \
+      RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100 \
+      UNION \
+      match (u:USER {id: $userid})-[:LIKES]->(t:TAG) WITH t, collect(t.name) as tags \
+      unwind tags as tag with tag \
+      match (a:ARTICLE), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) where a.keywords contains tag \
+      return DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100',
         {
-          userid: userid,
+          userid: userid.toString(),
           InterestList: interests
         }
       )
