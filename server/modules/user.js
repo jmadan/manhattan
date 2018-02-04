@@ -37,7 +37,7 @@ let fetchUserFeed = user => {
 
   return new Promise((resolve, reject) => {
     neo4j
-      .userRecommendation(interestsIdArray)
+      .userRecommendation(user._id, interestsIdArray)
       .then(result => {
         resolve(result);
       })
