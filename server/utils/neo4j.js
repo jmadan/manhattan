@@ -5,15 +5,20 @@ const driver = neo4j.driver(
   neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
 );
 
-let findUser = user => {
+let getUser = user => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
-      .run('MATCH (u:USER {email: $email}) RETURN u', { email: user.email })
+      .run(
+        'MATCH (u:USER {email: $email}) WITH u \
+      MATCH (u)-[:LIKES]->(t:TAG) WITH u,t \
+      RETURN u, collect(t) as tags',
+        { email: user.email }
+      )
       .then(result => {
         session.close();
         if (result.records.length > 0) {
-          resolve({ user: result.records[0] });
+          resolve({ user: result });
         }
         resolve({ user: null });
       })
@@ -307,7 +312,7 @@ let userSavedList = user => {
 };
 
 module.exports = {
-  findUser,
+  getUser,
   createUser,
   createParentChildRelationship,
   createCategory,
