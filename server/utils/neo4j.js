@@ -12,7 +12,7 @@ let getUser = user => {
       .run(
         'MATCH (u:USER {email: $email}) WITH u \
       MATCH (u)-[:LIKES]->(t:TAG) WITH u,t \
-      RETURN u, collect(t) as tags',
+      RETURN u, collect(t.name) as tags',
         { email: user.email }
       )
       .then(result => {
