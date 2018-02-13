@@ -273,16 +273,16 @@ let userRecommendation = (userid, interests) => {
       .run(
         'MATCH (a:ARTICLE)-[:HAS_CATEGORY]->(c:CATEGORY), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
       WHERE c.id in $InterestList \
-      RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100 \
+      RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 50 \
       UNION \
       match (u:USER {id: $userid})-[:LIKES]->(t:TAG) WITH t, collect(t.name) as tags \
       unwind tags as tag with tag \
       match (a:ARTICLE), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) where a.keywords contains tag \
-      return DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100 \
+      return DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 50 \
       UNION \
       MATCH (a:ARTICLE)-[:HAS_CATEGORY]->(c:CATEGORY)-[:HAS_PARENT]-(cp:CATEGORY), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
       WHERE cp.id in $InterestList \
-      RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100',
+      RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 50',
         {
           userid: userid.toString(),
           InterestList: interests
