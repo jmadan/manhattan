@@ -28,6 +28,7 @@ let fetchUserByEmail = email => {
         }
         neo4j.getUser(item).then(response => {
           item.tags = response.user.records.map(r => r.get('tags'))[0];
+          // item.tags = response.user.records[0].get('tags').map(t => t.properties.name);
           resolve(item);
         });
       });
