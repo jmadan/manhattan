@@ -26,10 +26,16 @@ let fetchUserByEmail = email => {
         if (error) {
           reject(error);
         }
-        neo4j.getUser(item).then(response => {
-          item.tags = response.user.records[0].get('tags').map(t => t.properties.name);
+        if (item) {
+          neo4j.getUser(item).then(response => {
+            console.log('response from neo4j: ', response);
+            response.user ? (item.tags = response.user.records[0].get('tags').map(t => t.properties.name)) : null;
+            // item.tags = response.user.records[0].get('tags').map(t => t.properties.name);
+            resolve(item);
+          });
+        } else {
           resolve(item);
-        });
+        }
       });
     });
   });
@@ -103,9 +109,11 @@ let newUser = user => {
       updated_at: user.updated_at,
       role: user.role ? user.role : 'member'
     }).then(result => {
+      console.log('created user in Mongo.............');
       if (result.insertedCount === 1) {
         user.id = result.insertedId;
         neo4j.createUser(user).then(response => {
+          console.log('creating user in Neo.............');
           if (response.records.length > 0) {
             resolve(user);
           } else {
