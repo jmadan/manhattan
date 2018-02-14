@@ -32,6 +32,7 @@
     "node-cron": "^1.2.0",
     "parse5": "^3.0.2",
     "pg": "7.1.2",
+    "raven": "^2.4.1",
     "redis": "^2.8.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.2",

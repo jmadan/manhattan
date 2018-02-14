@@ -6,8 +6,9 @@ const providerRoute = require('./route/provider');
 const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
-// let Rollbar = require('rollbar');
-// let rollbar = new Rollbar(process.env.ROLLBAR_KEY);
+var Raven = require('raven');
+
+Raven.config(process.env.RAVEN_CONFIG).install();
 
 const cors = corsMiddleware({
   preflightMaxAge: 5,

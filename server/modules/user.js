@@ -30,7 +30,6 @@ let fetchUserByEmail = email => {
           neo4j.getUser(item).then(response => {
             console.log('response from neo4j: ', response);
             response.user ? (item.tags = response.user.records[0].get('tags').map(t => t.properties.name)) : null;
-            // item.tags = response.user.records[0].get('tags').map(t => t.properties.name);
             resolve(item);
           });
         } else {
