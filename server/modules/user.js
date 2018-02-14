@@ -28,7 +28,6 @@ let fetchUserByEmail = email => {
         }
         if (item) {
           neo4j.getUser(item).then(response => {
-            console.log('response from neo4j: ', response);
             response.user ? (item.tags = response.user.records[0].get('tags').map(t => t.properties.name)) : null;
             resolve(item);
           });
@@ -41,7 +40,7 @@ let fetchUserByEmail = email => {
 };
 
 let fetchUserFeed = user => {
-  let interestsIdArray = user.interests.length > 0 ? user.interests.map(i => i._id) : [];
+  let interestsIdArray = user.interests && user.interests.length > 0 ? user.interests.map(i => i._id) : [];
 
   return new Promise((resolve, reject) => {
     neo4j
