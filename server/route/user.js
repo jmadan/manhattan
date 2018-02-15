@@ -13,9 +13,17 @@ let fetchUserFeed = (req, res, next) => {
   if (req.params.userId && ObjectID.isValid(req.params.userId)) {
     User.fetchUserById(req.params.userId).then(user => {
       User.fetchUserFeed(user).then(response => {
-        Article.formatFeedResponse(response.records).then(val => {
-          res.json({ userfeed: val });
-        });
+        if (response.records.length == 0) {
+          User.standardFeed().then(result => {
+            Article.formatFeedResponse(result.records).then(val => {
+              res.json({ userfeed: val });
+            });
+          });
+        } else {
+          Article.formatFeedResponse(response.records).then(val => {
+            res.json({ userfeed: val });
+          });
+        }
       });
     });
   } else {
