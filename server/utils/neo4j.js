@@ -296,6 +296,22 @@ let userRecommendation = (userid, interests) => {
   });
 };
 
+let standardRecommendation = () => {
+  const session = driver.session();
+  return new Promise((resolve, reject) => {
+    session
+      .run(
+        'MATCH (a:ARTICLE), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
+      RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 100'
+      )
+      .then(result => {
+        session.close();
+        resolve(result);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 let userSavedList = user => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
@@ -325,5 +341,6 @@ module.exports = {
   userAction,
   userInterestIn,
   userRecommendation,
+  standardRecommendation,
   userSavedList
 };

@@ -63,6 +63,17 @@ let savedFeed = user => {
   });
 };
 
+let standardFeed = () => {
+  return new Promise((resolve, reject) => {
+    neo4j
+      .standardRecommendation()
+      .then(result => {
+        resolve(result);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 let fetchAnonymousFeed = () => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
@@ -171,5 +182,6 @@ module.exports = {
   newUser,
   updateUser,
   fetchAnonymousFeed,
-  performAction
+  performAction,
+  standardFeed
 };
