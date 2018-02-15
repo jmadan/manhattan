@@ -3,6 +3,23 @@
 const MongoClient = require('mongodb');
 const ObjectID = MongoClient.ObjectID;
 const DBURI = process.env.MONGODB_URI;
+let db;
+
+function db_connect() {
+  MongoClient.connect(
+    DBURI,
+    {
+      poolSize: 10
+    },
+    (err, database) => {
+      if (err) {
+        throw err;
+      }
+      db = database;
+    }
+  );
+}
+db_connect();
 
 let insertManyDocuments = (coll, docs) => {
   return new Promise((resolve, reject) => {
@@ -108,24 +125,35 @@ let getDocuments = (coll, query, options) => {
 
 let getDocumentsWithLimit = (coll, query, limit) => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, datab) => {
-      if (err) {
-        reject(err);
-      }
-      datab
-        .db('manhattan')
-        .collection(coll)
-        .find(query)
-        .limit(parseInt(limit, 10))
-        .toArray((err, docs) => {
-          if (err) {
-            reject(err);
-          }
-          datab.close();
-          resolve(docs);
-        });
-    });
+    db
+      .collection(coll)
+      .find(query)
+      .limit(parseInt(limit, 10))
+      .toArray((err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      });
   });
+  //   MongoClient.connect(DBURI, (err, datab) => {
+  //     if (err) {
+  //       reject(err);
+  //     }
+  //     datab
+  //       .db('manhattan')
+  //       .collection(coll)
+  //       .find(query)
+  //       .limit(parseInt(limit, 10))
+  //       .toArray((err, docs) => {
+  //         if (err) {
+  //           reject(err);
+  //         }
+  //         datab.close();
+  //         resolve(docs);
+  //       });
+  //   });
+  // });
 };
 
 module.exports = {
