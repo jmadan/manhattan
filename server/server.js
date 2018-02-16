@@ -6,7 +6,7 @@ const providerRoute = require('./route/provider');
 const articleRoute = require('./route/article');
 const categoryRoute = require('./route/category');
 const userRoute = require('./route/user');
-var Raven = require('raven');
+const Raven = require('raven');
 
 Raven.config(process.env.RAVEN_CONFIG).install();
 
