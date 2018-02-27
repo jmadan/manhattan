@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-const rp = require('request-promise');
-const cheerio = require('cheerio');
-const MongoClient = require('mongodb').MongoClient;
-let ObjectID = require('mongodb').ObjectID;
+const rp = require("request-promise");
+const cheerio = require("cheerio");
+const MongoClient = require("mongodb").MongoClient;
+let ObjectID = require("mongodb").ObjectID;
 const DBURI = process.env.MONGODB_URI;
-const textract = require('textract');
-const natural = require('natural');
-const MongoDB = require('../utils/mongodb');
+const textract = require("textract");
+const natural = require("natural");
+const MongoDB = require("../utils/mongodb");
 
 const lancasterStemmer = natural.LancasterStemmer;
 
@@ -19,8 +19,8 @@ exports.fetchArticles = (status, noofdocs = 10) => {
         throw err;
       }
       db
-        .db('manhattan')
-        .collection('feeditems')
+        .db("manhattan")
+        .collection("feeditems")
         .find({ status: status })
         .sort({ pubDate: -1 })
         .limit(parseInt(noofdocs, 10))
@@ -38,9 +38,9 @@ exports.fetchClassifiedArticles = () => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
-        .db('manhattan')
-        .collection('feeditems')
-        .find({ status: 'classified' })
+        .db("manhattan")
+        .collection("feeditems")
+        .find({ status: "classified" })
         .sort({ pubDate: -1 })
         .toArray((err, docs) => {
           if (err) {
@@ -55,7 +55,7 @@ exports.fetchClassifiedArticles = () => {
 exports.getArticle = id => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
-      db.collection('feeditems').findOne({ _id: ObjectID(id) }, (err, item) => {
+      db.collection("feeditems").findOne({ _id: ObjectID(id) }, (err, item) => {
         if (err) {
           reject(err);
         } else {
@@ -68,7 +68,7 @@ exports.getArticle = id => {
 
 exports.updateArticle = data => {
   let query = null;
-  if (data.status === 'deleted') {
+  if (data.status === "deleted") {
     query = {
       $set: {
         status: data.status
@@ -87,7 +87,7 @@ exports.updateArticle = data => {
     };
   }
   return new Promise((resolve, reject) => {
-    MongoDB.updateDocument('feeditems', { _id: ObjectID(data._id) }, query)
+    MongoDB.updateDocument("feeditems", { _id: ObjectID(data._id) }, query)
       .then(result => {
         resolve(result);
       })
@@ -123,8 +123,8 @@ exports.autoUpdateArticleByClassification = data => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
-        .db('manhattan')
-        .collection('feeditems')
+        .db("manhattan")
+        .collection("feeditems")
         .findOneAndUpdate(
           { _id: ObjectID(data._id) },
           {
@@ -149,14 +149,18 @@ exports.updateArticleCategory = (id, category) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
-        .db('manhattan')
-        .collection('feeditems')
-        .findOneAndUpdate({ _id: ObjectID(id) }, { $set: { category: category, status: 'classified' } }, (err, doc) => {
-          if (err) {
-            reject(err);
+        .db("manhattan")
+        .collection("feeditems")
+        .findOneAndUpdate(
+          { _id: ObjectID(id) },
+          { $set: { category: category, status: "classified" } },
+          (err, doc) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(doc);
           }
-          resolve(doc);
-        });
+        );
     });
   });
 };
@@ -165,8 +169,8 @@ exports.updateArticleStatus = (id, status) => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
-        .db('manhattan')
-        .collection('feeditems')
+        .db("manhattan")
+        .collection("feeditems")
         .findOneAndUpdate(
           { _id: ObjectID(id) },
           { $set: { status: status } },
@@ -187,11 +191,11 @@ exports.getItemDetails = item => {
     rp(item.url)
       .then(response => {
         let $ = cheerio.load(response, { normalizeWhitespace: true });
-        item.keywords = $('meta[name="keywords"]').attr('content');
-        item.itembody = $('body')
+        item.keywords = $('meta[name="keywords"]').attr("content");
+        item.itembody = $("body")
           .text()
-          .replace('/s+/mg', '')
-          .replace(/[^a-zA-Z ]/g, '')
+          .replace("/s+/mg", "")
+          .replace(/[^a-zA-Z ]/g, "")
           .trim();
         resolve(item);
       })
@@ -200,7 +204,7 @@ exports.getItemDetails = item => {
 };
 
 exports.getArticleText = item => {
-  textract.fromUrl(item.url, function (error, text) {
+  textract.fromUrl(item.url, function(error, text) {
     return text;
   });
 };
@@ -208,7 +212,7 @@ exports.getArticleText = item => {
 exports.getArticleStemWords = item => {
   return new Promise((resolve, reject) => {
     try {
-      textract.fromUrl(item.url, function (error, text) {
+      textract.fromUrl(item.url, function(error, text) {
         if (text) {
           item.itembody = text;
           item.stemwords = lancasterStemmer.tokenizeAndStem(text);
@@ -226,8 +230,8 @@ exports.saveItem = item => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
-        .db('manhattan')
-        .collection('articles')
+        .db("manhattan")
+        .collection("articles")
         .insertOne(item, (err, savedItem) => {
           if (err) {
             reject(err);
@@ -244,8 +248,8 @@ exports.getArticleBasedOnCategory = category => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
-        .db('manhattan')
-        .collection('feeditems')
+        .db("manhattan")
+        .collection("feeditems")
         .find({ category: category.toLowerCase() })
         .toArray((err, item) => {
           if (err) {
@@ -262,8 +266,8 @@ exports.updateItem = item => {
   return new Promise((resolve, reject) => {
     MongoClient.connect(DBURI, (err, db) => {
       db
-        .db('manhattan')
-        .collection('feeditems')
+        .db("manhattan")
+        .collection("feeditems")
         .findOneAndUpdate(
           { _id: ObjectID(item.id) },
           {
@@ -291,9 +295,19 @@ exports.formatFeedResponse = items => {
   let idArray = items.map(i => ObjectID(i._fields[0]));
   return new Promise((resolve, reject) => {
     MongoDB.getDocuments(
-      'feeditems',
+      "feeditems",
       { _id: { $in: idArray } },
-      { _id: 1, title: 1, url: 1, description: 1, author: 1, pubDate: 1, provider: 1, keywords: 1 }
+      {
+        _id: 1,
+        title: 1,
+        url: 1,
+        description: 1,
+        author: 1,
+        pubDate: 1,
+        provider: 1,
+        keywords: 1,
+        img: 1
+      }
     )
       .then(docs => {
         resolve(docs);
