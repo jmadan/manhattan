@@ -93,7 +93,8 @@ let fetchAnonymousFeed = () => {
               provider: 1,
               category: 1,
               parentcat: 1,
-              subcategory: 1
+              subcategory: 1,
+              img: 1
             }
           }
         ])
