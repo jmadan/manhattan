@@ -331,6 +331,27 @@ let userSavedList = user => {
   });
 };
 
+let otherCategoryRecommendation = (userId) => {
+  const session = driver.session();
+  return new Promise((resolve, reject) => {
+    session
+      .run(
+        'match (u:USER)-[:INTERESTED_IN]-(c:CATEGORY)-[:INTERESTED_IN]-(ou:USER) with u,ou,c \
+        match (ou)-[:INTERESTED_IN]-(oc:CATEGORY) \
+        where u.id=$userid AND NOT c=oc \
+        Return DISTINCT oc.name as name',
+        {
+          userid: userId.toString()
+        }
+      )
+      .then(result => {
+        session.close();
+        resolve(result);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 module.exports = {
   getUser,
   createUser,
@@ -342,5 +363,6 @@ module.exports = {
   userInterestIn,
   userRecommendation,
   standardRecommendation,
-  userSavedList
+  userSavedList,
+  otherCategoryRecommendation
 };

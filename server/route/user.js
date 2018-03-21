@@ -1,6 +1,7 @@
 const User = require('../modules/user');
 let ObjectID = require('mongodb').ObjectID;
 const Article = require('../modules/article');
+const AI = require('../modules/recommendation');
 
 let fetchUserByEmail = (req, res, next) => {
   User.fetchUserByEmail(req.params.email).then(user => {
@@ -90,6 +91,15 @@ let userAction = (req, res, next) => {
   return next();
 };
 
+let fetchCatRecommendation = (req, res, next) => {
+  let userId = req.headers.user_id;
+  AI.fetchCatRecommendations(userId).then(result => {
+    res.json({cats: result.records.map(r => r.get('name'))});
+  }
+  );
+  return next();
+};
+
 module.exports = {
   fetchUserByEmail,
   fetchUserFeed,
@@ -97,5 +107,6 @@ module.exports = {
   createUser,
   updateUser,
   updateUserInterest,
-  userAction
+  userAction,
+  fetchCatRecommendation
 };

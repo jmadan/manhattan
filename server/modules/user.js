@@ -141,14 +141,14 @@ let updateUser = (userId, reqBody) => {
   let { action, attr, value } = reqBody;
   let query = null;
   switch (attr) {
-    case 'interest':
-      query = { [action === 'add' ? '$addToSet' : '$pull']: { interests: value } };
-      break;
-    case 'user':
-      query = { $set: { value } };
-      break;
-    default:
-      break;
+  case 'interest':
+    query = { [action === 'add' ? '$addToSet' : '$pull']: { interests: value } };
+    break;
+  case 'user':
+    query = { $set: { value } };
+    break;
+  default:
+    break;
   }
 
   return new Promise((resolve, reject) => {
@@ -162,7 +162,7 @@ let updateUser = (userId, reqBody) => {
 };
 
 let performAction = (user, action, item) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     neo4j
       .userAction(user, action, item)
       .then(result => {
