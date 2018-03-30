@@ -13,8 +13,8 @@ Raven.config(process.env.RAVEN_CONFIG).install();
 const cors = corsMiddleware({
   preflightMaxAge: 5,
   origins: ['*'],
-  allowHeaders: ['API-Token'],
-  exposeHeaders: ['API-Token-Expiry']
+  allowHeaders: ['userid', 'API-Token']
+  // exposeHeaders: ['API-Token-Expiry']
 });
 
 const server = restify.createServer({
@@ -37,12 +37,6 @@ server.use(cors.actual);
 server.pre((req, res, next) => {
   req.log.info({ req: req }, 'start');
   return next();
-});
-
-server.use((req, res, next) => {
-  res.setHeader('content-type', 'application-json');
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  next();
 });
 
 server.get('/', (req, res, next) => {
@@ -72,7 +66,7 @@ server.get('/api/category', categoryRoute.getCategories);
 server.post('/api/category', categoryRoute.newCategory);
 
 server.get('/api/user/feed/saved/:userId', userRoute.fetchUserSavedFeed);
-server.get('/api/user/feed/:userId', userRoute.fetchUserFeed);
+server.get('/api/user/feed', userRoute.fetchUserFeed);
 server.get('/api/user/email/:email', userRoute.fetchUserByEmail);
 
 server.post('/api/user/action', userRoute.userAction);

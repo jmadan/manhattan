@@ -10,9 +10,10 @@ let fetchUserByEmail = (req, res, next) => {
 };
 
 let fetchUserFeed = (req, res, next) => {
-  if (req.params.userId && ObjectID.isValid(req.params.userId)) {
-    User.fetchUserById(req.params.userId).then(user => {
+  if (req.headers.userid && ObjectID.isValid(req.headers.userid)) {
+    User.fetchUserById(req.headers.userid).then(user => {
       User.fetchUserFeed(user).then(response => {
+        console.log('I am not annonymous............');
         if (response.records.length == 0) {
           User.standardFeed().then(result => {
             Article.formatFeedResponse(result.records).then(val => {
