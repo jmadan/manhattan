@@ -59,9 +59,9 @@ let createArticle = article => {
         RETURN a',
         {
           id: article._id.toString(),
-          title: article.title,
-          provider: article.provider,
-          author: article.author,
+          title: article.title.trim(),
+          provider: article.provider.trim(),
+          author: article.author.trim(),
           pubDate: article.pubDate.toString(),
           url: article.url,
           keywords: article.keywords.toString()
@@ -271,26 +271,24 @@ let userRecommendation = (userid, interests) => {
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MATCH (a:ARTICLE)-[:HAS_CATEGORY]->(c:CATEGORY), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
-      WHERE c.id in $InterestList \
-      RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 50 \
-      UNION \
-      match (u:USER {id: $userid})-[:LIKES]->(t:TAG) WITH t, collect(t.name) as tags \
-      unwind tags as tag with tag \
-      match (a:ARTICLE), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) where a.keywords contains tag \
-      return DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 50 \
-      UNION \
-      MATCH (a:ARTICLE)-[:HAS_CATEGORY]->(c:CATEGORY)-[:HAS_PARENT]-(cp:CATEGORY), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
-      WHERE cp.id in $InterestList \
-      RETURN DISTINCT a.id AS id, a.title AS title, pub ORDER BY pub.pubDate DESC LIMIT 50',
+        'MATCH (u:USER {id: $userId})-[:LIKES]->(t:TAG) \
+        WITH t, \
+        collect(t.name) as tags \
+        UNWIND tags as tag with tag \
+        MATCH (a:ARTICLE),(a)-[pub:PUBLISHED_BY]->(p:PROVIDER) where a.keywords contains tag \
+        RETURN DISTINCT a.id AS id, a.title AS title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 100 \
+        UNION \
+        MATCH (u:USER {id: $userId}), (a:ARTICLE)-[*]->(c:CATEGORY), (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
+        WHERE c.id in $interestList AND NOT (u)-[:DISLIKES]->(a) \
+        RETURN DISTINCT a.id AS id, a.title AS title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 100',
         {
-          userid: userid.toString(),
-          InterestList: interests
+          userId: userid.toString(),
+          interestList: interests
         }
       )
       .then(result => {
-        session.close();
         resolve(result);
+        session.close();
       })
       .catch(err => reject(err));
   });
@@ -331,6 +329,27 @@ let userSavedList = user => {
   });
 };
 
+let otherCategoryRecommendation = userId => {
+  const session = driver.session();
+  return new Promise((resolve, reject) => {
+    session
+      .run(
+        'match (u:USER)-[:INTERESTED_IN]-(c:CATEGORY)-[:INTERESTED_IN]-(ou:USER) with u,ou,c \
+        match (ou)-[:INTERESTED_IN]-(oc:CATEGORY) \
+        where u.id=$userid AND NOT c=oc \
+        Return DISTINCT oc.name as name',
+        {
+          userid: userId.toString()
+        }
+      )
+      .then(result => {
+        session.close();
+        resolve(result);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 module.exports = {
   getUser,
   createUser,
@@ -342,5 +361,6 @@ module.exports = {
   userInterestIn,
   userRecommendation,
   standardRecommendation,
-  userSavedList
+  userSavedList,
+  otherCategoryRecommendation
 };

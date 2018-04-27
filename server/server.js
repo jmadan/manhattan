@@ -68,6 +68,7 @@ server.post('/api/category', categoryRoute.newCategory);
 server.get('/api/user/feed/saved/:userId', userRoute.fetchUserSavedFeed);
 server.get('/api/user/feed', userRoute.fetchUserFeed);
 server.get('/api/user/email/:email', userRoute.fetchUserByEmail);
+server.get('/api/user/recommendation/category/', userRoute.fetchCatRecommendation);
 
 server.post('/api/user/action', userRoute.userAction);
 server.patch('/api/user/:userId', userRoute.updateUser);
