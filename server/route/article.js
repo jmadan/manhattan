@@ -1,6 +1,5 @@
 'use strict';
 const article = require('../modules/article');
-const brain = require('../modules/nlp/brain');
 const snn = require('../modules/nlp/synaptic');
 const Neo4j = require('../utils/neo4j');
 
@@ -58,20 +57,6 @@ function updateArticle(req, res, next) {
   return next();
 }
 
-function classifyArticle(req, res, next) {
-  if (req.params.id) {
-    article
-      .getArticle(req.params.id)
-      .then(doc => {
-        return brain.classify(doc);
-      })
-      .then(category => {
-        res.json({ category: category });
-      });
-  }
-  next();
-}
-
 let getSynaptic = (req, res, next) => {
   article.getArticle(req.params.id).then(doc => {
     snn.classifyDocs(doc).then(dc => {
@@ -85,25 +70,11 @@ let getSynaptic = (req, res, next) => {
   next();
 };
 
-let getBrain = (req, res, next) => {
-  article.getArticle(req.params.id).then(doc => {
-    brain.brainClassify(doc).then(dc => {
-      if (dc.category) {
-        res.json({ article: dc, articleUpdated: true });
-      } else {
-        res.json({ article: dc, articleUpdated: false });
-      }
-    });
-  });
-  next();
-};
 
 module.exports = {
   getArticleByStatus,
   getArticleById,
   stemArticleById,
   updateArticle,
-  classifyArticle,
-  getSynaptic,
-  getBrain
+  getSynaptic
 };

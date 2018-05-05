@@ -58,9 +58,6 @@ server.get('/api/article/:id', articleRoute.getArticleById);
 server.put('/api/article/:id', articleRoute.updateArticle);
 server.get('/api/article/stem/:id', articleRoute.stemArticleById);
 server.get('/api/article/classify/:id', articleRoute.getSynaptic);
-server.get('/api/article/brain/classify/:id', articleRoute.getBrain);
-
-// server.get('/api/nlp/synaptic', articleRoute.getSynaptic);
 
 server.get('/api/category', categoryRoute.getCategories);
 server.post('/api/category', categoryRoute.newCategory);
