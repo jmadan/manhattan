@@ -3,6 +3,7 @@
 const MongoClient = require("mongodb");
 const ObjectID = MongoClient.ObjectID;
 const DBURI = process.env.MONGODB_URI;
+const dbName = process.env.MONGODB_NAME;
 let db;
 
 MongoClient.connect(
@@ -14,7 +15,7 @@ MongoClient.connect(
     if (err) {
       throw err;
     }
-    db = client.db("manhattan");
+    db = client.db(dbName);
   }
 );
 
@@ -69,6 +70,21 @@ let updateDocument = (coll, findQuery, updateQuery) => {
   });
 };
 
+let findDocument = (coll, query) => {
+  return new Promise((resolve, reject) => {
+    db
+      .collection(coll)
+      .findOne(query)
+      .sort({ pubDate: -1 })
+      .toArray((err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      });
+  });
+};
+
 let getDocuments = (coll, query, options) => {
   return new Promise((resolve, reject) => {
     db
@@ -84,11 +100,12 @@ let getDocuments = (coll, query, options) => {
   });
 };
 
-let getDocumentsWithLimit = (coll, query, limit) => {
+let getDocumentsWithLimit = (coll, query, sortOption, limit) => {
   return new Promise((resolve, reject) => {
     db
       .collection(coll)
       .find(query)
+      .sort(sortOption)
       .limit(parseInt(limit, 10))
       .toArray((err, docs) => {
         if (err) {
@@ -97,31 +114,44 @@ let getDocumentsWithLimit = (coll, query, limit) => {
         resolve(docs);
       });
   });
-  //   MongoClient.connect(DBURI, (err, datab) => {
-  //     if (err) {
-  //       reject(err);
-  //     }
-  //     datab
-  //       .db('manhattan')
-  //       .collection(coll)
-  //       .find(query)
-  //       .limit(parseInt(limit, 10))
-  //       .toArray((err, docs) => {
-  //         if (err) {
-  //           reject(err);
-  //         }
-  //         datab.close();
-  //         resolve(docs);
-  //       });
-  //   });
-  // });
+};
+
+let getAggregateQuery = (coll, query, sort) => {
+  return new Promise((resolve, reject) => {
+    db
+      .collection(coll)
+      .aggregate(query)
+      .toArray((err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      });
+  });
+};
+
+let getDistinctQuery = (coll, key, options) => {
+  return new Promise((resolve, reject) => {
+    db
+      .collection(coll)
+      .distinct(key, options)
+      .toArray((err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(docs);
+      });
+  });
 };
 
 module.exports = {
   insertManyDocuments,
   updateDocument,
   getDocuments,
+  findDocument,
   insertDocument,
   deleteDocument,
-  getDocumentsWithLimit
+  getDocumentsWithLimit,
+  getAggregateQuery,
+  getDistinctQuery
 };

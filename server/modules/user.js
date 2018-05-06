@@ -1,41 +1,57 @@
 'use strict';
-const MongoClient = require('mongodb').MongoClient;
+// const MongoClient = require('mongodb').MongoClient;
 let ObjectID = require('mongodb').ObjectID;
-const DBURI = process.env.MONGODB_URI;
+// const DBURI = process.env.MONGODB_URI;
+// const dbName = process.env.MONGODB_NAME;
 let neo4j = require('../utils/neo4j');
 
 const MongoDB = require('../utils/mongodb');
 
 let fetchUserById = userId => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db.collection('users').findOne({ _id: ObjectID(userId) }, (error, item) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(item);
-      });
+    MongoDB.getDocuments('users', { _id: ObjectID(userId) }).then((result) => {
+      resolve(result);
     });
+    // MongoClient.connect(DBURI, (err, db) => {
+    //   db.collection('users').findOne({ _id: ObjectID(userId) }, (error, item) => {
+    //     if (error) {
+    //       reject(error);
+    //     }
+    //     resolve(item);
+    //   });
+    // });
   });
 };
 
 let fetchUserByEmail = email => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db.collection('users').findOne({ email: email }, (error, item) => {
-        if (error) {
-          reject(error);
-        }
-        if (item) {
-          neo4j.getUser(item).then(response => {
-            response.user ? (item.tags = response.user.records[0].get('tags')) : null;
-            resolve(item);
-          });
-        } else {
-          resolve(item);
-        }
-      });
+    MongoDB.getDocuments('users', { email: email }).then((result) => {
+      let user = result[0];
+      if(result.length){
+        neo4j.getUser(user).then(response => {
+          response.user ? (user.tags = response.user.records[0].get('tags')) : null;
+          resolve(user);
+        });
+      } else {
+        resolve(user);
+      }
     });
+    // MongoClient.connect(DBURI, (err, client) => {
+    //   const db = client.db('manhattan');
+    //   db.collection('users').findOne({ email: email }, (error, item) => {
+    //     if (error) {
+    //       reject(error);
+    //     }
+    //     if (item) {
+    //       neo4j.getUser(item).then(response => {
+    //         response.user ? (item.tags = response.user.records[0].get('tags')) : null;
+    //         resolve(item);
+    //       });
+    //     } else {
+    //       resolve(item);
+    //     }
+    //   });
+    // });
   });
 };
 
@@ -76,36 +92,58 @@ let standardFeed = () => {
 
 let fetchAnonymousFeed = () => {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(DBURI, (err, db) => {
-      db
-        .collection('feeditems')
-        .aggregate([
-          { $match: { $and: [{ status: 'classified' }] } },
-          { $sample: { size: 50 } },
-          {
-            $project: {
-              url: 1,
-              title: 1,
-              description: 1,
-              keywords: 1,
-              author: 1,
-              pubDate: 1,
-              provider: 1,
-              category: 1,
-              parentcat: 1,
-              subcategory: 1,
-              img: 1
-            }
-          }
-        ])
-        .sort({ pubDate: -1 })
-        .toArray((error, docs) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(docs);
-        });
+    MongoDB.getAggregateQuery('feeditems', [
+      { $match: { $and: [{ status: 'classified' }] } },
+      { $sample: { size: 50 } },
+      {
+        $project: {
+          url: 1,
+          title: 1,
+          description: 1,
+          keywords: 1,
+          author: 1,
+          pubDate: 1,
+          provider: 1,
+          category: 1,
+          parentcat: 1,
+          subcategory: 1,
+          img: 1
+        }
+      }
+    ], { pubDate: -1 }).then(result => {
+      resolve(result);
     });
+    // MongoClient.connect(DBURI, (err, client) => {
+    //   const db = client.db(dbName);
+    //   db
+    //     .collection('feeditems')
+    //     .aggregate([
+    //       { $match: { $and: [{ status: 'classified' }] } },
+    //       { $sample: { size: 50 } },
+    //       {
+    //         $project: {
+    //           url: 1,
+    //           title: 1,
+    //           description: 1,
+    //           keywords: 1,
+    //           author: 1,
+    //           pubDate: 1,
+    //           provider: 1,
+    //           category: 1,
+    //           parentcat: 1,
+    //           subcategory: 1,
+    //           img: 1
+    //         }
+    //       }
+    //     ])
+    //     .sort({ pubDate: -1 })
+    //     .toArray((error, docs) => {
+    //       if (error) {
+    //         reject(error);
+    //       }
+    //       resolve(docs);
+    //     });
+    // });
   });
 };
 
