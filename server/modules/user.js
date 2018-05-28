@@ -24,12 +24,15 @@ let fetchUserById = userId => {
 };
 
 let fetchUserByEmail = email => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     MongoDB.getDocuments('users', { email: email }).then((result) => {
       let user = result[0];
-      if(result.length){
+      if (result.length) {
         neo4j.getUser(user).then(response => {
-          response.user ? (user.tags = response.user.records[0].get('tags')) : null;
+          if (response.user) {
+            user.tags = response.user.records[0].get('tags');
+          }
+          // response.user ? (user.tags = response.user.records[0].get('tags')) : null;
           resolve(user);
         });
       } else {
@@ -60,7 +63,7 @@ let fetchUserFeed = user => {
 
   return new Promise((resolve, reject) => {
     neo4j
-      .userRecommendation(user._id, interestsIdArray)
+      .userRecommendation(user[0]._id, interestsIdArray)
       .then(result => {
         resolve(result);
       })
