@@ -94,10 +94,10 @@ let standardFeed = () => {
 };
 
 let fetchAnonymousFeed = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     MongoDB.getAggregateQuery('feeditems', [
       { $match: { $and: [{ status: 'classified' }] } },
-      { $sample: { size: 50 } },
+      { $sample: { size: 100 } },
       {
         $project: {
           url: 1,

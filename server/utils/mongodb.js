@@ -121,6 +121,7 @@ let getAggregateQuery = (coll, query, sort) => {
     db
       .collection(coll)
       .aggregate(query)
+      .sort(sort)
       .toArray((err, docs) => {
         if (err) {
           reject(err);
