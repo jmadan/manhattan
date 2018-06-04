@@ -9,7 +9,8 @@ let db;
 MongoClient.connect(
   DBURI,
   {
-    poolSize: 10
+    poolSize: 10,
+    useNewUrlParser: true
   },
   (err, client) => {
     if (err) {

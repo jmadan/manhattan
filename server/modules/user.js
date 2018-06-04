@@ -8,7 +8,7 @@ let neo4j = require('../utils/neo4j');
 const MongoDB = require('../utils/mongodb');
 
 let fetchUserById = userId => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     MongoDB.getDocuments('users', { _id: ObjectID(userId) }).then((result) => {
       resolve(result);
     });
