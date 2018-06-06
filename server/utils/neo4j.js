@@ -318,7 +318,7 @@ let userSavedList = user => {
         'MATCH (a:ARTICLE)<-[:LATER]-(user:USER) WHERE user.email = $UserEmail \
         RETURN a.id AS id, a.title AS title, a.url AS url',
         {
-          UserEmail: user.email
+          UserEmail: user[0].email
         }
       )
       .then(result => {
