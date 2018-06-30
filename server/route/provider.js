@@ -13,6 +13,7 @@ function createProvider(req, res, next) {
   provider.newProvider(req.body).then((result) => {
     res.json(result);
   });
+  return next();
 }
 
 
