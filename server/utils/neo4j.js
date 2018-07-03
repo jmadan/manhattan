@@ -275,7 +275,7 @@ let userRecommendation = (userid, interests) => {
         collect(t.name) as tags UNWIND tags as tag with u,tag \
         MATCH (c:CATEGORY)<-[*]-(a:ARTICLE)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
         where a.keywords contains tag OR c.id in $interestList AND NOT (u)-[:DISLIKES]->(a) \
-        RETURN DISTINCT a.id AS id, a.title AS title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 250',
+        RETURN DISTINCT a.id AS id, a.title AS title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 150',
         {
           userId: userid.toString(),
           interestList: interests
