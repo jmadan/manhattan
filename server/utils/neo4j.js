@@ -271,16 +271,11 @@ let userRecommendation = (userid, interests) => {
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MATCH (u:USER {id: $userId})-[:LIKES]->(t:TAG) WITH t, \
-        collect(t.name) as tags UNWIND tags as tag with tag \
-        MATCH (a:ARTICLE),(a)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
-        where a.keywords contains tag \
-        RETURN DISTINCT a.id AS id, a.title AS title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 100 \
-        UNION \
-        MATCH (a:ARTICLE)-[*]->(c:CATEGORY) WHERE c.id in $interestList with a \
-        MATCH (u:USER {id: $userId}) \
-        MATCH (a)-[pub:PUBLISHED_BY]->(p:PROVIDER) WHERE NOT (u)-[:DISLIKES]->(a) \
-        RETURN DISTINCT a.id AS id, a.title AS title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 200',
+        'MATCH (u:USER {id: $userId})-[:LIKES]->(t:TAG) WITH u,t, \
+        collect(t.name) as tags UNWIND tags as tag with u,tag \
+        MATCH (c:CATEGORY)<-[*]-(a:ARTICLE)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
+        where a.keywords contains tag OR c.id in $interestList AND NOT (u)-[:DISLIKES]->(a) \
+        RETURN DISTINCT a.id AS id, a.title AS title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 250',
         {
           userId: userid.toString(),
           interestList: interests

@@ -14,7 +14,7 @@ let fetchUserFeed = (req, res, next) => {
   if (req.headers.userid && ObjectID.isValid(req.headers.userid)) {
     User.fetchUserById(req.headers.userid).then(user => {
       User.fetchUserFeed(user).then(response => {
-        if (response.records.length == 0) {
+        if (response.records.length === 0) {
           User.standardFeed().then(result => {
             Article.formatFeedResponse(result.records).then(val => {
               res.json({ userfeed: val });
