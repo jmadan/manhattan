@@ -10,23 +10,23 @@ let fetchUserByEmail = (req, res, next) => {
   return next();
 };
 
-let fetchUserFeed = (req, res, next) => {
+let fetchUserFeed = async (req, res, next) => {
   if (req.headers.userid && ObjectID.isValid(req.headers.userid)) {
-    User.fetchUserById(req.headers.userid).then(user => {
-      User.fetchUserFeed(user).then(response => {
-        if (response.records.length === 0) {
-          User.standardFeed().then(result => {
-            Article.formatFeedResponse(result.records).then(val => {
-              res.json({ userfeed: val });
-            });
-          });
-        } else {
-          Article.formatFeedResponse(response.records).then(val => {
-            res.json({ userfeed: val });
-          });
-        }
+    let user = await User.fetchUserById(req.headers.userid);
+    console.log(user);
+    let feed = await User.fetchUserFeed(user[0]);
+    if (feed.records.length === 0) {
+      User.standardFeed().then(result => {
+        Article.formatFeedResponse(result.records).then(val => {
+          res.json({ userfeed: val });
+        });
       });
-    });
+    } else {
+      console.log("I am in specific...............");
+      Article.formatFeedResponse(feed.records).then(val => {
+        res.json({ userfeed: val });
+      });
+    }
   } else {
     User.fetchAnonymousFeed().then(response => {
       res.json({ userfeed: response });
