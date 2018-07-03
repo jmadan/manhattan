@@ -90,7 +90,8 @@ let getDocuments = (coll, query, options) => {
   return new Promise((resolve, reject) => {
     db
       .collection(coll)
-      .find(query, options)
+      .find(query)
+      .project(options)
       .sort({ pubDate: -1 })
       .toArray((err, docs) => {
         if (err) {
