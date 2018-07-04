@@ -266,19 +266,22 @@ let userInterestIn = (userId, interestId, action) => {
     .catch(err => console.log(err));
 };
 
-let userRecommendation = (userid, interests) => {
+let userRecommendation = (userid) => {
   const session = driver.session();
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MATCH (u:USER {id: $userId})-[:LIKES]->(t:TAG) WITH u,t, \
-        collect(t.name) as tags UNWIND tags as tag with u,tag \
-        MATCH (c:CATEGORY)<-[*]-(a:ARTICLE)-[pub:PUBLISHED_BY]->(p:PROVIDER) \
-        where a.keywords contains tag OR c.id in $interestList AND NOT (u)-[:DISLIKES]->(a) \
-        RETURN DISTINCT a.id AS id, a.title AS title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 150',
+        'MATCH (u:USER {id: $userid})-[:INTERESTED_IN]->(c:CATEGORY)<-[*]-(a:ARTICLE)-[pub:PUBLISHED_BY]->(p:PROVIDER) WHERE NOT (u)-[:DISLIKES]->(a) \
+        RETURN DISTINCT a.id, a.title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 150 \
+        UNION \
+        MATCH (u:USER {id: $userid})-[:LIKES]->(t:TAG) \
+        WITH u, t, \
+        collect(t.name) AS tags UNWIND tags AS tag \
+        MATCH (a:ARTICLE)-[pub:PUBLISHED_BY]-(:PROVIDER) \
+        WHERE a.keywords CONTAINS tag AND NOT (u)-[:DISLIKES]->(a) \
+        RETURN DISTINCT a.id, a.title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 150',
         {
-          userId: userid.toString(),
-          interestList: interests
+          userId: userid.toString()
         }
       )
       .then(result => {
