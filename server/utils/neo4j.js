@@ -271,7 +271,7 @@ let userRecommendation = (userid) => {
   return new Promise((resolve, reject) => {
     session
       .run(
-        'MATCH (u:USER {id: $userid})-[:INTERESTED_IN]->(c:CATEGORY)<-[*]-(a:ARTICLE)-[pub:PUBLISHED_BY]->(p:PROVIDER) WHERE NOT (u)-[:DISLIKES]->(a) \
+        'MATCH (u:USER {id: $userId})-[:INTERESTED_IN]->(c:CATEGORY)<-[*]-(a:ARTICLE)-[pub:PUBLISHED_BY]->(p:PROVIDER) WHERE NOT (u)-[:DISLIKES]->(a) \
         RETURN DISTINCT a.id, a.title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 150 \
         UNION \
         MATCH (u:USER {id: $userid})-[:LIKES]->(t:TAG) \
