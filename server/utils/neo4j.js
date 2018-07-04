@@ -274,7 +274,7 @@ let userRecommendation = (userid) => {
         'MATCH (u:USER {id: $userId})-[:INTERESTED_IN]->(c:CATEGORY)<-[*]-(a:ARTICLE)-[pub:PUBLISHED_BY]->(p:PROVIDER) WHERE NOT (u)-[:DISLIKES]->(a) \
         RETURN DISTINCT a.id, a.title, pub.pubDate ORDER BY pub.pubDate DESC LIMIT 150 \
         UNION \
-        MATCH (u:USER {id: $userid})-[:LIKES]->(t:TAG) \
+        MATCH (u:USER {id: $userId})-[:LIKES]->(t:TAG) \
         WITH u, t, \
         collect(t.name) AS tags UNWIND tags AS tag \
         MATCH (a:ARTICLE)-[pub:PUBLISHED_BY]-(:PROVIDER) \
