@@ -1,0 +1,22 @@
+"_id",code,name,parent._id,parent.code,parent.name,parent.parent,parent.slug,parent.status,slug,status
+5b6da583a156079d25d2b138,IAB1,Arts & Entertainment,,,,,,,arts_entertainment,Active
+5b6ffda5f30f974103c326b7,IAB2,Automotive,,,,,,,automotive,Active
+5b6ffdf9f30f97e077c326b8,IAB3,Business,,,,,,,business,Active
+5b6fff46f30f97577cc326b9,IAB4,Careers,,,,,,,careers,Active
+5b6fff62f30f974d4ac326ba,IAB7,Health & Fitness,,,,,,,health_fitness,Active
+5b6fff7df30f978955c326bb,IAB8,Food & Drink,,,,,,,food_drink,Active
+5b6fff96f30f9775ecc326bc,IAB9,Hobbies & Interests,,,,,,,hobbies_interests,Active
+5b6fffb1f30f972f06c326bd,IAB10,Home & Garden,,,,,,,home_garden,Active
+5b6fffd3f30f971d0bc326be,IAB11,"Law, Gov’t & Politics",,,,,,,law_govt_politics,Active
+5b6fffe8f30f97e78fc326bf,IAB12,News,,,,,,,news,Active
+5b6ffffbf30f973b3fc326c0,IAB14,Society,,,,,,,society,Active
+5b70000df30f9762c1c326c1,IAB15,Science,,,,,,,science,Active
+5b70001ff30f970b99c326c2,IAB17,Sports,,,,,,,sports,Active
+5b700032f30f970d2ac326c3,IAB19,Technology,,,,,,,technology,Active
+5b700042f30f975cc0c326c4,IAB20,Travel,,,,,,,travel,Active
+5b700054f30f976ef2c326c5,IAB21,Real Estate,,,,,,,real_estate,Active
+5b70006ff30f971611c326c6,IAB23,Religion & Spirituality,,,,,,,religion_spirituality,Active
+5b853182e4ef7a602f8258b6,IAB24,Uncategorized,,,,,,,uncategorized,Active
+5b854997e4ef7a13f48258b8,IAB1-1,Books & Literature,5b6da583a156079d25d2b138,IAB1,Arts & Entertainment,,arts_entertainment,Active,books_literature,Active
+5bacc193648aa987615e391a,IAB25,Opinion,,,,,,,opinion,Active
+5c356fb1520c2f0c4f0384a1,IAB1-2,Humour,5b6da583a156079d25d2b138,IAB1,Arts & Entertainment,,arts_entertainment,Active,humour,Active
