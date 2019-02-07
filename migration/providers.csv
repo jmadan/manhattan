@@ -1,0 +1,85 @@
+id,name,status,url
+5b9d3ca13a3ee945b98bbf97,RollingStone,Active,https://www.rollingstone.com/
+5b9de085027d5e025b245479,TechCrunch,Active,https://techcrunch.com/
+5b9de097027d5e7d8d24547a,NY Times,Active,https://www.nytimes.com
+5b9de0ab027d5e584a24547b,How to Geek,Active,https://feeds.howtogeek.com/howtogeek
+5b9de0ba027d5e480424547c,SiliconANGLE,Active,https://siliconangle.com/feed/
+5b9de0cd027d5e4e2824547d,Digital Finance Analytics,Active,http://digitalfinanceanalytics.com/
+5b9de297027d5e48d724547e,Housing Wire,Active,https://www.housingwire.com
+5b9de315027d5e5ce224547f,AllMusic,Inactive,https://www.allmusic.com
+5b9de356027d5ecf76245480,Slashdot,Active,https://slashdot.org
+5b9de3f2027d5e7cc6245481,Wired,Active,https://www.wired.com
+5b9de548027d5e0ecb245482,Science Mag,Active,https://www.sciencemag.org
+5b9de56d027d5e01be245483,Esquire,Active,https://www.esquire.com
+5b9de5ef027d5e5ba5245484,HBR,Active,https://hbr.org
+5b9de633027d5e0087245485,Goal,Active,http://www.goal.com
+5b9de68a027d5e4c86245486,Coindesk,Active,https://www.coindesk.com
+5b9de81a027d5e7176245487,Bloomberg,Inactive,https://www.bloomberg.com
+5b9de8ee027d5ef131245488,ESPN Cric Info,Active,http://www.espncricinfo.com
+5b9de997027d5e2654245489,MTV,Active,http://www.mtv.com
+5b9dea00027d5ef37d24548a,talkSPORT,Active,https://talksport.com
+5b9deaad027d5e724224548b,New Scientist,Active,https://www.newscientist.com
+5ba31286ba3795dc0232cd1e,ARS Technica,Active,https://arstechnica.com/
+5ba596ad5b5c564772b0b807,Vanity Fair,Active,https://www.vanityfair.com
+5ba599ea5b5c56d955b0b808,Seeking Alpha,Active,https://seekingalpha.com
+5ba59c885b5c5613b3b0b809,GOOD HOUSEKEEPING,Active,http://www.goodhousekeeping.com
+5ba59e245b5c567f0eb0b80a,Outdoor Photographer,Active,http://www.outdoorphotographer.com
+5ba7548c088830f43d903c79,Coding Horror,Active,https://blog.codinghorror.com
+5ba9c0c594ab58fb47e30396,Realtor,Inactive,https://www.realtor.com
+5baa14955cdd635761d3ef34,Medium,Active,https://medium.com
+5baa31e5b850282aa622a323,FourFourTwo,Inactive,https://www.fourfourtwo.com
+5baaed0005621a83b2ee1aa7,Hackernoon,Active,https://hackernoon.com
+5bade60ea7fdb08844ea0a41,TheNextWeb,Active,https://thenextweb.com
+5bade6dfa7fdb025d0ea0a42,freeCodeCamp,Active,https://medium.freecodecamp.org
+5baf6ea718029db1b593c22e,Smashing Magazine,Active,https://www.smashingmagazine.com
+5bb1807cd19fe105af645364,CNN Money,Active,https://money.cnn.com/
+5bb4b50edb71aa9c882d7dcc,Yahoo,Active,https://www.yahoo.com
+5bb99d55bbd136306ae696c1,The Verge,Active,https://www.theverge.com
+5bb9e26fb5790d53c66c628a,Economist,Inactive,https://www.economist.com
+5bb9eb72f272021aa03df839,FASTCOMPANY,Active,https://www.fastcompany.com
+5bbfcda0683a5959708c5bb0,MoneyControl,Active,https://www.moneycontrol.com
+5bd24a225888e52fd29e4d11,TechRepublic,Active,https://www.techrepublic.com
+5bd7dbe1eb2a88c3bba0193d,Sky News,Active,https://news.sky.com
+5bdb7616a9b7145cd3e87ee6,Prototypr.io,Active,https://blog.prototypr.io
+5bdd9dbf598b424d62424fb0,Daily Fintech,Active,https://dailyfintech.com
+5bdd9f59598b420a1d424fb1,WSJ,Active,https://www.wsj.com
+5bde206a91f6d0453ee1679e,BBC,Active,https://www.bbc.co.uk
+5bdeb41cbd5703817f210283,The Telegraph,Active,https://www.telegraph.co.uk
+5bdec6f35ed50f85bcedfc0e,SoccerNews,Inactive,https://www.soccernews.com
+5bdecb0b5ed50fcdf5edfc0f,MedicalNewsToday,Active,http://www.medicalnewstoday.com
+5bdecdc75ed50fe166edfc11,Bleacher Report,Active,https://bleacherreport.com
+5bdece865ed50fbd7bedfc12,The Hindu,Active,https:/www.thehindu.com
+5bdecfb55ed50f2a37edfc13,Yahoo UK Sports,Active,https://uk.sports.yahoo.com
+5be4eed4dee62a577f735995,Capitalmind,Active,https://capitalmind.in
+5be68b422de00766b2657c22,SVPG,Active,https://svpg.com
+5be68bd22de0079a85657c23,Dan North,Active,https://dannorth.net
+5be9780c02b631ed41361a3a,The Guardian,Active,https://www.theguardian.com
+5bf0b65b73193c6b03bc5109,themuse,Active,https://www.themuse.com
+5bf0b6d973193c8f9bbc510a,phoronix,Active,https://www.phoronix.com
+5bf0b72073193c037fbc510b,THENEXTPLATFORM,Active,https://www.nextplatform.com
+5bf0b80173193ce495bc510c,Moz://a,Inactive,https://blog.mozilla.org
+5bf141bbdc6da2c6971658d0,Insideevs,Active,https://insideevs.com
+5bf14486dc6da2b4421658d1,techradar,Active,https://www.techradar.com
+5bf15469277e68f3b0b2fd91,DEV,Active,https://dev.to
+5bfd14df2fbbe1b97e61cd02,codebits,Active,https://blog.grossman.io
+5c086f70afd6b7a439b06eb9,StockMarketWire,Active,http://www.stockmarketwire.com
+5c09cd75063ac928c05c4b42,Reuters India,Active,http://in.reuters.com
+5c0f48395a598202384551e9,Value Research,Active,https://www.valueresearchonline.com
+5c0f4bc55a598213064551ea,livemint,Active,https://www.livemint.com
+5c157eb5ef5ca068222a7477,The New Yorker,Active,https://www.newyorker.com
+5c15864a6f71290bb933e180,Russ Olsen,Active,http://www.russolsen.com
+5c2215acf627a94a45613b46,Sam Altman,Active,https://blog.samaltman.com
+5c2c40bee45c1234aa62a3aa,gitconnected,Active,https://levelup.gitconnected.com
+5c2da5580712a0225fa74516,SMALL CAPS,Active,https://smallcaps.com.au/feed/
+5c333409ff124d27cee4d1b1,caradvice,Active,https://www.caradvice.com.au
+5c3334c3ff124d67bde4d1b2,RH,Active,https://riskhedge.com
+5c34129cd82621babeacec57,THE COOPER REVIEW,Active,https://thecooperreview.com/
+5c357d96b80a13a83578ebc0,The Washington Post,Active,http://www.washingtonpost.com
+5c46a2b3ff635f3866935426,Alex Sexton,Active,https://alexsexton.com
+5c46d5f7fa12640de1af98cd,allBusiness,Active,https://www.allbusiness.com/
+5c46d765fa12645228af98ce,AstronomyNow,Active,https://atronomynow.com
+5c46e8f6721fca85cc1b41d2,BLOCKONOMI,Active,https://blockonomi.com/
+5c47b02f7d8d3682f31955c1,Mark Needham,Active,https://markhneedham.com
+5c4931434f50b90d23371aeb,itnews,Active,https://www.itnews.com.au/
+5c520bdb54f0c71068c327f4,startup daily,Active,https://www.startupdaily.net/
+5c520c4954f0c72244c327f5,Business Standard,Active,https://www.business-standard.com
